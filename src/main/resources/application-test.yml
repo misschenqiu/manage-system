@@ -1,11 +1,19 @@
+server:
+  port: 7065
+
 spring:
   datasource:
-    url: mpw:qRhvCwF4GOqjessEB3G+a5okP+uXXr96wcucn2Pev6Bf1oEMZ1gVpPPhdDmjQqoM
-    password: mpw:Hzy5iliJbwDHhjLs1L0j6w==
-    username: mpw:Xb+EgsyuYRXw7U7sBJjBpA==
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://121.196.110.80:3306/manage_system?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2b8
+    password: Qiudaye90900..
+    username: root
 
   # 配置plus
   mybatis-plus:
+    #配置mybatis-plus xml 路径
+    mapper-locations: classpath:/mapper/**/*Mapper.xml
+    #实体类别名, 多个package用[ , 或 ; ]区分
+    typeAliasesPackage: com.starda.managesystem.mapper
     global-config:
       db-config:
         logic-delete-field: flag  # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
@@ -13,3 +21,7 @@ spring:
         logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
     # 支持统配符 * 或者 ; 分割
     typeEnumsPackage: com.starda.managesystem.pojo.enums
+    configuration:
+      #配置驼峰命名规则
+      map-underscore-to-camel-case: true
+      cache-enabled: false

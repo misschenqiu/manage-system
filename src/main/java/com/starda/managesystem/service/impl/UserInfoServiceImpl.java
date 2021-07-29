@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.starda.managesystem.mapper.UserInfoMapper;
 import com.starda.managesystem.pojo.UserInfo;
 import com.starda.managesystem.service.IUserInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -17,5 +18,14 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> implements IUserInfoService {
+public class UserInfoServiceImpl implements IUserInfoService {
+
+    @Autowired
+    private UserInfoMapper userInfoMapper;
+
+
+    @Override
+    public Object getUserInfo() {
+        return userInfoMapper.selectById(2);
+    }
 }

@@ -12,5 +12,8 @@ import com.starda.managesystem.pojo.UserInfo;
  * @Date: 2021/7/29 11:38
  * @Version: 1.0
  */
-public interface IUserInfoService extends IService<UserInfo> {
+public interface IUserInfoService {
+
+    Object getUserInfo();
+
 }

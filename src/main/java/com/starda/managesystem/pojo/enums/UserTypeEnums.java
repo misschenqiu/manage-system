@@ -27,6 +27,18 @@ public enum UserTypeEnums {
 
     private String message;
 
+    public int getStatus() {
+        return status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     UserTypeEnums(int status, String message) {
         this.status = status;
         this.message = message;
