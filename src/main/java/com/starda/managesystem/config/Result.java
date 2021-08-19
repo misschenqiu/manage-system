@@ -1,7 +1,10 @@
 package com.starda.managesystem.config;
 
 import com.starda.managesystem.constant.Constant;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.util.List;
 
@@ -18,25 +21,75 @@ import java.util.List;
 @Data
 public class Result<T> {
 
+    public Result(){
+    }
+
+    /**
+     * 直接成功
+     */
+    public static DefaultResult success(){
+       return new DefaultResult();
+    }
+
+    /**
+     * 成功后添加说明
+     */
+    public static DefaultResult success(Object data, String message){
+       return new DefaultResult(data, message);
+    }
+
+
+    /**
+     * 返回数据 带分页数据
+     * @param data
+     */
+    public ResultPage resultPage(List<T> data, Integer currentPage, Integer pageSize){
+        return new ResultPage(data, currentPage, pageSize);
+    }
+
+    /**
+     * 返回数据 不带分页
+     * @param
+     */
+    public DefaultResult resultPage(T data){
+        return new DefaultResult(data);
+    }
+
+    /**
+     * 返回错误信息
+     * @param code
+     * @param message
+     */
+    public static Error error(String code, String message, String msg){
+        return new Error(code, message, msg);
+    }
+
+    /**
+     * 返回错误信息 自带异常
+     * @param msg
+     */
+    public static Error error(String msg){
+        return new Error(msg);
+    }
+
+}
+
+/**
+ * 默认返回类
+ * @param <T>
+ */
+@Data
+class DefaultResult<T> extends Result {
     /**
      * 对应编码
      */
-    private Integer code;
+    private String code;
 
     /**
      * 返回数据
      */
     private Object data;
 
-    /**
-     * 显示页码
-     */
-    private Integer currentPage;
-
-    /**
-     * 显示条数
-     */
-    private Integer pageSize;
 
     /**
      * 错误信息
@@ -49,68 +102,135 @@ public class Result<T> {
     private Boolean success;
 
     /**
-     * 用户认证
-     */
-    private String token;
-
-    /**
      * 直接成功
      */
-    public Result(){
-        this.code = 200;
+    public DefaultResult(){
+        this.code = ExceptionEnums.SUCCESS.getCode();
         this.message = Constant.ResultCodeMessage.SUCCESS;
         this.success = Constant.ResultCodeMessage.DEFAULT;
     }
+
     /**
      * 成功后添加说明
      */
-    public Result(String message){
-        this.code = 200;
+    public DefaultResult(T data, String message){
+        new DefaultResult();
+        this.data = data;
         this.message = message;
-        this.success = Constant.ResultCodeMessage.DEFAULT;
-    }
-
-
-    /**
-     * 返回数据 带分页数据
-     * @param data
-     */
-    public Result(List<T> data, Integer currentPage, Integer pageSize){
-        new Result();
-        this.data = data;
-        this.currentPage = currentPage;
-        this.pageSize = pageSize;
     }
 
     /**
-     * 返回数据 不带分页
-     * @param data
+     * 不带分页数据
      */
-    public Result(T data){
-        new Result();
+    public DefaultResult(T data){
+        new DefaultResult<T>();
         this.data = data;
     }
+
+}
+
+
+/**
+ * 异常返回类
+ */
+@Data
+class Error extends Result<T>{
+    /**
+     * 对应编码
+     */
+    private String code;
+
+    /**
+     * 错误信息
+     */
+    private String message;
+
+    /**
+     * 异常详情
+     */
+    private String msg;
+
+    /**
+     * 错误编码
+     */
+    private Boolean success;
 
     /**
      * 返回错误信息
      * @param code
      * @param message
      */
-    public Result(Integer code, String message){
+    public Error(String code, String message, String msg){
         this.code = code;
         this.message = message;
         this.success = Constant.ResultCodeMessage.ERROR;
+        this.msg = msg;
     }
 
     /**
-     * 登录验证数据
-     * @param token
-     * @param code
+     * 返回错误信息 自带异常
+     * @param msg
      */
-    public Result(String token, Integer code){
-        new Result();
-        this.token = token;
-        this.code = code;
+    public Error(String msg){
+        this.code = ExceptionEnums.DEFAULT.getCode();
+        this.message = ExceptionEnums.DEFAULT.getMessage();
+        this.success = Constant.ResultCodeMessage.ERROR;
+        this.msg = msg;
+    }
+
+    public Error(){
+    }
+
+}
+
+/**
+ * 带分页数据
+ */
+@Data
+class ResultPage<T> extends Result<T>{
+    /**
+     * 对应编码
+     */
+    private String code;
+
+    /**
+     * 返回数据
+     */
+    private Object data;
+
+    /**
+     * 错误信息
+     */
+    private String message;
+
+    /**
+     * 错误编码
+     */
+    private Boolean success;
+
+    /**
+     * 显示页码
+     */
+    private Integer currentPage;
+
+    /**
+     * 显示条数
+     */
+    private Integer pageSize;
+
+    /**
+     * 返回带参数
+     * @param data 数据
+     * @param currentPage 显示条数
+     * @param pageSize 当前页
+     */
+    public ResultPage (List<T> data, Integer currentPage, Integer pageSize){
+        this.code = ExceptionEnums.SUCCESS.getCode();
+        this.message = Constant.ResultCodeMessage.SUCCESS;
+        this.success = Constant.ResultCodeMessage.DEFAULT;
+        this.data = data;
+        this.currentPage = currentPage;
+        this.pageSize = pageSize;
     }
 
 }

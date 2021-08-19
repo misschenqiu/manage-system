@@ -1,8 +1,11 @@
 package com.starda.managesystem.exceptions;
 
+import cn.hutool.core.util.StrUtil;
+import com.starda.managesystem.config.ExceptionEnums;
 import com.starda.managesystem.config.Result;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * @ProjectName: manage-system
@@ -22,7 +25,23 @@ public class HandleException {
      * @return
      */
     @ExceptionHandler(ManageStarException.class)
-    public Result paramException(){
-        return new Result();
+    @ResponseBody
+    public Result systemManageException(ManageStarException e){
+        if(e.getCode() == null || StrUtil.isBlank(e.getCode())){
+            e.setCode(ExceptionEnums.DEFAULT.getCode());
+        }
+        return Result.error(e.getCode(), e.getMessage(), e.toString());
     }
+
+    /**
+     * 系统自定义 异常
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(Exception.class)
+    @ResponseBody
+    public Result bootException(Exception e){
+        return Result.error(e.getMessage());
+    }
+
 }
