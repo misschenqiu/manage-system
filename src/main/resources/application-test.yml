@@ -1,5 +1,10 @@
 server:
   port: 7065
+  tomcat:
+    uri-encoding: UTF-8
+    max-threads: 800
+    min-spare-threads: 30
+    basedir: /home/tmp
 
 spring:
   datasource:
@@ -25,3 +30,9 @@ spring:
       #配置驼峰命名规则
       map-underscore-to-camel-case: true
       cache-enabled: false
+
+#输出日志
+logging:
+  config: classpath:log4j2.xml
+  level:
+    com.starda.managesystem: trace
