@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starda.managesystem.mapper.system.SysStaffMapper">
+  <resultMap id="BaseResultMap" type="com.starda.managesystem.pojo.SysStaff">
+    <id column="sys_staff_id" jdbcType="INTEGER" property="id" />
+    <result column="sys_staff_username" jdbcType="VARCHAR" property="username" />
+    <result column="sys_staff_sex" jdbcType="INTEGER" property="sex" />
+    <result column="sys_staff_user_height" jdbcType="DOUBLE" property="user_height" />
+    <result column="sys_staff_phone" jdbcType="VARCHAR" property="phone" />
+    <result column="sys_staff_create_time" jdbcType="TIMESTAMP" property="create_time" />
+    <result column="sys_staff_status" jdbcType="INTEGER" property="status" />
+    <result column="sys_staff_identity" jdbcType="VARCHAR" property="identity" />
+    <result column="sys_staff_head_img" jdbcType="VARCHAR" property="head_img" />
+    <result column="sys_staff_user_id" jdbcType="INTEGER" property="user_id" />
+    <result column="sys_staff_position" jdbcType="VARCHAR" property="position" />
+    <result column="sys_staff_remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    sys_staff.id as sys_staff_id, sys_staff.username as sys_staff_username, sys_staff.sex as sys_staff_sex, 
+    sys_staff.user_height as sys_staff_user_height, sys_staff.phone as sys_staff_phone, 
+    sys_staff.create_time as sys_staff_create_time, sys_staff.`status` as `sys_staff_status`, 
+    sys_staff.`identity` as `sys_staff_identity`, sys_staff.head_img as sys_staff_head_img, 
+    sys_staff.user_id as sys_staff_user_id, sys_staff.`position` as `sys_staff_position`, 
+    sys_staff.remark as sys_staff_remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_staff sys_staff
+    where sys_staff.id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_staff
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.SysStaff" useGeneratedKeys="true">
+    insert into sys_staff (username, sex, user_height, 
+      phone, create_time, `status`, 
+      `identity`, head_img, user_id, 
+      `position`, remark)
+    values (#{username,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, #{user_height,jdbcType=DOUBLE}, 
+      #{phone,jdbcType=VARCHAR}, #{create_time,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
+      #{identity,jdbcType=VARCHAR}, #{head_img,jdbcType=VARCHAR}, #{user_id,jdbcType=INTEGER}, 
+      #{position,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.SysStaff" useGeneratedKeys="true">
+    insert into sys_staff
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="username != null">
+        username,
+      </if>
+      <if test="sex != null">
+        sex,
+      </if>
+      <if test="user_height != null">
+        user_height,
+      </if>
+      <if test="phone != null">
+        phone,
+      </if>
+      <if test="create_time != null">
+        create_time,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="identity != null">
+        `identity`,
+      </if>
+      <if test="head_img != null">
+        head_img,
+      </if>
+      <if test="user_id != null">
+        user_id,
+      </if>
+      <if test="position != null">
+        `position`,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="user_height != null">
+        #{user_height,jdbcType=DOUBLE},
+      </if>
+      <if test="phone != null">
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="create_time != null">
+        #{create_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="identity != null">
+        #{identity,jdbcType=VARCHAR},
+      </if>
+      <if test="head_img != null">
+        #{head_img,jdbcType=VARCHAR},
+      </if>
+      <if test="user_id != null">
+        #{user_id,jdbcType=INTEGER},
+      </if>
+      <if test="position != null">
+        #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.starda.managesystem.pojo.SysStaff">
+    update sys_staff
+    <set>
+      <if test="username != null">
+        username = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="sex != null">
+        sex = #{sex,jdbcType=INTEGER},
+      </if>
+      <if test="user_height != null">
+        user_height = #{user_height,jdbcType=DOUBLE},
+      </if>
+      <if test="phone != null">
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="create_time != null">
+        create_time = #{create_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="identity != null">
+        `identity` = #{identity,jdbcType=VARCHAR},
+      </if>
+      <if test="head_img != null">
+        head_img = #{head_img,jdbcType=VARCHAR},
+      </if>
+      <if test="user_id != null">
+        user_id = #{user_id,jdbcType=INTEGER},
+      </if>
+      <if test="position != null">
+        `position` = #{position,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.starda.managesystem.pojo.SysStaff">
+    update sys_staff
+    set username = #{username,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=INTEGER},
+      user_height = #{user_height,jdbcType=DOUBLE},
+      phone = #{phone,jdbcType=VARCHAR},
+      create_time = #{create_time,jdbcType=TIMESTAMP},
+      `status` = #{status,jdbcType=INTEGER},
+      `identity` = #{identity,jdbcType=VARCHAR},
+      head_img = #{head_img,jdbcType=VARCHAR},
+      user_id = #{user_id,jdbcType=INTEGER},
+      `position` = #{position,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

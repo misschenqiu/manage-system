@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starda.managesystem.mapper.system.SysMenuMapper">
+  <resultMap id="BaseResultMap" type="com.starda.managesystem.pojo.SysMenu">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="menu_name" jdbcType="VARCHAR" property="menu_name" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="create_time" />
+    <result column="modified_time" jdbcType="TIMESTAMP" property="modified_time" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, menu_name, code, url, create_time, modified_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sys_menu
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_menu
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.SysMenu" useGeneratedKeys="true">
+    insert into sys_menu (menu_name, code, url, 
+      create_time, modified_time)
+    values (#{menu_name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{create_time,jdbcType=TIMESTAMP}, #{modified_time,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.SysMenu" useGeneratedKeys="true">
+    insert into sys_menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="menu_name != null">
+        menu_name,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="url != null">
+        url,
+      </if>
+      <if test="create_time != null">
+        create_time,
+      </if>
+      <if test="modified_time != null">
+        modified_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="menu_name != null">
+        #{menu_name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="create_time != null">
+        #{create_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modified_time != null">
+        #{modified_time,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.starda.managesystem.pojo.SysMenu">
+    update sys_menu
+    <set>
+      <if test="menu_name != null">
+        menu_name = #{menu_name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="create_time != null">
+        create_time = #{create_time,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modified_time != null">
+        modified_time = #{modified_time,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.starda.managesystem.pojo.SysMenu">
+    update sys_menu
+    set menu_name = #{menu_name,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      create_time = #{create_time,jdbcType=TIMESTAMP},
+      modified_time = #{modified_time,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

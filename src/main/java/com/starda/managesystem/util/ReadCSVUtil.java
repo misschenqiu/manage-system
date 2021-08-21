@@ -1,5 +1,7 @@
 package com.starda.managesystem.util;
 
+import lombok.extern.log4j.Log4j2;
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -12,12 +14,16 @@ import java.util.ArrayList;
  * @Date: 2021/7/30 11:19
  * @Version: 1.0
  */
+@Log4j2
 public class ReadCSVUtil {
 
     public static ArrayList<String> readCsv(String filepath) {
-        File csv = new File(filepath); // CSV文件路径
-        csv.setReadable(true);//设置可读
-        csv.setWritable(true);//设置可写
+        // CSV文件路径
+        File csv = new File(filepath);
+        //设置可读
+        csv.setReadable(true);
+        //设置可写
+        csv.setWritable(true);
         BufferedReader br = null;
         try {
             InputStreamReader gbReader = new InputStreamReader( new FileInputStream(csv), "GBK" );
@@ -29,13 +35,13 @@ public class ReadCSVUtil {
         String everyLine = "";
         ArrayList<String> allString = new ArrayList<>();
         try {
-            while ((line = br.readLine()) != null) // 读取到的内容给line变量
-            {
+            // 读取到的内容给line变量
+            while ((line = br.readLine()) != null) {
                 everyLine = line;
                 System.out.println(everyLine);
                 allString.add(everyLine);
             }
-            System.out.println("csv表格中所有行数：" + allString.size());
+            log.info("csv表格中所有行数：" + allString.size());
         } catch (Exception e) {
             e.printStackTrace();
         }

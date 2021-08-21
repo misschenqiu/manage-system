@@ -38,6 +38,13 @@ public class Result<T> {
        return new DefaultResult(data, message);
     }
 
+    /**
+     * 成功值返回说明
+     */
+    public static DefaultResult success(String message){
+        return new DefaultResult(message);
+    }
+
 
     /**
      * 返回数据 带分页数据
@@ -108,6 +115,14 @@ class DefaultResult<T> extends Result {
         this.code = ExceptionEnums.SUCCESS.getCode();
         this.message = Constant.ResultCodeMessage.SUCCESS;
         this.success = Constant.ResultCodeMessage.DEFAULT;
+    }
+
+    /**
+     * 只返回说明
+     */
+    public DefaultResult(String message){
+        new DefaultResult();
+        this.message = message;
     }
 
     /**

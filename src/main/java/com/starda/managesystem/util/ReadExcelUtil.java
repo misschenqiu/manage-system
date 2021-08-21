@@ -20,6 +20,11 @@ import java.util.List;
  */
 public class ReadExcelUtil {
 
+    /**
+     * 读取excel 文件
+     * @param filePath
+     * @return
+     */
     public static List<Object> readExcel(String filePath){
 
         List<Object> result = new ArrayList<>();

@@ -20,4 +20,11 @@ public interface Constant {
         Boolean ERROR = false;
     }
 
+    /**
+     * 基本系统字符串
+     */
+    interface BaseStringInfoManage{
+        String COOKIES = "JSESSIONID";
+    }
+
 }

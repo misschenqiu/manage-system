@@ -11,6 +11,8 @@ import com.starda.managesystem.pojo.enums.UserTypeEnums;
 import lombok.Data;
 import lombok.ToString;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * user_info
  * @author 
@@ -26,6 +28,7 @@ public class UserInfo implements Serializable {
     /**
      * 用户名
      */
+    @NotNull(message = "用户名不能为空")
     private String username;
 
     /**

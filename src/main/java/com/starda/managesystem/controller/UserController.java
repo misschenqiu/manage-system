@@ -1,11 +1,11 @@
 package com.starda.managesystem.controller;
 
+import com.starda.managesystem.pojo.UserInfo;
 import com.starda.managesystem.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 /**
  * @ProjectName: manage-system
@@ -24,9 +24,9 @@ public class UserController {
     @Autowired
     private IUserInfoService userInfoService;
 
-    @GetMapping
+    @PostMapping("/getUserInfo")
     @ResponseBody
-    public Object getUserInfo(){
+    public Object getUserInfo(@Valid UserInfo userInfo){
         return userInfoService.getUserInfo();
     }
 
