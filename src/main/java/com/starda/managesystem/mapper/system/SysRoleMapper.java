@@ -1,11 +1,11 @@
 package com.starda.managesystem.mapper.system;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.github.yulichang.base.MPJBaseMapper;
 import com.starda.managesystem.pojo.SysRole;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface SysRoleMapper extends BaseMapper<SysRole> {
+public interface SysRoleMapper extends MPJBaseMapper<SysRole> {
 
     int deleteByPrimaryKey(Integer id);
 

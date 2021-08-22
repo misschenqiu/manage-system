@@ -4,6 +4,7 @@ import com.starda.managesystem.pojo.SysUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,7 +25,7 @@ import java.util.Map;
  */
 
 @Component
-@Slf4j
+@Log4j2
 public class JwtTokenUtil {
 
     /**
@@ -57,7 +58,7 @@ public class JwtTokenUtil {
         String username = null;
         try {
             Claims claims = getClaimsFromToken(token);
-            System.out.println("claims = " + claims.toString());
+            log.info("claims = " + claims.toString());
             username = claims.getSubject();
         } catch (Exception e) {
             System.out.println("e = " + e.getMessage());
@@ -77,6 +78,7 @@ public class JwtTokenUtil {
             Date expiration = claims.getExpiration();
             return expiration.before(new Date());
         } catch (Exception e) {
+            log.info("令牌已经过期");
             new Throwable(e);
         }
         return true;
@@ -136,6 +138,7 @@ public class JwtTokenUtil {
         try {
             claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
         } catch (Exception e) {
+            log.error("token中获取数据失败" + e.getMessage());
             new Throwable(e);
         }
         return claims;

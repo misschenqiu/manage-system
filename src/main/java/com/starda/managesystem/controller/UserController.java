@@ -1,6 +1,8 @@
 package com.starda.managesystem.controller;
 
+import com.starda.managesystem.config.Result;
 import com.starda.managesystem.pojo.UserInfo;
+import com.starda.managesystem.pojo.po.AccountPO;
 import com.starda.managesystem.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,5 +31,6 @@ public class UserController {
     public Object getUserInfo(@Valid UserInfo userInfo){
         return userInfoService.getUserInfo();
     }
+
 
 }

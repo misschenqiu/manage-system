@@ -136,6 +136,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin()
                 //允许所有用户
                 .permitAll()
+                // 登录 url
+                .loginProcessingUrl("/user/loginAccount")
                 //登录成功
                 .successHandler(myAuthenticationSuccessHandler)
                 //登录失败
@@ -144,6 +146,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.logout()
                 //允许所有用户
                 .permitAll()
+                // 推出登录 url
+                .logoutUrl("/user/logout")
                 //注销成功
                 .logoutSuccessHandler(myLogoutSuccessHandler)
                 //登出之后删除cookie

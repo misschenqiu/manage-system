@@ -22,7 +22,6 @@ public class SysUser implements Serializable {
     /**
      * 密码
      */
-    @TableField(typeHandler = AESEncryptHandler.class)
     private String password;
 
     /**

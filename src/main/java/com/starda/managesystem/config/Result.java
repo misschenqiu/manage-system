@@ -1,9 +1,7 @@
 package com.starda.managesystem.config;
 
 import com.starda.managesystem.constant.Constant;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.poi.ss.formula.functions.T;
 
 import java.util.List;
@@ -121,7 +119,8 @@ class DefaultResult<T> extends Result {
      * 只返回说明
      */
     public DefaultResult(String message){
-        new DefaultResult();
+        this.code = ExceptionEnums.SUCCESS.getCode();
+        this.success = Constant.ResultCodeMessage.DEFAULT;
         this.message = message;
     }
 
@@ -129,7 +128,8 @@ class DefaultResult<T> extends Result {
      * 成功后添加说明
      */
     public DefaultResult(T data, String message){
-        new DefaultResult();
+        this.code = ExceptionEnums.SUCCESS.getCode();
+        this.success = Constant.ResultCodeMessage.DEFAULT;
         this.data = data;
         this.message = message;
     }
@@ -138,7 +138,9 @@ class DefaultResult<T> extends Result {
      * 不带分页数据
      */
     public DefaultResult(T data){
-        new DefaultResult<T>();
+        this.code = ExceptionEnums.SUCCESS.getCode();
+        this.message = Constant.ResultCodeMessage.SUCCESS;
+        this.success = Constant.ResultCodeMessage.DEFAULT;
         this.data = data;
     }
 

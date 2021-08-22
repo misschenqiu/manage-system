@@ -54,9 +54,12 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
             return null;
         }
         // 获取角色信息
-        MPJLambdaWrapper<SysRole> wrapper = new MPJLambdaWrapper<>();
-        List<SysRole> roleList = this.sysRoleMapper.selectList(wrapper.selectAll(SysRole.class)
-                                             .rightJoin(SysUserRole.class, SysUserRole::getRole_id, SysRole::getId)
+        MPJLambdaWrapper<SysRole> wrapper = new MPJLambdaWrapper<SysRole>();
+        List<SysRole> roleList = this.sysRoleMapper.selectJoinList(SysRole.class, wrapper
+                                            .selectAll(SysRole.class)
+                                            .select(SysRole::getId)
+                                            .select(SysUserRole::getUser_id)
+                                            .rightJoin(SysUserRole.class, SysUserRole::getRole_id, SysRole::getId)
                                             .eq(SysUserRole::getUser_id, accountInfo.getId()));
         accountInfo.setRoleList(roleList);
         return accountInfo;

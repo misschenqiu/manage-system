@@ -25,6 +25,7 @@ public interface Constant {
      */
     interface BaseStringInfoManage{
         String COOKIES = "JSESSIONID";
+        String SUCCESS = "登录成功";
     }
 
 }

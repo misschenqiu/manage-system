@@ -22,8 +22,17 @@
     where sys_user.id = #{id,jdbcType=INTEGER}
   </select>
 
+  <resultMap id="Base_Account_Result" type="com.starda.managesystem.pojo.dto.AccountInfoDTO">
+    <id column="sys_user_id" jdbcType="INTEGER" property="id" />
+    <result column="sys_user_account" jdbcType="VARCHAR" property="account" />
+    <result column="sys_user_password" jdbcType="VARCHAR" property="password" />
+    <result column="sys_user_phone" jdbcType="VARCHAR" property="phone" />
+    <result column="sys_user_address" jdbcType="VARCHAR" property="address" />
+    <result column="sys_user_address_code" jdbcType="VARCHAR" property="address_code" />
+  </resultMap>
+
   <!-- 获取到账号信息 -->
-    <select id="getAccountInfo" resultType="com.starda.managesystem.pojo.dto.AccountInfoDTO">
+    <select id="getAccountInfo" resultMap="Base_Account_Result">
         select <include refid="Base_Column_List"/>
         from sys_user sys_user
         <where>

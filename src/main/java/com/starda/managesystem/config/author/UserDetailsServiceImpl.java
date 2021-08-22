@@ -58,6 +58,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(String.format(ExceptionEnums.USER_ACCOUNT_NOT_EXIST.getMessage(), userAccount));
         }
 
+        // 无权限
+        if(null == account.getRoleList() || account.getRoleList().isEmpty()){
+            return new User(account.getAccount(), account.getPassword(), new ArrayList<>());
+        }
+
         // 2.获取权限信息
         List<SysMenu> sysMenuList = menuService.getMenuInfoList(account.getRoleList().parallelStream().map(SysRole::getId).collect(Collectors.toList()));
         // 3.封装权限信息

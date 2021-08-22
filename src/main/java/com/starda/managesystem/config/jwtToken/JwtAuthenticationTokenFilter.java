@@ -74,13 +74,17 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             }
             if (!check){
                 //通过令牌获取用户名称
-                String username = jwtTokenUtil.getUsernameFromToken(token);
-                log.info("username = " + username);
+                String account = jwtTokenUtil.getUsernameFromToken(token);
+                log.info("account = " + account);
 
                 //判断用户不为空，且SecurityContextHolder授权信息还是空的
-                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                if (account != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                     //通过用户信息得到UserDetails
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                    UserDetails userDetails = userDetailsService.loadUserByUsername(account);
+                    if(null == userDetails){
+                        log.info("没有查到相关用户信息！");
+                        new Throwable("验证token无效");
+                    }
                     //验证令牌有效性
                     boolean validata = false;
                     try {
@@ -104,9 +108,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     }
                 }
             }
-        }else {
-            log.error("没有" + header + "认证信息");
-            new IOException("没有" + header + "认证信息");
         }
         chain.doFilter(request, response);
 
