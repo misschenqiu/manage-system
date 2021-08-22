@@ -17,7 +17,7 @@ import java.io.IOException;
  * @Package: com.starda.managesystem.config.author
  * @ClassName: MySessionInformationExpiredStrategy
  * @Author: chenqiu
- * @Description: 账号 被挤下来
+ * @Description: 账号 被挤下来 账号被挤下线的处理方案
  * @Date: 2021/8/21 20:29
  * @Version: 1.0
  */

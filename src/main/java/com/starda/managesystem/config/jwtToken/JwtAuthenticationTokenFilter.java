@@ -1,11 +1,7 @@
 package com.starda.managesystem.config.jwtToken;
 
-import cn.hutool.cache.CacheUtil;
-import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.util.StrUtil;
 import com.starda.managesystem.common.LocalCache;
-import com.starda.managesystem.constant.Constant;
-import com.starda.managesystem.service.IUserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

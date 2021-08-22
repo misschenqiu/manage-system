@@ -5,6 +5,7 @@ import com.starda.managesystem.constant.Constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsUtils;
 
@@ -31,16 +33,17 @@ import javax.annotation.Resource;
 
 /**
  * param @EnableGlobalMethodSecurity 开启权限注解控制
+ *
  * @author chenqiu
  */
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         //使用这么一个实现类，获取加密加盐的密码
         //而且每次运行就算是相同的字符串，生成的密码也是不一样的
         return new BCryptPasswordEncoder();
@@ -62,7 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * 异常处理
      */
     @Autowired
-    private MyAuthenticationEntryPoint myAuthenticationEntryPoint ;
+    private MyAuthenticationEntryPoint myAuthenticationEntryPoint;
 
     /**
      * 登录成功的处理方案
@@ -95,6 +98,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private RestfulAccessDeniedHandler accessDeniedHandler;
 
     /**
+     * 赛选路径角色
+     */
+    @Autowired
+    private CustomAccessDecisionManager customAccessDecisionManager;
+
+    /**
+     * 路径角色判断
+     */
+    @Autowired
+    private CustomFilterInvocationSecurityMetadataSource customFilterInvocationSecurityMetadataSource;
+
+    /**
      * jwt
      */
     @Autowired
@@ -108,7 +123,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //替换默认的密码认证方式
                 .passwordEncoder(passwordEncoder);
     }
-
 
 
     @Override
@@ -168,9 +182,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(myAuthenticationEntryPoint)
                 .accessDeniedHandler(accessDeniedHandler);
 
+        // 配置权限信息
         http.authorizeRequests()
-                .antMatchers("/bb").hasAuthority("home:index")
-                .anyRequest().authenticated();
+                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                    @Override
+                    public <O extends FilterSecurityInterceptor> O postProcess(O object){
+                        object.setSecurityMetadataSource(customFilterInvocationSecurityMetadataSource);
+                        object.setAccessDecisionManager(customAccessDecisionManager);
+                        return object;
+                    }
+                })
+//                .antMatchers("/bb").hasAuthority("home:index")  antMatchers 路径匹配 hasAuthority 角色匹配 都是静态
+                .and()
+                .formLogin()
+                .permitAll()
+                .and()
+                .csrf().disable();
     }
 
 }

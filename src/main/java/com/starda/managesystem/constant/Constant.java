@@ -34,6 +34,11 @@ public interface Constant {
          * 请求投中 特定参数
          */
         String HEADER = "Authorization";
+
+        /**
+         * 设置默认角色
+         */
+        String DEFAULT_ROLE = "ROLE_def";
     }
 
 }

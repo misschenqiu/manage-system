@@ -1,6 +1,7 @@
 package com.starda.managesystem.service;
 
 import com.starda.managesystem.pojo.SysMenu;
+import com.starda.managesystem.pojo.dto.RoleInfoListDTO;
 
 import java.util.List;
 
@@ -21,5 +22,17 @@ public interface ISysMenuService {
      * @return
      */
     List<SysMenu> getMenuInfoList(List<Integer> accountId);
+
+    /**
+     * 获取全部 路径信息
+     * @return
+     */
+    List<SysMenu> getMenuAllToRoleList();
+
+    /**
+     * 获取 角色 列表信息
+     * @return
+     */
+    List<RoleInfoListDTO> getRoleToAllMenusList();
 
 }
