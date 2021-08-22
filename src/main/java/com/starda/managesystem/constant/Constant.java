@@ -16,6 +16,7 @@ public interface Constant {
      */
     interface ResultCodeMessage{
         String SUCCESS = "success";
+        String FAIL = "fail";
         Boolean DEFAULT = true;
         Boolean ERROR = false;
     }
@@ -26,6 +27,13 @@ public interface Constant {
     interface BaseStringInfoManage{
         String COOKIES = "JSESSIONID";
         String SUCCESS = "登录成功";
+        // 本地缓存最大数
+        long NUMBER = 1000;
+        long TIME_CACHE = 12 * 60;
+        /**
+         * 请求投中 特定参数
+         */
+        String HEADER = "Authorization";
     }
 
 }

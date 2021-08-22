@@ -1,5 +1,11 @@
 package com.starda.managesystem.config.author;
 
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.TimedCache;
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.thread.ThreadUtil;
+import com.starda.managesystem.common.LocalCache;
+import com.starda.managesystem.common.SecurityPasswordCommon;
 import com.starda.managesystem.config.JSONAuthentication;
 import com.starda.managesystem.config.Result;
 import com.starda.managesystem.config.jwtToken.JwtTokenUtil;
@@ -16,6 +22,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -44,10 +51,14 @@ public class MyAuthenticationSuccessHandler extends JSONAuthentication implement
         //生成token
         String token = jwtTokenUtil.generateToken(userDetails);
 
+        // 保存12个小时
+        String tokenKey = SecurityPasswordCommon.generateKey(userDetails.getUsername());
+        LocalCache.put(tokenKey, token, Constant.BaseStringInfoManage.TIME_CACHE);
+
         // 返回数据
         HashMap data = new HashMap<String, String>() {{
             put("account", userDetails.getUsername());
-            put("token", token);
+            put("token", tokenKey);
         }};
         Result result = Result.success(data, Constant.BaseStringInfoManage.SUCCESS);
         this.WriteJSON(request, response, result);

@@ -35,6 +35,7 @@ public enum ExceptionEnums {
     USER_ACCOUNT_NOT_STATUS("2010","禁用操作失败"),
     USER_ACCOUNT_DELETE_EXIST("2011","删除失败"),
     USER_ACCOUNT_UPDATE_ID("2012","修改失败"),
+    USER_ACCOUNT_CANCELLATION("2013","注销失败"),
 
     /* 业务错误 */
     NO_PERMISSION("3001", "没有权限")

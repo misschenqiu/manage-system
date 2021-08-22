@@ -1,5 +1,10 @@
 package com.starda.managesystem.config.jwtToken;
 
+import cn.hutool.cache.CacheUtil;
+import cn.hutool.cache.impl.TimedCache;
+import cn.hutool.core.util.StrUtil;
+import com.starda.managesystem.common.LocalCache;
+import com.starda.managesystem.constant.Constant;
 import com.starda.managesystem.service.IUserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +49,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
     /**
      * 请求投中 特定参数
      */
-    private String header = "Authorization";
+    private final String header = "Authorization";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
@@ -55,11 +60,17 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
 
         if (!StringUtils.isEmpty(headerToken)) {
             //postMan测试时，自动加入的前缀，要去掉。
-            String token = headerToken.replace("Bearer", "").trim();
-            log.info("token = " + token);
+            String tokenKey = headerToken.replace("Bearer", "").trim();
+            log.info("token = " + tokenKey);
 
             //判断令牌是否过期，默认是一周
             //比较好的解决方案是：
+            // 从本地缓存里面获取数据
+            String token = (String) LocalCache.get(tokenKey, false);
+            if(StrUtil.isBlank(token)){
+                chain.doFilter(request, response);
+                return;
+            }
             //登录成功获得token后，将token存储到数据库（redis）
             //将数据库版本的token设置过期时间为15~30分钟
             //如果数据库中的token版本过期，重新刷新获取新的token
