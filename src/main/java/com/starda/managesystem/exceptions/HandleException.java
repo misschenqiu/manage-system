@@ -12,6 +12,7 @@ import javax.validation.ValidationException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -117,8 +118,8 @@ public class HandleException {
     @ResponseBody
     public Result bindParamException(BindException e) {
         Map<String, String> errorList = new HashMap<String, String>();
-        for (ObjectError allError : e.getBindingResult().getAllErrors()) {
-            errorList.put(allError.getObjectName(), allError.getDefaultMessage());
+        for (FieldError allError : e.getBindingResult().getFieldErrors()) {
+            errorList.put(allError.getField(), allError.getDefaultMessage());
         }
         return Result.error(ExceptionEnums.PARAMS.getCode(), ExceptionEnums.PARAMS.getMessage(), JSON.toJSONString(errorList));
     }

@@ -18,11 +18,11 @@ public class LocalCache {
     /**
      * 默认缓存时长 单位s
      */
-    private static final Long DEFAULT_TIMEOUT = 12 * 60 * 1000L;
+    private static final Long DEFAULT_TIMEOUT = 12 * 60 * 60 * 1000L;
     /**
      * 默认清理间隔时间 单位s
      */
-    private static final Long CLEAN_TIMEOUT = 12 * 60 * 1000L;
+    private static final Long CLEAN_TIMEOUT = 12  * 60 * 60 * 1000L;
     /**
      * 缓存对象
      */

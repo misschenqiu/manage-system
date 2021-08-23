@@ -57,7 +57,7 @@ public class CustomFilterInvocationSecurityMetadataSource implements FilterInvoc
                 List<RoleInfoListDTO> roleList = menusToRoleInfoDTO.getRoleList();
                 String[] role = new String[roleList.size()];
                 for (int i = 0; i < roleList.size(); i++) {
-                    role[i] = roleList.get(i).getRole_name();
+                    role[i] = roleList.get(i).getRole_code();
                 }
                 // 将url对应赛选出来的角色 返回出去
                 log.info("角色信息： role->{}" + role);

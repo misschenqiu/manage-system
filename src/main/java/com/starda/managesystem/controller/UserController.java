@@ -1,8 +1,9 @@
 package com.starda.managesystem.controller;
 
 import com.starda.managesystem.config.Result;
+import com.starda.managesystem.config.annotation.AnnotationAuthor;
+import com.starda.managesystem.config.author.UserVO;
 import com.starda.managesystem.pojo.UserInfo;
-import com.starda.managesystem.pojo.po.AccountPO;
 import com.starda.managesystem.service.IUserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +28,8 @@ public class UserController {
     private IUserInfoService userInfoService;
 
     @PostMapping("/getUserInfo")
-    @ResponseBody
-    public Object getUserInfo(@Valid UserInfo userInfo){
+    public Object getUserInfo(@AnnotationAuthor UserVO userVO, @Valid UserInfo userInfo){
+        System.out.println(userVO);
         return userInfoService.getUserInfo();
     }
 

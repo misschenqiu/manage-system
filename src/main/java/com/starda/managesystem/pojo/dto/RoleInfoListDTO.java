@@ -27,6 +27,11 @@ public class RoleInfoListDTO implements Serializable {
     private String role_name;
 
     /**
+     * 角色编码
+     */
+    private String role_code;
+
+    /**
      * 描述
      */
     private String remark;

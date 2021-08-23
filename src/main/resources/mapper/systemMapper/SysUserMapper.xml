@@ -29,12 +29,18 @@
     <result column="sys_user_phone" jdbcType="VARCHAR" property="phone" />
     <result column="sys_user_address" jdbcType="VARCHAR" property="address" />
     <result column="sys_user_address_code" jdbcType="VARCHAR" property="address_code" />
+    <result column="staff_id" jdbcType="INTEGER" property="staffId" />
+    <result column="staff_username" jdbcType="VARCHAR" property="staffName" />
+    <result column="staff_head_img" jdbcType="VARCHAR" property="staffImg" />
   </resultMap>
 
   <!-- 获取到账号信息 -->
     <select id="getAccountInfo" resultMap="Base_Account_Result">
-        select <include refid="Base_Column_List"/>
+        select sys_user.id as sys_user_id, sys_user.account as sys_user_account, sys_user.`password` as `sys_user_password`,
+      sys_user.phone as sys_user_phone, sys_user.address as sys_user_address, sys_user.address_code as sys_user_address_code,
+               staff.id as staff_id, staff.username as staff_username, staff.head_img as staff_head_img
         from sys_user sys_user
+        left join sys_staff staff on sys_user.id = staff.user_id
         <where>
           sys_user.status = 1
         <if test="account != null and account != ''">

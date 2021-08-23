@@ -47,5 +47,10 @@ public class SysRole implements Serializable {
      */
     private String address_code;
 
+    /**
+     * 角色编码
+     */
+    private String role_code;
+
     private static final long serialVersionUID = 1L;
 }

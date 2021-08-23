@@ -59,17 +59,35 @@ public class UserVO implements UserDetails, CredentialsContainer {
     private String address_code;
 
     /**
+     * 员工共id
+     */
+    private Integer staffId;
+
+    /**
+     * 员工名字
+     */
+    private String staffName;
+
+    /**
+     * 员工头像
+     */
+    private String staffImg;
+
+    /**
      * 角色信息
      */
     List<GrantedAuthority> authorities;
 
-    public UserVO(Integer id, String account, String password, String phone, String address, String address_code, List<GrantedAuthority> authorities) {
+    public UserVO(Integer id, String account, String password, String phone, String address, String address_code, Integer staffId, String staffName, String staffImg, List<GrantedAuthority> authorities) {
         this.id = id;
         this.account = account;
         this.password = password;
         this.phone = phone;
         this.address = address;
         this.address_code = address_code;
+        this.staffId = staffId;
+        this.staffName = staffName;
+        this.staffImg = staffImg;
         this.authorities = authorities;
     }
 

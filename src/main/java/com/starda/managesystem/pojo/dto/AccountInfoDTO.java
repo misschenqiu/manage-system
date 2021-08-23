@@ -32,7 +32,6 @@ public class AccountInfoDTO implements Serializable {
     /**
      * 密码
      */
-    @TableField(typeHandler = AESEncryptHandler.class)
     private String password;
 
     /**
@@ -50,6 +49,21 @@ public class AccountInfoDTO implements Serializable {
      * 所属地编码
      */
     private String address_code;
+
+    /**
+     * 员工共id
+     */
+    private Integer staffId;
+
+    /**
+     * 员工名字
+     */
+    private String staffName;
+
+    /**
+     * 员工头像
+     */
+    private String staffImg;
 
     /**
      * 角色信息

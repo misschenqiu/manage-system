@@ -37,5 +37,10 @@ public class SysMenu implements Serializable {
      */
     private Date modified_time;
 
+    /**
+     * 父级id
+     */
+    private Integer pId;
+
     private static final long serialVersionUID = 1L;
 }

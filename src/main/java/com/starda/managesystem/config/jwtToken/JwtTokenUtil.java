@@ -1,5 +1,7 @@
 package com.starda.managesystem.config.jwtToken;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.starda.managesystem.config.author.UserVO;
 import com.starda.managesystem.pojo.SysUser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -44,6 +46,7 @@ public class JwtTokenUtil {
     public String generateToken(UserDetails userDetails){
         Map<String, Object> claims = new HashMap<>(2);
         //把用户名和签发时间封装在claims中
+        claims = BeanUtil.beanToMap(userDetails);
         claims.put(Claims.SUBJECT, userDetails.getUsername());
         claims.put(Claims.ISSUED_AT, new Date());
         return generateToken(claims);
@@ -110,7 +113,7 @@ public class JwtTokenUtil {
      * @return 是否有效
      */
     public Boolean validateToken(String token, UserDetails userDetails) throws Exception {
-        User user = (User) userDetails;
+        UserVO user = (UserVO) userDetails;
         String username = getUsernameFromToken(token);
         return (username.equals(user.getUsername()) && !isTokenExpired(token));
     }
@@ -133,7 +136,7 @@ public class JwtTokenUtil {
      * @param token 令牌
      * @return 数据声明
      */
-    private Claims getClaimsFromToken(String token) throws Exception {
+    public static Claims getClaimsFromToken(String token) throws Exception {
         Claims claims = null;
         try {
             claims = Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();

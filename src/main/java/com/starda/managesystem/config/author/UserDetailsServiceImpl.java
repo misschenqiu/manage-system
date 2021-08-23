@@ -1,5 +1,6 @@
 package com.starda.managesystem.config.author;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.starda.managesystem.config.ExceptionEnums;
 import com.starda.managesystem.pojo.SysMenu;
@@ -53,6 +54,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         // 1.获取用户信息
         AccountInfoDTO account = userInfoService.getAccountInfo(userAccount);
+        UserVO userVO = BeanUtil.copyProperties(account, UserVO.class);
         if (null == account) {
             log.info("没有该账号的信息!");
             throw new UsernameNotFoundException(String.format(ExceptionEnums.USER_ACCOUNT_NOT_EXIST.getMessage(), userAccount));
@@ -60,24 +62,29 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         // 无权限
         if(null == account.getRoleList() || account.getRoleList().isEmpty()){
-            return new User(account.getAccount(), account.getPassword(), new ArrayList<>());
+            userVO.setAuthorities(new ArrayList<>());
+            return userVO;
         }
 
         // 2.获取权限信息
-        List<SysMenu> sysMenuList = menuService.getMenuInfoList(account.getRoleList().parallelStream().map(SysRole::getId).collect(Collectors.toList()));
+//        List<SysMenu> sysMenuList = menuService.getMenuInfoList(account.getRoleList().parallelStream().map(SysRole::getId).collect(Collectors.toList()));
         // 3.封装权限信息
         // 3.1创建权限集
         List<GrantedAuthority> authorities = new ArrayList<>();
         // 3.2 添加权限集合
-        sysMenuList.forEach(tbMenu -> {
+        account.getRoleList().forEach(role -> {
             //通过GrantedAuthority的子类去存储权限码
-            if (StrUtil.isBlank(tbMenu.getCode())) {
-                GrantedAuthority authority = new SimpleGrantedAuthority(tbMenu.getCode());
+            if (StrUtil.isBlank(role.getRole_code())) {
+                GrantedAuthority authority = new SimpleGrantedAuthority(role.getRole_code());
                 //再将权限存在到权限集中
                 authorities.add(authority);
             }
 
         });
-        return new User(account.getAccount(), account.getPassword(), authorities);
+
+        // 封装数据
+        userVO.setAuthorities(authorities);
+//        return new User(account.getAccount(), account.getPassword(), authorities);
+        return userVO;
     }
 }
