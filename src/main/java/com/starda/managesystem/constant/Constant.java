@@ -39,6 +39,12 @@ public interface Constant {
          * 设置默认角色
          */
         String DEFAULT_ROLE = "ROLE_def";
+
+        /**
+         * 设置文件上传 基本路径
+         */
+        String BASE_FILE_PATH = "/file/img/";
+        String BASE_HEADER_PATH = "/header/img/";
     }
 
 }
