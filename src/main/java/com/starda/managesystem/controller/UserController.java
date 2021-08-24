@@ -20,7 +20,7 @@ import javax.validation.Valid;
  * @Version: 1.0
  */
 
-@RequestMapping("/user")
+@RequestMapping("/account")
 @RestController
 public class UserController {
 
@@ -33,5 +33,18 @@ public class UserController {
         return userInfoService.getUserInfo();
     }
 
+    /**
+     * 添加员工 账号信息
+     * @param userVO
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/staff/insertStaff")
+    public Result addStaffInfo(@AnnotationAuthor UserVO userVO) throws Exception{
+
+        this.userInfoService.insertStaffInfo();
+
+        return Result.success();
+    }
 
 }

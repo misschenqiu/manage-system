@@ -35,6 +35,7 @@ public class AddressUrlPO implements Serializable {
     /**
      * 菜单路由 多级用”/“分割 父级在上成
      */
+    @NotBlank(message = "菜单路由 多级用”,“分割 父级在上成")
     private String addressUrl;
 
     /**

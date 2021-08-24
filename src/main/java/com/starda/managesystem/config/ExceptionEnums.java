@@ -41,7 +41,8 @@ public enum ExceptionEnums {
     NO_PERMISSION("3001", "没有权限"),
     NO_FILE_NULL("3002", "文件不能为空"),
     FILE_EXIST("3003", "文件已存在"),
-    FILE_LOAD_FAIL("3004", "文件上传失败");
+    FILE_LOAD_FAIL("3004", "文件上传失败"),
+    ADDRESS_URL("3005", "前端路径与父级菜单不能匹配"),
     ;
 
     private String code;

@@ -35,4 +35,7 @@ public interface IUserInfoService {
      */
     List<System> getAccountInfoList();
 
+
+    void insertStaffInfo() throws Exception;
+
 }

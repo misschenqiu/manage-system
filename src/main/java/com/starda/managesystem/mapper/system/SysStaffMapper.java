@@ -1,12 +1,9 @@
 package com.starda.managesystem.mapper.system;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.github.yulichang.base.MPJBaseMapper;
 import com.starda.managesystem.pojo.SysStaff;
-import org.apache.ibatis.annotations.Mapper;
 
-@Mapper
-public interface SysStaffMapper extends BaseMapper<SysStaff> {
-
+public interface SysStaffMapper extends MPJBaseMapper<SysStaff> {
     int deleteByPrimaryKey(Integer id);
 
     int insertSelective(SysStaff record);

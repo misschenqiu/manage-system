@@ -14,6 +14,8 @@
     <result column="sys_staff_user_id" jdbcType="INTEGER" property="user_id" />
     <result column="sys_staff_position" jdbcType="VARCHAR" property="position" />
     <result column="sys_staff_remark" jdbcType="VARCHAR" property="remark" />
+    <result column="sys_staff_create_account_id" jdbcType="INTEGER" property="create_account_id" />
+    <result column="sys_staff_update_time" jdbcType="TIMESTAMP" property="update_time" />
   </resultMap>
   <sql id="Base_Column_List">
     sys_staff.id as sys_staff_id, sys_staff.username as sys_staff_username, sys_staff.sex as sys_staff_sex, 
@@ -21,7 +23,8 @@
     sys_staff.create_time as sys_staff_create_time, sys_staff.`status` as `sys_staff_status`, 
     sys_staff.`identity` as `sys_staff_identity`, sys_staff.head_img as sys_staff_head_img, 
     sys_staff.user_id as sys_staff_user_id, sys_staff.`position` as `sys_staff_position`, 
-    sys_staff.remark as sys_staff_remark
+    sys_staff.remark as sys_staff_remark, sys_staff.create_account_id as sys_staff_create_account_id, 
+    sys_staff.update_time as sys_staff_update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -37,11 +40,13 @@
     insert into sys_staff (username, sex, user_height, 
       phone, create_time, `status`, 
       `identity`, head_img, user_id, 
-      `position`, remark)
+      `position`, remark, create_account_id, 
+      update_time)
     values (#{username,jdbcType=VARCHAR}, #{sex,jdbcType=INTEGER}, #{user_height,jdbcType=DOUBLE}, 
       #{phone,jdbcType=VARCHAR}, #{create_time,jdbcType=TIMESTAMP}, #{status,jdbcType=INTEGER}, 
       #{identity,jdbcType=VARCHAR}, #{head_img,jdbcType=VARCHAR}, #{user_id,jdbcType=INTEGER}, 
-      #{position,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
+      #{position,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{create_account_id,jdbcType=INTEGER}, 
+      #{update_time,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.SysStaff" useGeneratedKeys="true">
     insert into sys_staff
@@ -79,6 +84,12 @@
       <if test="remark != null">
         remark,
       </if>
+      <if test="create_account_id != null">
+        create_account_id,
+      </if>
+      <if test="update_time != null">
+        update_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="username != null">
@@ -113,6 +124,12 @@
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="create_account_id != null">
+        #{create_account_id,jdbcType=INTEGER},
+      </if>
+      <if test="update_time != null">
+        #{update_time,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -152,6 +169,12 @@
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
       </if>
+      <if test="create_account_id != null">
+        create_account_id = #{create_account_id,jdbcType=INTEGER},
+      </if>
+      <if test="update_time != null">
+        update_time = #{update_time,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -167,7 +190,9 @@
       head_img = #{head_img,jdbcType=VARCHAR},
       user_id = #{user_id,jdbcType=INTEGER},
       `position` = #{position,jdbcType=VARCHAR},
-      remark = #{remark,jdbcType=VARCHAR}
+      remark = #{remark,jdbcType=VARCHAR},
+      create_account_id = #{create_account_id,jdbcType=INTEGER},
+      update_time = #{update_time,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

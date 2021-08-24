@@ -67,5 +67,15 @@ public class SysStaff implements Serializable {
      */
     private String remark;
 
+    /**
+     * 创建账号
+     */
+    private Integer create_account_id;
+
+    /**
+     * 修改时间
+     */
+    private Date update_time;
+
     private static final long serialVersionUID = 1L;
 }

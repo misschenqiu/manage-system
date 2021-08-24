@@ -45,6 +45,29 @@ public interface Constant {
          */
         String BASE_FILE_PATH = "/file/img/";
         String BASE_HEADER_PATH = "/header/img/";
+
+        /**
+         * 是否有子级  0.否 1.是
+         */
+        int CHILDREN_YES = 1;
+        int CHILDREN_NO = 0;
+    }
+
+    /**
+     * 基本数字管理
+     */
+    interface BaseNumberManage{
+        int ONE = 1;
+        int TWO = 2;
+        int THREE = 3;
+        int FOUR = 4;
+        int FIVE = 5;
+        int SIX = 6;
+        int SEVEN = 7;
+        int EIGHT = 8;
+        int NINE = 9;
+        int TEN = 10;
+        int ZERO = 0;
     }
 
 }

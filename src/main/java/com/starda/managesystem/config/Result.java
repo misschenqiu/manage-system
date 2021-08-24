@@ -48,7 +48,7 @@ public class Result<T> {
      * 返回数据 带分页数据
      * @param data
      */
-    public ResultPage resultPage(List<T> data, Integer currentPage, Integer pageSize){
+    public ResultPage resultPage(List<T> data, Long currentPage, Long pageSize){
         return new ResultPage(data, currentPage, pageSize);
     }
 
@@ -226,14 +226,14 @@ class ResultPage<T> extends Result<T>{
     private Boolean success;
 
     /**
-     * 显示页码
-     */
-    private Integer currentPage;
-
-    /**
      * 显示条数
      */
-    private Integer pageSize;
+    private Long currentPage;
+
+    /**
+     * 显示页码
+     */
+    private Long pageSize;
 
     /**
      * 返回带参数
@@ -241,7 +241,7 @@ class ResultPage<T> extends Result<T>{
      * @param currentPage 显示条数
      * @param pageSize 当前页
      */
-    public ResultPage (List<T> data, Integer currentPage, Integer pageSize){
+    public ResultPage (List<T> data, Long currentPage, Long pageSize){
         this.code = ExceptionEnums.SUCCESS.getCode();
         this.message = Constant.ResultCodeMessage.SUCCESS;
         this.success = Constant.ResultCodeMessage.DEFAULT;

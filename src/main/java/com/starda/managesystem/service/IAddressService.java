@@ -1,6 +1,10 @@
 package com.starda.managesystem.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.starda.managesystem.pojo.po.address.AddressUrlPO;
+import com.starda.managesystem.pojo.vo.AddressVO;
+
+import java.util.List;
 
 /**
  * @ProjectName: manage-system
@@ -19,5 +23,36 @@ public interface IAddressService {
      * @throws Exception
      */
     void insertAddress(AddressUrlPO po) throws Exception;
+
+    /**
+     * 删除 路由
+     * @param id 路由id
+     * @param children 是否有子级 0.否 1 是
+     * @throws Exception
+     */
+    void removeMenuAddress(Integer id, Integer children) throws Exception;
+
+    /**
+     * 添加管理地址
+     * @param addressName
+     * @throws Exception
+     */
+    void addManageAddress(String addressName) throws Exception;
+
+    /**
+     * 获取管理地址数据
+     * @param currentPage
+     * @param pageSize
+     * @return
+     * @throws Exception
+     */
+    Page<AddressVO> getManageAddress(Integer currentPage, Integer pageSize) throws Exception;
+
+    /**
+     * 删除管理地址
+     * @param addressId
+     * @throws Exception
+     */
+    void removeManageAddress(Integer addressId) throws Exception;
 
 }
