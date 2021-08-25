@@ -45,6 +45,20 @@ public class AddressController {
     }
 
     /**
+     * 获取 权限列表路径
+     * @param po
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("getAddressList")
+    public Result getAddressList(@RequestBody @Valid AddressUrlPO po) throws Exception{
+
+        this.addressService.insertAddress(po);
+
+        return Result.success();
+    }
+
+    /**
      * 删除路由
      * @param id
      * @return

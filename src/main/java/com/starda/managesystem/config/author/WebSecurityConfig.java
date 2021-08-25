@@ -137,7 +137,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().requestMatchers(CorsUtils::isPreFlightRequest).permitAll();
 
         //第2步：让Security永远不会创建HttpSession，它不会使用HttpSession来获取SecurityContext
-        http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().headers().cacheControl();
 /**
  * 在 UsernamePasswordAuthenticationFilter 之前添加 JwtAuthenticationTokenFilter
@@ -146,8 +146,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
-        //登录
-        http.formLogin()
+         // 配置权限信息
+        http.authorizeRequests()
+                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                    @Override
+                    public <O extends FilterSecurityInterceptor> O postProcess(O object){
+                        object.setSecurityMetadataSource(customFilterInvocationSecurityMetadataSource);
+                        object.setAccessDecisionManager(customAccessDecisionManager);
+                        return object;
+                    }
+                })
+                .and()
+                //登录
+                .formLogin()
                 //允许所有用户
                 .permitAll()
                 // 登录 url
@@ -155,9 +166,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //登录成功
                 .successHandler(myAuthenticationSuccessHandler)
                 //登录失败
-                .failureHandler(myAuthenticationFailureHandler);
-        //注销
-        http.logout()
+                .failureHandler(myAuthenticationFailureHandler)
+                .and()
+                //注销
+                .logout()
                 //允许所有用户
                 .permitAll()
                 // 推出登录 url
@@ -181,23 +193,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //用来解决匿名用户访问无权限资源时的异常 因为是通过authenticated认证的
                 .authenticationEntryPoint(myAuthenticationEntryPoint)
                 .accessDeniedHandler(accessDeniedHandler);
-
-        // 配置权限信息
-        http.authorizeRequests()
-                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
-                    @Override
-                    public <O extends FilterSecurityInterceptor> O postProcess(O object){
-                        object.setSecurityMetadataSource(customFilterInvocationSecurityMetadataSource);
-                        object.setAccessDecisionManager(customAccessDecisionManager);
-                        return object;
-                    }
-                })
-//                .antMatchers("/bb").hasAuthority("home:index")  antMatchers 路径匹配 hasAuthority 角色匹配 都是静态
-                .and()
-                .formLogin()
-                .permitAll()
-                .and()
-                .csrf().disable();
     }
 
 }
