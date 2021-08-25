@@ -69,4 +69,9 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
     public List<System> getAccountInfoList() {
         return null;
     }
+
+    @Override
+    public void insertStaffInfo() throws Exception {
+
+    }
 }

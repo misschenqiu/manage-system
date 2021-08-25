@@ -18,6 +18,13 @@
     from sys_address
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <!-- 获取管理地址 -->
+  <select id="getAddressList" resultType="com.starda.managesystem.pojo.vo.AddressVO">
+    select address as addressName, address_code as addressCode from manage_address where status = 1
+  </select>
+
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from sys_address
     where id = #{id,jdbcType=INTEGER}
@@ -65,7 +72,35 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.starda.managesystem.pojo.SysAddress">
+
+    <!-- 添加管理地址 -->
+    <insert id="insertAddress"  keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.ManageAddress" useGeneratedKeys="true">
+      insert into manage_address
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="addressName != null">
+          address,
+        </if>
+        <if test="addressCode != null">
+          address_code,
+        </if>
+        <if test="status != null">
+          status,
+        </if>
+      </trim>
+      <trim prefix="values (" suffix=")" suffixOverrides=",">
+        <if test="addressName != null">
+          #{addressName},
+        </if>
+        <if test="addressCode != null">
+          #{addressCode},
+        </if>
+        <if test="status != null">
+          #{status},
+        </if>
+      </trim>
+    </insert>
+
+    <update id="updateByPrimaryKeySelective" parameterType="com.starda.managesystem.pojo.SysAddress">
     update sys_address
     <set>
       <if test="pId != null">
@@ -94,5 +129,12 @@
       address_url = #{addressUrl,jdbcType=VARCHAR},
       children = #{children,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <!-- 修改管理地址 -->
+  <update id="updateAddress">
+    update manage_address
+    set status = 0
+    where id = #{addressId}
   </update>
 </mapper>

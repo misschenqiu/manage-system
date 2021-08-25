@@ -1,14 +1,14 @@
 package com.starda.managesystem.mapper.system;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.github.yulichang.base.MPJBaseMapper;
 import com.starda.managesystem.pojo.SysMenu;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface SysMenuMapper extends BaseMapper<SysMenu> {
+public interface SysMenuMapper extends MPJBaseMapper<SysMenu> {
     int deleteByPrimaryKey(Integer id);
 
-    int insertSelective(SysMenu record);
+    int insertSelectiveMenu(SysMenu record);
 
     SysMenu selectByPrimaryKey(Integer id);
 

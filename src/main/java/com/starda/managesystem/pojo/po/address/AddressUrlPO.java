@@ -1,6 +1,9 @@
 package com.starda.managesystem.pojo.po.address;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
@@ -16,6 +19,8 @@ import java.io.Serializable;
  */
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AddressUrlPO implements Serializable {
 
     private static final long serializableUUid = 1L;
@@ -24,6 +29,7 @@ public class AddressUrlPO implements Serializable {
      * 菜单名称 多级用”/“分割 父级在上成
      */
     @NotBlank(message = "菜单名称不能为空")
+    @JsonProperty("pName")
     private String pName;
 
     /**
@@ -44,4 +50,9 @@ public class AddressUrlPO implements Serializable {
     @NotBlank(message = "后端路径不能为空")
     private String url;
 
+    /**
+     * 后端路径描述
+     */
+    @NotBlank(message = "后端路径描述")
+    private String remark;
 }

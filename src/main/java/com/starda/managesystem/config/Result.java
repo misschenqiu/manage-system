@@ -22,6 +22,10 @@ public class Result<T> {
     public Result(){
     }
 
+    public static Result ok(){
+        return new Result();
+    }
+
     /**
      * 直接成功
      */
@@ -48,8 +52,8 @@ public class Result<T> {
      * 返回数据 带分页数据
      * @param data
      */
-    public ResultPage resultPage(List<T> data, Long currentPage, Long pageSize){
-        return new ResultPage(data, currentPage, pageSize);
+    public ResultPage resultPage(List<T> data, Long currentPage, Long pageSize, Long totalCount){
+        return new ResultPage(data, currentPage, pageSize, totalCount);
     }
 
     /**
@@ -236,18 +240,24 @@ class ResultPage<T> extends Result<T>{
     private Long pageSize;
 
     /**
+     * 总页数
+     */
+    private Long totalCount;
+
+    /**
      * 返回带参数
      * @param data 数据
-     * @param currentPage 显示条数
-     * @param pageSize 当前页
+     * @param currentPage 当前页
+     * @param pageSize  显示条数
      */
-    public ResultPage (List<T> data, Long currentPage, Long pageSize){
+    public ResultPage (List<T> data, Long currentPage, Long pageSize, Long totalCount){
         this.code = ExceptionEnums.SUCCESS.getCode();
         this.message = Constant.ResultCodeMessage.SUCCESS;
         this.success = Constant.ResultCodeMessage.DEFAULT;
         this.data = data;
         this.currentPage = currentPage;
         this.pageSize = pageSize;
+        this.totalCount = totalCount;
     }
 
 }

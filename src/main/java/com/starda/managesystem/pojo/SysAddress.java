@@ -2,6 +2,8 @@ package com.starda.managesystem.pojo;
 
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,10 +14,10 @@ import lombok.NoArgsConstructor;
  * @author 
  */
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class SysAddress implements Serializable {
+    @TableId(value="id",type= IdType.AUTO)
     private Integer id;
 
     /**

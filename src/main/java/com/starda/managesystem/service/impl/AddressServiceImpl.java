@@ -1,6 +1,7 @@
 package com.starda.managesystem.service.impl;
 
-import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.lang.UUID;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.starda.managesystem.config.ExceptionEnums;
@@ -8,6 +9,7 @@ import com.starda.managesystem.constant.Constant;
 import com.starda.managesystem.exceptions.ManageStarException;
 import com.starda.managesystem.mapper.system.SysAddressMapper;
 import com.starda.managesystem.mapper.system.SysMenuMapper;
+import com.starda.managesystem.pojo.ManageAddress;
 import com.starda.managesystem.pojo.SysAddress;
 import com.starda.managesystem.pojo.SysMenu;
 import com.starda.managesystem.pojo.po.address.AddressUrlPO;
@@ -16,7 +18,6 @@ import com.starda.managesystem.service.IAddressService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,37 +48,40 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
         List<String> addressUrlList = new ArrayList<String>(Arrays.asList(po.getAddressUrl().split(",")));
 
         // 路劲子级
-        SysMenu menu = SysMenu.builder().menu_name(pNameList.get(pNameList.size() - Constant.BaseNumberManage.ONE))
-                                        .code(po.getSmilName())
-                                        .create_time(new Date())
-                                        .url(po.getUrl())
-                                        .addressUrl(addressUrlList.get(addressUrlList.size() - Constant.BaseNumberManage.ONE))
-                                        .build();
-        Integer menuId = menuMapper.insertSelective(menu);
-        log.info("添加权限，路径信息 menuId->{}" + menuId);
+        SysMenu menu = new SysMenu();
+        menu.setMenu_name(pNameList.get(pNameList.size() - Constant.BaseNumberManage.ONE));
+        menu.setCode(po.getSmilName());
+        menu.setCreate_time(new Date());
+        menu.setUrl(po.getUrl());
+        menu.setAddress_url(addressUrlList.get(addressUrlList.size() - Constant.BaseNumberManage.ONE));
+        menu.setRemark(po.getRemark());
+        menuMapper.insertSelectiveMenu(menu);
+        Integer menuId = menu.getId();
+                log.info("添加权限，路径信息 menuId->{}" + menuId);
         int pId = 0;
         // 父级
         for (int i = 0; i < pNameList.size() - Constant.BaseNumberManage.ONE; i++) {
             try {
                 if(i == pNameList.size() - Constant.BaseNumberManage.TWO) {
-                    SysAddress address = SysAddress.builder()
-                            .addressName(pNameList.get(i))
-                            .addressUrl(addressUrlList.get(i))
-                            .children(Constant.BaseStringInfoManage.CHILDREN_NO)
-                            .menuId(menuId)
-                            .pId(pId)
-                            .build();
-                    pId = this.baseMapper.insertSelective(address);
+                    SysAddress address = new SysAddress();
+                    address.setAddressName(pNameList.get(i));
+                    address.setAddressUrl(addressUrlList.get(i));
+                    address.setChildren(Constant.BaseStringInfoManage.CHILDREN_NO);
+                    address.setMenuId(menuId);
+                    address.setPId(pId);
+                    this.baseMapper.insertSelective(address);
+                    pId = address.getId();
                 }else {
-                    SysAddress address = SysAddress.builder()
-                            .addressName(pNameList.get(i))
-                            .addressUrl(addressUrlList.get(i))
-                            .children(Constant.BaseStringInfoManage.CHILDREN_YES)
-                            .pId(pId)
-                            .build();
-                    pId = this.baseMapper.insertSelective(address);
+                    SysAddress address = new SysAddress();
+                    address.setAddressName(pNameList.get(i));
+                    address.setAddressUrl(addressUrlList.get(i));
+                    address.setChildren(Constant.BaseStringInfoManage.CHILDREN_YES);
+                    address.setPId(pId);
+                    this.baseMapper.insertSelective(address);
+                    pId = address.getId();
                 }
             }catch (Exception e){
+                e.printStackTrace();
                 throw new ManageStarException(ExceptionEnums.ADDRESS_URL.getCode(), ExceptionEnums.ADDRESS_URL.getMessage());
             }
         }
@@ -98,17 +102,28 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
     }
 
     @Override
-    public void addManageAddress(String addressName) throws Exception {
+    public Integer addManageAddress(String addressName) throws Exception {
+        ManageAddress address = new ManageAddress();
+        address.setAddressName(addressName);
+        address.setAddressCode(UUID.fastUUID().toString().replaceAll("-", ""));
+        address.setStatus(Constant.BaseStringInfoManage.CHILDREN_YES);
 
+        this.baseMapper.insertAddress(address);
+        return address.getId();
     }
 
     @Override
-    public Page<AddressVO> getManageAddress(Integer currentPage, Integer pageSize) throws Exception {
-        return null;
+    public IPage<AddressVO> getManageAddress(Integer currentPage, Integer pageSize) throws Exception {
+
+        IPage<AddressVO> addressVOIPage = this.baseMapper.getAddressList(new Page<AddressVO>(currentPage, pageSize));
+
+        return addressVOIPage;
     }
 
     @Override
     public void removeManageAddress(Integer addressId) throws Exception {
+
+        this.baseMapper.updateAddress(addressId);
 
     }
 }

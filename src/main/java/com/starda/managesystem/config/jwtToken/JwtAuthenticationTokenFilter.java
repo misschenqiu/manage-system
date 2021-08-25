@@ -1,7 +1,10 @@
 package com.starda.managesystem.config.jwtToken;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.starda.managesystem.common.LocalCache;
+import com.starda.managesystem.config.ExceptionEnums;
+import com.starda.managesystem.exceptions.ManageStarException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -64,8 +67,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             // 从本地缓存里面获取数据
             String token = (String) LocalCache.get(tokenKey, false);
             if(StrUtil.isBlank(token)){
-                chain.doFilter(request, response);
-                return;
+                log.info("没有登录信息");
+                throw new ManageStarException(ExceptionEnums.USER_NOT_LOGIN.getCode(), ExceptionEnums.USER_NOT_LOGIN.getMessage());
             }
             //登录成功获得token后，将token存储到数据库（redis）
             //将数据库版本的token设置过期时间为15~30分钟

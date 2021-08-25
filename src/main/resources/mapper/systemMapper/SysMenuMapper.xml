@@ -8,10 +8,13 @@
         <result column="url" jdbcType="VARCHAR" property="url"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="create_time"/>
         <result column="modified_time" jdbcType="TIMESTAMP" property="modified_time"/>
+        <result column="p_id" property="p_id"/>
+        <result column="address_url" property="address_url"/>
+        <result column="remark" property="remark"/>
     </resultMap>
     <sql id="Base_Column_List">
         id
-        , menu_name, code, url, create_time, modified_time
+        , menu_name, code, url, create_time, modified_time, p_id, address_url, remark
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -31,7 +34,8 @@
         values (#{menu_name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR},
                 #{create_time,jdbcType=TIMESTAMP}, #{modified_time,jdbcType=TIMESTAMP})
     </insert>
-    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.SysMenu"
+
+    <insert id="insertSelectiveMenu" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.SysMenu"
             useGeneratedKeys="true">
         insert into sys_menu
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -53,6 +57,9 @@
             <if test="address_url != null">
               address_url,
             </if>
+            <if test="remark != null">
+                remark,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="menu_name != null">
@@ -72,6 +79,9 @@
             </if>
             <if test="address_url != null">
                 #{address_url},
+            </if>
+            <if test="remark != null">
+                #{remark},
             </if>
         </trim>
     </insert>
@@ -95,6 +105,9 @@
             </if>
             <if test="address_url != null">
                 address_url = #{address_url},
+            </if>
+            <if test="remark != null">
+                remark = #{remark},
             </if>
         </set>
         where id = #{id,jdbcType=INTEGER}

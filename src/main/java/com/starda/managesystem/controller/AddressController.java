@@ -1,7 +1,7 @@
 package com.starda.managesystem.controller;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.starda.managesystem.config.ExceptionEnums;
 import com.starda.managesystem.config.Result;
 import com.starda.managesystem.exceptions.ManageStarException;
@@ -71,9 +71,9 @@ public class AddressController {
             throw new ManageStarException(ExceptionEnums.PARAM_NOT_COMPLETE.getCode(), ExceptionEnums.PARAM_NOT_COMPLETE.getMessage());
         }
 
-        this.addressService.addManageAddress(addressName);
+        int id = this.addressService.addManageAddress(addressName);
 
-        return Result.success();
+        return Result.ok().resultPage(id);
     }
 
     /**
@@ -90,12 +90,9 @@ public class AddressController {
             throw new ManageStarException(ExceptionEnums.PARAM_NOT_COMPLETE.getCode(), ExceptionEnums.PARAM_NOT_COMPLETE.getMessage());
         }
 
-        Page<AddressVO> pageData = this.addressService.getManageAddress(currentPage, pageSize);
+        IPage<AddressVO> pageData = this.addressService.getManageAddress(currentPage, pageSize);
 
-        Result<AddressVO> result = new Result<AddressVO>();
-        result.resultPage(pageData.getRecords(), pageData.getSize(), pageData.getPages());
-
-        return result;
+        return Result.ok().resultPage(pageData.getRecords(), pageData.getCurrent(), pageData.getSize(), pageData.getTotal());
     }
 
     /**
