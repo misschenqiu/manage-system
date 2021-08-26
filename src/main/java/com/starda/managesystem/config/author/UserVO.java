@@ -26,7 +26,6 @@ import java.util.List;
  */
 
 @Data
-@Builder
 @ToString
 @EqualsAndHashCode
 public class UserVO implements UserDetails, CredentialsContainer {
@@ -76,9 +75,17 @@ public class UserVO implements UserDetails, CredentialsContainer {
     /**
      * 角色信息
      */
+    private String roleListString;
+
+    /**
+     * 角色信息
+     */
     List<GrantedAuthority> authorities;
 
-    public UserVO(Integer id, String account, String password, String phone, String address, String address_code, Integer staffId, String staffName, String staffImg, List<GrantedAuthority> authorities) {
+    public UserVO(Integer id, String account, String password, String phone,
+                  String address, String address_code, Integer staffId,
+                  String staffName, String staffImg, List<GrantedAuthority> authorities,
+                  String roleListString) {
         this.id = id;
         this.account = account;
         this.password = password;
@@ -89,6 +96,7 @@ public class UserVO implements UserDetails, CredentialsContainer {
         this.staffName = staffName;
         this.staffImg = staffImg;
         this.authorities = authorities;
+        this.roleListString = roleListString;
     }
 
     @Override

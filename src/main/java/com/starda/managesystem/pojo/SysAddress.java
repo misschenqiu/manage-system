@@ -9,11 +9,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * sys_address
  * @author 
  */
 @Data
+@NotBlank
 @AllArgsConstructor
 @NoArgsConstructor
 public class SysAddress implements Serializable {
@@ -44,6 +47,21 @@ public class SysAddress implements Serializable {
      * 是否有子级  0.否 1.是
      */
     private Integer children;
+
+    /**
+     * 浏览器地址
+     */
+    private String route;
+
+    /**
+     * 图标
+     */
+    private String icon;
+
+    /**
+     * 前端自用
+     */
+    private String redirect;
 
     private static final long serialVersionUID = 1L;
 }

@@ -2,7 +2,10 @@ package com.starda.managesystem.mapper.system;
 
 import com.github.yulichang.base.MPJBaseMapper;
 import com.starda.managesystem.pojo.SysRoleMenu;
+import com.starda.managesystem.pojo.dto.MenuAddressDTO;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 @Mapper
 public interface SysRoleMenuMapper extends MPJBaseMapper<SysRoleMenu> {
@@ -16,4 +19,17 @@ public interface SysRoleMenuMapper extends MPJBaseMapper<SysRoleMenu> {
     int updateByPrimaryKeySelective(SysRoleMenu record);
 
     int updateByPrimaryKey(SysRoleMenu record);
+
+    /**
+     * 获取到权限信息列表
+     */
+    List<MenuAddressDTO> getMenuAddressList(List<Integer> roleList) throws Exception;
+
+    /**
+     * 获取全部权限
+     * @return
+     * @throws Exception
+     */
+    List<MenuAddressDTO> getMenuAddressListAll() throws Exception;
+
 }

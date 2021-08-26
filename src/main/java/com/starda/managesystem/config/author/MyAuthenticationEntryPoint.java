@@ -27,7 +27,7 @@ public class MyAuthenticationEntryPoint extends JSONAuthentication implements Au
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
         //结果处理：账号未登录
-        Result result = Result.error(ExceptionEnums.USER_NOT_LOGIN.getCode(), ExceptionEnums.USER_NOT_LOGIN.getMessage(), e.getMessage());
+        Result result = Result.ok().error(ExceptionEnums.USER_NOT_LOGIN.getCode(), ExceptionEnums.USER_NOT_LOGIN.getMessage(), e.getMessage());
         //通过json输出
         this.WriteJSON(request, response, result);
     }

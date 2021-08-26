@@ -133,6 +133,7 @@ public class HandleException {
     @ResponseBody
     public Result bootException(Exception e) {
         log.error("全局错误" + e.getMessage());
+        e.printStackTrace();
         return Result.error(e.getMessage());
     }
 

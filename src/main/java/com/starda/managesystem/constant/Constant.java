@@ -27,6 +27,12 @@ public interface Constant {
     interface BaseStringInfoManage{
         String COOKIES = "JSESSIONID";
         String SUCCESS = "登录成功";
+
+        /**
+         * 大管理员
+         */
+        String MANAGE = "admin";
+
         // 本地缓存最大数
         long NUMBER = 1000;
         long TIME_CACHE = 12 * 60;

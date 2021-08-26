@@ -29,7 +29,13 @@ import java.util.Collection;
 public class CustomAccessDecisionManager implements AccessDecisionManager {
     @Override
     public void decide(Authentication authentication, Object o, Collection<ConfigAttribute> configAttributes) throws AccessDeniedException, InsufficientAuthenticationException {
-    //configAttribute存放着 CustomFilterInvocationSecurityMetadataSource 过滤出来的 角色信息
+
+        // 如果过是大管理员这不需要判断
+        if(authentication.getAuthorities().contains(Constant.BaseStringInfoManage.MANAGE)){
+            return;
+        }
+
+        //configAttribute存放着 CustomFilterInvocationSecurityMetadataSource 过滤出来的 角色信息
         for (ConfigAttribute configAttribute : configAttributes) {
             // 是不是默认 角色 任意放行
             if(Constant.BaseStringInfoManage.DEFAULT_ROLE.equals(configAttribute.getAttribute())){

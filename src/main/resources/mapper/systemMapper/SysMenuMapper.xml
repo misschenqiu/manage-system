@@ -11,10 +11,13 @@
         <result column="p_id" property="p_id"/>
         <result column="address_url" property="address_url"/>
         <result column="remark" property="remark"/>
+        <result column="route" property="route"/>
+        <result column="icon" property="icon"/>
+        <result column="redirect" property="redirect"/>
     </resultMap>
     <sql id="Base_Column_List">
         id
-        , menu_name, code, url, create_time, modified_time, p_id, address_url, remark
+        , menu_name, code, url, create_time, modified_time, p_id, address_url, remark, route, icon, redirect
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -60,6 +63,15 @@
             <if test="remark != null">
                 remark,
             </if>
+            <if test="route != null">
+                route,
+            </if>
+            <if test="icon != null">
+                icon,
+            </if>
+            <if test="redirect != null">
+                redirect,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="menu_name != null">
@@ -82,6 +94,15 @@
             </if>
             <if test="remark != null">
                 #{remark},
+            </if>
+            <if test="route != null">
+                #{route},
+            </if>
+            <if test="icon != null">
+                 #{icon},
+            </if>
+            <if test="redirect != null">
+                 #{redirect},
             </if>
         </trim>
     </insert>
@@ -108,6 +129,15 @@
             </if>
             <if test="remark != null">
                 remark = #{remark},
+            </if>
+            <if test="route != null">
+                route = #{route},
+            </if>
+            <if test="icon != null">
+                icon = #{icon},
+            </if>
+            <if test="redirect != null">
+                redirect = #{redirect},
             </if>
         </set>
         where id = #{id,jdbcType=INTEGER}

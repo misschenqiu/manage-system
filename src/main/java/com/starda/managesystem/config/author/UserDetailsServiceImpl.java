@@ -2,6 +2,7 @@ package com.starda.managesystem.config.author;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.starda.managesystem.config.ExceptionEnums;
 import com.starda.managesystem.pojo.SysMenu;
 import com.starda.managesystem.pojo.SysRole;
@@ -55,6 +56,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         // 1.获取用户信息
         AccountInfoDTO account = userInfoService.getAccountInfo(userAccount);
         UserVO userVO = BeanUtil.copyProperties(account, UserVO.class);
+        // 系统角色
+        userVO.setRoleListString(JSONObject.toJSONString(account.getRoleList()));
         if (null == account) {
             log.info("没有该账号的信息!");
             throw new UsernameNotFoundException(String.format(ExceptionEnums.USER_ACCOUNT_NOT_EXIST.getMessage(), userAccount));

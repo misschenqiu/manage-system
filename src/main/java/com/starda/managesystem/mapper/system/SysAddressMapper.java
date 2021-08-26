@@ -9,6 +9,9 @@ import com.starda.managesystem.pojo.vo.AddressVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+import java.util.Map;
+
 @Mapper
 public interface SysAddressMapper extends MPJBaseMapper<SysAddress> {
     int deleteByPrimaryKey(Integer id);
@@ -40,5 +43,12 @@ public interface SysAddressMapper extends MPJBaseMapper<SysAddress> {
      * @param addressId
      */
     void updateAddress(@Param("addressId") Integer addressId);
+
+    /**
+     * 获取全部父级id
+     * @param menuIdList
+     * @return
+     */
+    List<Map<String,Object>> getParentAddressList(List<Integer> menuIdList);
 
 }

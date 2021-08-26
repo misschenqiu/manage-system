@@ -8,9 +8,12 @@
     <result column="menu_id" jdbcType="INTEGER" property="menuId" />
     <result column="address_url" jdbcType="VARCHAR" property="addressUrl" />
     <result column="children" jdbcType="INTEGER" property="children" />
+    <result column="route" property="route"/>
+    <result column="icon" property="icon"/>
+    <result column="redirect" property="redirect"/>
   </resultMap>
   <sql id="Base_Column_List">
-    id, p_id, address_name, menu_id, address_url, children
+    id, p_id, address_name, menu_id, address_url, children, route, icon, redirect
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -31,9 +34,9 @@
   </delete>
   <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.SysAddress" useGeneratedKeys="true">
     insert into sys_address (p_id, address_name, menu_id, 
-      address_url, children)
+      address_url, children, route, icon, redirect)
     values (#{pId,jdbcType=INTEGER}, #{addressName,jdbcType=VARCHAR}, #{menuId,jdbcType=INTEGER}, 
-      #{addressUrl,jdbcType=VARCHAR}, #{children,jdbcType=INTEGER})
+      #{addressUrl,jdbcType=VARCHAR}, #{children,jdbcType=INTEGER}, #{route}, #{icon}, #{redirect})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.SysAddress" useGeneratedKeys="true">
     insert into sys_address
@@ -53,6 +56,15 @@
       <if test="children != null">
         children,
       </if>
+        <if test="route != null">
+          route,
+        </if>
+      <if test="icon != null">
+        icon,
+      </if>
+      <if test="redirect != null">
+        redirect,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="pId != null">
@@ -69,6 +81,15 @@
       </if>
       <if test="children != null">
         #{children,jdbcType=INTEGER},
+      </if>
+        <if test="route != null">
+          #{route},
+        </if>
+      <if test="icon != null">
+        #{icon},
+      </if>
+      <if test="redirect != null">
+        #{redirect},
       </if>
     </trim>
   </insert>
@@ -118,6 +139,15 @@
       <if test="children != null">
         children = #{children,jdbcType=INTEGER},
       </if>
+        <if test="route != null">
+          route = #{route},
+        </if>
+      <if test="icon != null">
+        icon = #{icon},
+      </if>
+      <if test="redirect != null">
+        redirect = #{redirect},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -137,4 +167,21 @@
     set status = 0
     where id = #{addressId}
   </update>
+  
+  <!-- 获取全部父级id -->
+  <select id="getParentAddressList" parameterType="list" resultType="map">
+    select *
+        from sys_address sa
+            right join sys_address sa1 on sa1.id = sa.p_id
+            <where>
+              sa.status = 1
+                <if test="menuList != null">
+                  and menu_id in
+                    <foreach collection="menuList" item="menuId" separator="," open="(" close=")">
+                      #{menuId}
+                    </foreach>
+                </if>
+            </where>
+  </select>
+  
 </mapper>

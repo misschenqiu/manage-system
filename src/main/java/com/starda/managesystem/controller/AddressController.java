@@ -4,14 +4,19 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.starda.managesystem.config.ExceptionEnums;
 import com.starda.managesystem.config.Result;
+import com.starda.managesystem.config.annotation.AnnotationAuthor;
+import com.starda.managesystem.config.author.UserVO;
 import com.starda.managesystem.exceptions.ManageStarException;
 import com.starda.managesystem.pojo.po.address.AddressUrlPO;
 import com.starda.managesystem.pojo.vo.AddressVO;
+import com.starda.managesystem.pojo.vo.MenuAddressVO;
+import com.starda.managesystem.pojo.vo.role.MenuRoleChoiceVO;
 import com.starda.managesystem.service.IAddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @ProjectName: manage-system
@@ -46,16 +51,30 @@ public class AddressController {
 
     /**
      * 获取 权限列表路径
-     * @param po
+     * @param userVO
      * @return
      * @throws Exception
      */
     @PostMapping("getAddressList")
-    public Result getAddressList(@RequestBody @Valid AddressUrlPO po) throws Exception{
+    public Result getAddressList(@AnnotationAuthor UserVO userVO) throws Exception{
 
-        this.addressService.insertAddress(po);
+        List<MenuAddressVO> menuAddressDTOList = this.addressService.getMenuAddressList(userVO);
 
-        return Result.success();
+        return Result.ok().resultPage(menuAddressDTOList);
+    }
+
+    /**
+     * 获取 权限列表路径
+     * @param userVO
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("getMenuAddressList")
+    public Result getMenuAddressList(@AnnotationAuthor UserVO userVO) throws Exception{
+
+        List<MenuRoleChoiceVO> menuAddressDTOList = this.addressService.getMenuAddressChoiceList(userVO);
+
+        return Result.ok().resultPage(menuAddressDTOList);
     }
 
     /**

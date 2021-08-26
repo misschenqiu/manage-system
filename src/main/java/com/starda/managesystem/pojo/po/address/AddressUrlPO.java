@@ -55,4 +55,22 @@ public class AddressUrlPO implements Serializable {
      */
     @NotBlank(message = "后端路径描述")
     private String remark;
+
+    /**
+     * 浏览器路劲 多级用”,“分割 父级在上成
+     */
+    @NotBlank(message = "浏览器路径不能为空")
+    private String path;
+
+    /**
+     * 图标 用空格分离
+     */
+    @NotBlank(message = "图标不能为空")
+    private String icon;
+
+    /**
+     * 前端自用
+     */
+    private String redirect;
+
 }

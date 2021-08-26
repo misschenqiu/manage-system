@@ -60,5 +60,20 @@ public class SysMenu implements Serializable {
      */
     private String remark;
 
+    /**
+     * 浏览器路径
+     */
+    private String route;
+
+    /**
+     * 图标
+     */
+    private String icon;
+
+    /**
+     * 前端自用
+     */
+    private String redirect;
+
     private static final long serialVersionUID = 1L;
 }

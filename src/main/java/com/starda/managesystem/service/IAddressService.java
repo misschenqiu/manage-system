@@ -1,8 +1,14 @@
 package com.starda.managesystem.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.starda.managesystem.config.author.UserVO;
+import com.starda.managesystem.pojo.dto.MenuAddressDTO;
 import com.starda.managesystem.pojo.po.address.AddressUrlPO;
 import com.starda.managesystem.pojo.vo.AddressVO;
+import com.starda.managesystem.pojo.vo.MenuAddressVO;
+import com.starda.managesystem.pojo.vo.role.MenuRoleChoiceVO;
+
+import java.util.List;
 
 /**
  * @ProjectName: manage-system
@@ -21,6 +27,30 @@ public interface IAddressService {
      * @throws Exception
      */
     void insertAddress(AddressUrlPO po) throws Exception;
+
+    /**
+     * 获取菜单路由
+     * @param vo 用户信息
+     * @return
+     * @throws Exception
+     */
+    List<MenuAddressDTO> getAddressList(UserVO vo) throws Exception;
+
+    /**
+     * 获取前端页面返回数据
+     * @param vo
+     * @return
+     * @throws Exception
+     */
+    List<MenuAddressVO> getMenuAddressList(UserVO vo) throws Exception;
+
+    /**
+     * 获取前端页面返回数据
+     * @param vo
+     * @return
+     * @throws Exception
+     */
+    List<MenuRoleChoiceVO> getMenuAddressChoiceList(UserVO vo) throws Exception;
 
     /**
      * 删除 路由
