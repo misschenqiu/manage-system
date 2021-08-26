@@ -32,8 +32,10 @@ public class JSONAuthentication {
                              Object data) throws IOException, ServletException {
         //这里很重要，否则页面获取不到正常的JSON数据集
         response.setContentType("application/json;charset=UTF-8");
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Method", "POST,GET");
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Methods", request.getMethod());
+        response.setHeader("Access-Control-Allow-Credentials","true");
+        response.setHeader("Access-Control-Allow-Headers", request.getHeader("Access-Control-Request-Headers"));
         //输出JSON
         PrintWriter out = response.getWriter();
         out.write(new ObjectMapper().writeValueAsString(data));

@@ -46,7 +46,7 @@ public class ManageStarException extends RuntimeException {
      */
     public ManageStarException(String code, String massage) {
         super(massage);
-        this.message = message;
+        this.message = massage;
         this.code = code;
     }
 

@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsUtils;
@@ -39,7 +40,7 @@ import javax.annotation.Resource;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
@@ -134,15 +135,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         //第1步：解决跨域问题。cors 预检请求放行,让Spring security 放行所有preflight request（cors 预检请求）
-        http.authorizeRequests().requestMatchers(CorsUtils::isPreFlightRequest).permitAll();
-
         //第2步：让Security永远不会创建HttpSession，它不会使用HttpSession来获取SecurityContext
-        http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        http.cors().and().csrf().disable().authorizeRequests()
+                .requestMatchers(CorsUtils::isPreFlightRequest)
+                .permitAll()
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().headers().cacheControl();
 /**
  * 在 UsernamePasswordAuthenticationFilter 之前添加 JwtAuthenticationTokenFilter
  */
-        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new WebSecurityCorsFilter(), ChannelProcessingFilter.class).addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
 
 
         http.exceptionHandling().accessDeniedHandler(accessDeniedHandler);
@@ -177,10 +179,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //注销成功
                 .logoutSuccessHandler(myLogoutSuccessHandler)
                 //登出之后删除cookie
-                .deleteCookies(Constant.BaseStringInfoManage.COOKIES);
-
-        //限制账号的会话管理
-        http.sessionManagement()
+                .deleteCookies(Constant.BaseStringInfoManage.COOKIES)
+                .and()
+                //限制账号的会话管理
+                .sessionManagement()
                 //同一账号同时登录最大用户数
                 .maximumSessions(1)
                 //如果为true,那么之后不能再登录，如果为false，登录之后会将之前的账号挤下线

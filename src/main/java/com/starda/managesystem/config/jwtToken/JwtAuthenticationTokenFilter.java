@@ -57,7 +57,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         log.info("headerToken = " + headerToken);
         log.info("request getMethod = " + request.getMethod());
 
-        if (!StringUtils.isEmpty(headerToken)) {
+        if (!StringUtils.isEmpty(headerToken) && headerToken.startsWith("Bearer")) {
             //postMan测试时，自动加入的前缀，要去掉。
             String tokenKey = headerToken.replace("Bearer", "").trim();
             log.info("token = " + tokenKey);
@@ -120,6 +120,6 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             }
         }
         chain.doFilter(request, response);
-
     }
+
 }
