@@ -36,4 +36,12 @@ public interface SysRoleMapper extends MPJBaseMapper<SysRole> {
      */
     List<RoleListDTO> selectRoleByAccountId(Integer accountId) throws Exception;
 
+    /**
+     * 查询账号角色
+     * @param accountIds
+     * @return
+     * @throws Exception
+     */
+    List<RoleListDTO> selectRoleByAccountIds(@Param("accountIds") List<Integer> accountIds) throws Exception;
+
 }

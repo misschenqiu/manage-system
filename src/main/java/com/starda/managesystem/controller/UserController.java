@@ -59,7 +59,7 @@ public class UserController {
     }
 
     /**
-     * 账号列表
+     * 删除账号
      * @param userVO
      * @param accountIds
      * @return

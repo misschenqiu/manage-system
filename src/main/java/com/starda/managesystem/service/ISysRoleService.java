@@ -97,4 +97,11 @@ public interface ISysRoleService {
      */
     List<RoleListDTO> getRoleList(Integer accountId) throws Exception;
 
+    /**
+     * 获取角色信息
+     * @param accountIds
+     * @return
+     */
+    List<RoleListDTO> getRoleByAccountIdsList(List<Integer> accountIds) throws Exception;
+
 }

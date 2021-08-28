@@ -35,5 +35,9 @@ public class AccountListPO {
      */
     private String accountName;
 
+    /**
+     * 最大账号
+     */
+    private Integer accountId;
 
 }

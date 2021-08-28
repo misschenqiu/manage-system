@@ -1,8 +1,12 @@
 package com.starda.managesystem.mapper.system;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.starda.managesystem.pojo.SysUser;
 import com.starda.managesystem.pojo.dto.AccountInfoDTO;
+import com.starda.managesystem.pojo.po.staff.AccountListPO;
+import com.starda.managesystem.pojo.vo.staff.AccountInfoListVO;
 import com.starda.managesystem.pojo.vo.staff.StaffInfoVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -36,5 +40,14 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
      * @throws Exception
      */
     StaffInfoVO getStaffInfo(Integer staffId) throws Exception;
+
+    /**
+     * 获取账号列表信
+     * @param page
+     * @param accountListPO
+     * @return
+     * @throws Exception
+     */
+    IPage<AccountInfoListVO> getAccountList(Page<AccountInfoListVO> page, AccountListPO accountListPO) throws Exception;
 
 }

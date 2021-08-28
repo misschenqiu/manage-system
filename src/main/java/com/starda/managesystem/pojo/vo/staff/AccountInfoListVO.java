@@ -39,6 +39,11 @@ public class AccountInfoListVO {
     private String address;
 
     /**
+     * 描述
+     */
+    private String remark;
+
+    /**
      * 角色列表
      */
     private List<RoleListVO> roleListVOList;

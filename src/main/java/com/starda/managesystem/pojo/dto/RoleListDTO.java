@@ -42,4 +42,9 @@ public class RoleListDTO {
      */
     private String addressCode;
 
+    /**
+     * 账号id
+     */
+    private Integer accountId;
+
 }

@@ -34,15 +34,32 @@
         <result column="create_time" property="createTime"/>
         <result column="address" property="address"/>
         <result column="address_code" property="addressCode"/>
+        <result column="user_id" property="accountId"/>
     </resultMap>
 
     <!--账号角色信息 -->
-    <select id="selectRoleByAccountId" resultType="com.starda.managesystem.pojo.dto.RoleListDTO">
+    <select id="selectRoleByAccountId" resultMap="Base_role_list_by_account">
 
-        select sr.id, sr.role_name, sr.remark, DATE_FORMAT(sr.create_time,'%Y-%m-%d %H:%i:%s') as create_time,sr.address,sr.address_code
+        select sr.id, sr.role_name, sr.remark, DATE_FORMAT(sr.create_time,'%Y-%m-%d %H:%i:%s') as create_time,
+               sr.address,sr.address_code,sur.user_id
             from sys_role sr
-                left join sys_user_role sur on sur.role_id = sr.id
+                right join sys_user_role sur on sur.role_id = sr.id
+                    <where>
+                        sr.status = 1
+                        and sur.user_id = #{accountId}
+                    </where>
+    </select>
 
+    <select id="selectRoleByAccountIds" resultMap="Base_role_list_by_account">
+
+        select sr.id, sr.role_name, sr.remark, DATE_FORMAT(sr.create_time,'%Y-%m-%d %H:%i:%s') as create_time,
+               sr.address,sr.address_code,sur.user_id
+        from sys_role sr
+        right join sys_user_role sur on sur.role_id = sr.id
+        <where>
+            sr.status = 1
+            and sur.user_id in <foreach collection="accountIds" item="accountId" separator="," open="(" close=")">#{accountId}</foreach>
+        </where>
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">

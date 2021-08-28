@@ -84,6 +84,34 @@
             </where>
     </select>
 
+  <resultMap id="Base_account_info_list" type="com.starda.managesystem.pojo.vo.staff.AccountInfoListVO">
+    <id column="id" property="id"/>
+    <result column="address" property="address"/>
+    <result column="account" property="accountName"/>
+    <result column="phone" property="phone"/>
+    <result column="remark" property="remark"/>
+  </resultMap>
+
+  <!-- 账号信息列表 -->
+    <select id="getAccountList" resultMap="Base_account_info_list">
+        select su.id,su.account,su.address,stf.remark,stf.phone
+            from sys_user su, sys_staff stf
+            <where>
+                su.status = 1
+              and stf.user_id = su.id
+                <if test="accountId != null">
+                  and stf.create_account_id = #{accountId}
+                </if>
+                <if test="accountName != null and accountName !=''">
+                  and account like concat('%', #{accountName}, '%')
+                </if>
+              <if test="addressCode != null and addressCode !=''">
+                and su.address_code = #{addressCode}
+              </if>
+            </where>
+            order by su.id desc
+    </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from sys_user
     where id = #{id,jdbcType=INTEGER}

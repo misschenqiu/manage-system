@@ -155,7 +155,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
         Page<SysRole> sysRolePage = this.baseMapper.selectPage(new Page<SysRole>(po.getCurrentPage(), po.getPageSize()), new LambdaQueryWrapper<SysRole>()
                 .eq(SysRole::getStatus, Constant.BaseNumberManage.ONE)
-                .eq(po.getMaxManger(), SysRole::getCreate_account_id, userVO.getId()));
+                .eq(po.getMaxManger(), SysRole::getCreate_account_id, userVO.getId())
+                .orderByDesc(SysRole::getCreate_time));
 
         List<RoleListVO> roleListVOS = new ArrayList<RoleListVO>();
         sysRolePage.getRecords().stream().forEach(role->{
@@ -229,6 +230,15 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     public List<RoleListDTO> getRoleList(Integer accountId) throws Exception{
         return this.baseMapper.selectRoleByAccountId(accountId);
+    }
+
+    @Override
+    public List<RoleListDTO> getRoleByAccountIdsList(List<Integer> accountIds) throws Exception{
+        if(null == accountIds || accountIds.isEmpty()){
+            return null;
+        }
+
+        return this.baseMapper.selectRoleByAccountIds(accountIds);
     }
 
 }
