@@ -5,8 +5,8 @@ import com.starda.managesystem.config.Result;
 import com.starda.managesystem.config.annotation.AnnotationAuthor;
 import com.starda.managesystem.config.author.UserVO;
 import com.starda.managesystem.pojo.UserInfo;
-import com.starda.managesystem.pojo.po.staff.StaffInfoPO;
-import com.starda.managesystem.pojo.po.staff.StaffQueryPO;
+import com.starda.managesystem.pojo.po.staff.*;
+import com.starda.managesystem.pojo.vo.staff.AccountInfoListVO;
 import com.starda.managesystem.pojo.vo.staff.StaffInfoListVO;
 import com.starda.managesystem.pojo.vo.staff.StaffInfoVO;
 import com.starda.managesystem.service.IUserInfoService;
@@ -41,6 +41,38 @@ public class UserController {
     public Object getUserInfo(@AnnotationAuthor UserVO userVO, @Valid UserInfo userInfo){
         System.out.println(userVO);
         return userInfoService.getUserInfo();
+    }
+
+    /**
+     * 账号列表
+     * @param userVO
+     * @param accountListPO
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/getAccountList")
+    public Result getAccountList(@AnnotationAuthor UserVO userVO, @RequestBody @Valid AccountListPO accountListPO) throws Exception{
+
+        IPage<AccountInfoListVO> page = this.userInfoService.getAccountList(userVO, accountListPO);
+
+        return Result.ok().resultPage(page.getRecords(), page.getCurrent(), page.getSize(), page.getTotal());
+    }
+
+    /**
+     * 账号列表
+     * @param userVO
+     * @param accountIds
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/removeAccountList/{accountIds}/{type}")
+    public Result removeAccountList(@AnnotationAuthor UserVO userVO, @PathVariable @NotBlank(message = "请选择删除账号") String accountIds, @PathVariable("type")Integer type) throws Exception{
+
+        List<String> accountIdList = new ArrayList<String>(Arrays.asList(accountIds.split(",")));
+
+        this.userInfoService.removeAccountList(userVO, accountIdList.stream().map(accountId->Integer.valueOf(accountId)).collect(Collectors.toList()), type);
+
+        return Result.success();
     }
 
     /**
@@ -102,19 +134,46 @@ public class UserController {
         return Result.success();
     }
 
+    /**
+     * 修改员工信息
+     * @param userVO
+     * @param staffInfo
+     * @return
+     * @throws Exception
+     */
     @PostMapping("/updateStaffInfo")
-    public Result updateStaffInfo(@AnnotationAuthor UserVO userVO) throws Exception{
+    public Result updateStaffInfo(@AnnotationAuthor UserVO userVO, @RequestBody @Valid StaffInfoUpdatePO staffInfo) throws Exception{
+
+        this.userInfoService.updateStaffInfo(userVO, staffInfo);
 
         return Result.success();
     }
 
+    /**
+     * 修改 账号信息
+     * @param accountInfoPO
+     * @return
+     * @throws Exception
+     */
     @PostMapping("/updateAccountInfo")
-    public Result updateAccountInfo() throws Exception{
+    public Result updateAccountInfo(@AnnotationAuthor UserVO user, @RequestBody @Valid AccountInfoPO accountInfoPO) throws Exception{
+
+        this.userInfoService.updateAccountInfo(user, accountInfoPO);
+
         return Result.success();
     }
 
+    /**
+     * 修改密码
+     * @param userVO
+     * @param passwordPO
+     * @return
+     * @throws Exception
+     */
     @PostMapping("/updateAccountPassword")
-    public Result updateAccountPassword() throws Exception{
+    public Result updateAccountPassword(@AnnotationAuthor UserVO userVO, @RequestBody @Valid AccountPasswordPO passwordPO) throws Exception{
+
+        this.userInfoService.updateAccountPassword(userVO, passwordPO);
 
         return Result.success();
     }

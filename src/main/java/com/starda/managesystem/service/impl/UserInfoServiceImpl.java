@@ -1,6 +1,7 @@
 package com.starda.managesystem.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.PageUtil;
 import cn.hutool.core.util.StrUtil;
@@ -23,8 +24,10 @@ import com.starda.managesystem.pojo.SysStaff;
 import com.starda.managesystem.pojo.SysUser;
 import com.starda.managesystem.pojo.SysUserRole;
 import com.starda.managesystem.pojo.dto.AccountInfoDTO;
-import com.starda.managesystem.pojo.po.staff.StaffInfoPO;
-import com.starda.managesystem.pojo.po.staff.StaffQueryPO;
+import com.starda.managesystem.pojo.dto.RoleListDTO;
+import com.starda.managesystem.pojo.po.staff.*;
+import com.starda.managesystem.pojo.vo.role.RoleListVO;
+import com.starda.managesystem.pojo.vo.staff.AccountInfoListVO;
 import com.starda.managesystem.pojo.vo.staff.StaffInfoListVO;
 import com.starda.managesystem.pojo.vo.staff.StaffInfoVO;
 import com.starda.managesystem.service.ISysRoleService;
@@ -74,6 +77,34 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
     }
 
     @Override
+    public IPage<AccountInfoListVO> getAccountList(UserVO user, AccountListPO accountListPO) throws Exception {
+        return null;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void removeAccountList(UserVO user, List<Integer> accountIds, Integer type) throws Exception {
+        // 不能删除自己的账号
+        if(accountIds.contains(user.getId())){
+            throw new ManageStarException("不能删除自己的账号！");
+        }
+        // 1.删除账号
+        List<SysUser> userList = new ArrayList<SysUser>();
+        accountIds.stream().forEach(userId ->{
+            SysUser account = new SysUser();
+            account.setId(userId);
+            account.setStatus(Constant.BaseNumberManage.ZERO);
+            userList.add(account);
+        });
+        this.updateBatchById(userList);
+        // 2.删除员工表
+        if(type != null && type == Constant.BaseNumberManage.ONE) {
+            this.staffMapper.updateByAccountIds(accountIds);
+        }
+
+    }
+
+    @Override
     public AccountInfoDTO getAccountInfo(String account) {
         AccountInfoDTO accountInfo;
         // 获取账号信息
@@ -112,6 +143,9 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
         if(po.getAccountId() != null){
             staffList.getRecords().stream().forEach( staff->{
                 staff.setAccountName(user.getStaffName());
+                // 脱敏处理
+                staff.setPhone(DesensitizedUtil.mobilePhone(staff.getPhone()));
+                staff.setIdentity(DesensitizedUtil.idCardNum(staff.getIdentity(), 3, 4));
             });
         }
 
@@ -152,17 +186,8 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
         if(null == staffInfo.getRoleIds() || staffInfo.getRoleIds().isEmpty()){
             return;
         }
-        Date time = new Date();
-        List<SysUserRole> userRoles = new ArrayList<SysUserRole>();
-        staffInfo.getRoleIds().stream().forEach(role->{
-            SysUserRole userRole = new SysUserRole();
-            userRole.setRole_id(role);
-            userRole.setUser_id(sysUser.getId());
-            userRole.setStatus(Constant.BaseNumberManage.ONE);
-            userRole.setCreate_time(time);
-            userRoles.add(userRole);
-        });
-        this.roleService.insertRoleUser(userRoles);
+
+        this.roleService.insertRoleUserList(sysUser.getId(), staffInfo.getRoleIds());
     }
 
     @Override
@@ -172,7 +197,15 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
             return this.getBaseMapper().getStaffInfo(user.getStaffId());
         }
 
-        return this.getBaseMapper().getStaffInfo(staffId);
+        // 员工信息
+        StaffInfoVO staffInfoVO = this.getBaseMapper().getStaffInfo(staffId);
+
+        // 角色信息
+        List<RoleListDTO> roleList = this.roleService.getRoleList(staffId);
+
+        staffInfoVO.setRoleList(BeanUtil.copyToList(roleList, RoleListVO.class));
+
+        return staffInfoVO;
     }
 
     @Override
@@ -198,6 +231,74 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
         });
 
         this.updateBatchById(userList);
+    }
+
+    @Override
+    public void updateStaffInfo(UserVO userVO, StaffInfoUpdatePO staffInfo) throws Exception {
+
+        // 分装数据
+        HashMap<String, String> mapping = new HashMap<String, String>();
+        mapping.put("user_height", "userHeight");
+        mapping.put("head_img", "headImg");
+        mapping.put("username", "userName");
+        SysStaff staff = BeanCopyUtil.toBean(staffInfo, SysStaff.class, mapping);
+        staff.setUpdate_time(new Date());
+       // 修改自己
+        if(staffInfo.getId() == null){
+            staff.setId(userVO.getId());
+        }else {
+            // 判断员工信息是否正常
+            List<SysStaff> staffs = this.staffMapper.selectList(new LambdaQueryWrapper<SysStaff>().eq(SysStaff::getId, staffInfo.getId()));
+
+            if (null == staffs || staffs.isEmpty()) {
+                throw new ManageStarException(ExceptionEnums.USER_ACCOUNT_DISABLE.getCode(), ExceptionEnums.USER_ACCOUNT_DISABLE.getMessage());
+            }
+        }
+
+        this.staffMapper.updateByPrimaryKeySelective(staff);
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateAccountInfo(UserVO user, AccountInfoPO accountInfoPO) throws Exception {
+
+        // 本人不能修改
+        if(user.getId().equals(accountInfoPO.getAccountId())){
+            throw new ManageStarException(ExceptionEnums.USER_ACCOUNT_NOT_STATUS.getCode(), ExceptionEnums.USER_ACCOUNT_NOT_STATUS.getMessage());
+        }
+        // 修改用户信息
+        SysUser account = new SysUser();
+        account.setAddress(accountInfoPO.getAddress());
+        account.setAddress_code(accountInfoPO.getAddressCode());
+        account.setId(accountInfoPO.getAccountId());
+        this.getBaseMapper().updateByPrimaryKeySelective(account);
+
+        // 修改权限信息
+        this.roleService.removeRoleUserByAccountIds(accountInfoPO.getAccountId());
+        // 添加
+        this.roleService.insertRoleUserList(accountInfoPO.getAccountId(), accountInfoPO.getRoleIds());
+
+    }
+
+    @Override
+    public void updateAccountPassword(UserVO user, AccountPasswordPO password) throws Exception {
+
+        // 两次密码的准确性
+        if(password.getNewPassword().equals(password.getAgainPassword())){
+            throw new ManageStarException(ExceptionEnums.USER_ACCOUNT_AGAIN_PASSWORD.getCode(), ExceptionEnums.USER_ACCOUNT_AGAIN_PASSWORD.getMessage());
+        }
+
+        // 判断原来密码的正确性
+        if(!SecurityPasswordCommon.isPassword(password.getOldPassword(), user.getPassword())){
+            throw new ManageStarException(ExceptionEnums.USER_CREDENTIALS_ERROR.getCode(), ExceptionEnums.USER_CREDENTIALS_ERROR.getMessage());
+        }
+
+        SysUser account = new SysUser();
+        account.setId(user.getId());
+        account.setPassword(SecurityPasswordCommon.password(password.getNewPassword()));
+
+        this.getBaseMapper().updateByPrimaryKeySelective(account);
     }
 
 }

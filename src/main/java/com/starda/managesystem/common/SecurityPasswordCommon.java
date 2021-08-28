@@ -44,4 +44,14 @@ public class SecurityPasswordCommon {
         return SecureUtil.md5(account + new Date());
     }
 
+    /**
+     * 判断密码的准确性
+     * @param oldPassword
+     * @param password
+     * @return
+     */
+    public static boolean isPassword(String oldPassword, String password){
+        return password.equals(password(oldPassword));
+    }
+
 }

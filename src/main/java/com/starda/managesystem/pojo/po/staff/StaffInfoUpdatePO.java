@@ -1,55 +1,30 @@
 package com.starda.managesystem.pojo.po.staff;
 
 import com.starda.managesystem.pojo.enums.UserTypeEnums;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import java.util.List;
+import javax.validation.constraints.NotNull;
 
 /**
  * @ProjectName: manage-system
  * @Package: com.starda.managesystem.pojo.po.staff
- * @ClassName: StaffInfoPO
+ * @ClassName: StaffInfoUpdatePO
  * @Author: chenqiu
- * @Description: 添加员工
- * @Date: 2021/8/28 10:37
+ * @Description: 修改员工信息
+ * @Date: 2021/8/28 15:21
  * @Version: 1.0
  */
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class StaffInfoPO {
+public class StaffInfoUpdatePO {
 
-    /**
-     * 账号
-     */
-    @NotBlank(message = "账号信息不能为空")
-    private String account;
-
-    /**
-     * 密码
-     */
-    @NotBlank(message = "密码不能为空")
-    private String password;
-
-    /**
-     * 归属地
-     */
-    @NotBlank(message = "归属地不能为空")
-    private String address;
-
-    /**
-     * 编码
-     */@NotBlank(message = "归属编码不能为空")
-    private String addressCode;
+    @NotNull(message = "员工id不能为空")
+    private Integer id;
 
     /**
      * 用户名
      */
-    @NotBlank(message = "员工名不能为空")
     private String userName;
 
     /**
@@ -86,10 +61,5 @@ public class StaffInfoPO {
      * 描述
      */
     private String remark;
-
-    /**
-     * 角色id
-     */
-    private List<Integer> roleIds;
 
 }

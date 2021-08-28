@@ -2,6 +2,7 @@ package com.starda.managesystem.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.starda.managesystem.common.SecurityPasswordCommon;
@@ -15,6 +16,7 @@ import com.starda.managesystem.mapper.system.SysUserRoleMapper;
 import com.starda.managesystem.pojo.SysRole;
 import com.starda.managesystem.pojo.SysRoleMenu;
 import com.starda.managesystem.pojo.SysUserRole;
+import com.starda.managesystem.pojo.dto.RoleListDTO;
 import com.starda.managesystem.pojo.po.role.RoleInsertPO;
 import com.starda.managesystem.pojo.po.role.RoleSelectPO;
 import com.starda.managesystem.pojo.vo.role.RoleListVO;
@@ -196,6 +198,37 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             return;
         }
         this.userRoleMapper.insertRoleUser(userRoles);
+    }
+
+    @Override
+    public void removeRoleUserByAccountIds(Integer accountId) throws Exception {
+
+        if(accountId == null || accountId < 0){
+            throw new ManageStarException("账号id不能为空");
+        }
+        this.userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUser_id, accountId));
+        log.info("删除角色中间表成功");
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void insertRoleUserList(Integer accountId, List<Integer> roleIds) throws Exception {
+        Date time = new Date();
+        List<SysUserRole> userRoles = new ArrayList<SysUserRole>();
+        roleIds.stream().forEach(role->{
+            SysUserRole userRole = new SysUserRole();
+            userRole.setRole_id(role);
+            userRole.setUser_id(accountId);
+            userRole.setStatus(Constant.BaseNumberManage.ONE);
+            userRole.setCreate_time(time);
+            userRoles.add(userRole);
+        });
+        this.insertRoleUser(userRoles);
+    }
+
+    @Override
+    public List<RoleListDTO> getRoleList(Integer accountId) throws Exception{
+        return this.baseMapper.selectRoleByAccountId(accountId);
     }
 
 }

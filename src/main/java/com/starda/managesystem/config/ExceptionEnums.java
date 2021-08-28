@@ -32,10 +32,11 @@ public enum ExceptionEnums {
     USER_ACCOUNT_NOT_EXIST("2007", "账号不存在"),
     USER_ACCOUNT_ALREADY_EXIST("2008", "账号已存在"),
     USER_ACCOUNT_USE_BY_OTHERS("2009", "账号在异处登录"),
-    USER_ACCOUNT_NOT_STATUS("2010","禁用操作失败"),
+    USER_ACCOUNT_NOT_STATUS("2010","禁用操作"),
     USER_ACCOUNT_DELETE_EXIST("2011","删除失败"),
     USER_ACCOUNT_UPDATE_ID("2012","修改失败"),
     USER_ACCOUNT_CANCELLATION("2013","注销失败"),
+    USER_ACCOUNT_AGAIN_PASSWORD("2014","两次密码不对"),
 
     /* 业务错误 */
     NO_PERMISSION("3001", "没有权限"),

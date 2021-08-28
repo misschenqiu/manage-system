@@ -203,6 +203,13 @@
       where id in <foreach collection="staffIds" item="id" separator="," open="(" close=")">#{id,jdbcType=INTEGER}</foreach>
     </update>
 
+  <!-- 批量操作修改 -->
+  <update id="updateByAccountIds">
+    update sys_staff
+    set status = 0
+    where user_id in <foreach collection="accountIds" item="id" separator="," open="(" close=")">#{id,jdbcType=INTEGER}</foreach>
+  </update>
+
   <resultMap id="Base_staff_list" type="com.starda.managesystem.pojo.vo.staff.StaffInfoListVO">
     <id column="id" property="id"/>
     <result column="username" property="username"/>

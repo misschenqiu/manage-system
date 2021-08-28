@@ -1,25 +1,19 @@
-package com.starda.managesystem.pojo.vo.role;
+package com.starda.managesystem.pojo.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @ProjectName: manage-system
- * @Package: com.starda.managesystem.pojo.vo.role
- * @ClassName: RoleListVO
+ * @Package: com.starda.managesystem.pojo.dto
+ * @ClassName: RoleListDTO
  * @Author: chenqiu
- * @Description: 角色实例列表
- * @Date: 2021/8/27 0:40
+ * @Description: 角色实例
+ * @Date: 2021/8/28 17:09
  * @Version: 1.0
  */
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class RoleListVO {
+public class RoleListDTO {
 
     private Integer id;
 

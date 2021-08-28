@@ -31,6 +31,13 @@ public interface SysStaffMapper extends MPJBaseMapper<SysStaff> {
     void updateByStaffIds(@Param("staffIds")List<Integer> staffIds) throws Exception;
 
     /**
+     * 通过账号id 删除员工
+     * @param staffIds
+     * @throws Exception
+     */
+    void updateByAccountIds(@Param("accountIds")List<Integer> staffIds) throws Exception;
+
+    /**
      * 获取到员工列表
      * @param po
      * @return

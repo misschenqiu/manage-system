@@ -1,9 +1,13 @@
 package com.starda.managesystem.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.starda.managesystem.config.Result;
 import com.starda.managesystem.config.author.UserVO;
+import com.starda.managesystem.pojo.SysRole;
 import com.starda.managesystem.pojo.SysRoleMenu;
 import com.starda.managesystem.pojo.SysUserRole;
+import com.starda.managesystem.pojo.dto.RoleListDTO;
 import com.starda.managesystem.pojo.po.role.RoleInsertPO;
 import com.starda.managesystem.pojo.po.role.RoleSelectPO;
 import com.starda.managesystem.pojo.vo.role.RoleListVO;
@@ -73,5 +77,24 @@ public interface ISysRoleService {
      * @throws Exception
      */
     void insertRoleUser(List<SysUserRole> userRoles) throws Exception;
+
+    /**
+     * 删除账号角色信息
+     * @param accountId
+     * @throws Exception
+     */
+    void removeRoleUserByAccountIds(Integer accountId) throws Exception;
+
+    /**
+     * 添加用户 角色信息
+     */
+    void insertRoleUserList(Integer accountId, List<Integer> roleIds) throws Exception;
+
+    /**
+     * 获取角色信息
+     * @param accountId
+     * @return
+     */
+    List<RoleListDTO> getRoleList(Integer accountId) throws Exception;
 
 }

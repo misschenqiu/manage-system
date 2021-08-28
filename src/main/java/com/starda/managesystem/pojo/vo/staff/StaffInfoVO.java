@@ -2,12 +2,14 @@ package com.starda.managesystem.pojo.vo.staff;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.starda.managesystem.pojo.enums.UserTypeEnums;
+import com.starda.managesystem.pojo.vo.role.RoleListVO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * @ProjectName: manage-system
@@ -90,5 +92,10 @@ public class StaffInfoVO {
      * 描述
      */
     private String remark;
+
+    /**
+     * 角色信息
+     */
+    private List<RoleListVO> roleList;
 
 }

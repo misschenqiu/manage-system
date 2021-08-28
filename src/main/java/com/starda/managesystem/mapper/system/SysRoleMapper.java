@@ -2,6 +2,7 @@ package com.starda.managesystem.mapper.system;
 
 import com.github.yulichang.base.MPJBaseMapper;
 import com.starda.managesystem.pojo.SysRole;
+import com.starda.managesystem.pojo.dto.RoleListDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -26,5 +27,13 @@ public interface SysRoleMapper extends MPJBaseMapper<SysRole> {
      * @throws Exception
      */
     void updateRoleListById(@Param("roleList") List<Integer> roleList) throws Exception;
+
+    /**
+     * 查询账号角色
+     * @param accountId
+     * @return
+     * @throws Exception
+     */
+    List<RoleListDTO> selectRoleByAccountId(Integer accountId) throws Exception;
 
 }
