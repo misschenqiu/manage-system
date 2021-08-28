@@ -17,7 +17,7 @@
     </resultMap>
     <sql id="Base_Column_List">
         id
-        , menu_name, code, url, create_time, modified_time, p_id, address_url, remark, route, icon, redirect
+        , menu_name, code, url, create_time, modified_time, p_id, address_url, remark, route, icon, redirect, p_id
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -72,6 +72,9 @@
             <if test="redirect != null">
                 redirect,
             </if>
+            <if test="p_id">
+                p_id,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="menu_name != null">
@@ -103,6 +106,9 @@
             </if>
             <if test="redirect != null">
                  #{redirect},
+            </if>
+            <if test="p_id">
+                #{p_id},
             </if>
         </trim>
     </insert>
@@ -138,6 +144,9 @@
             </if>
             <if test="redirect != null">
                 redirect = #{redirect},
+            </if>
+            <if test="p_id">
+                p_id = #{p_id},
             </if>
         </set>
         where id = #{id,jdbcType=INTEGER}

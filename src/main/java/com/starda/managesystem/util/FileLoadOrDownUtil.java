@@ -48,7 +48,7 @@ public class FileLoadOrDownUtil {
 //        }
         if (StrUtil.isBlank(folder)) {
             // 默认文件上传地址
-            folder = Constant.BaseStringInfoManage.BASE_FILE_PATH + File.separator;
+            folder = Constant.BaseStringInfoManage.BASE_FILE_PATH;
         }
         if (!FileUtil.exist(folder)) {
             FileUtil.mkdir(folder);

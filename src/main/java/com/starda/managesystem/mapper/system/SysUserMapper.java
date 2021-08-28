@@ -3,6 +3,7 @@ package com.starda.managesystem.mapper.system;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.starda.managesystem.pojo.SysUser;
 import com.starda.managesystem.pojo.dto.AccountInfoDTO;
+import com.starda.managesystem.pojo.vo.staff.StaffInfoVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -27,5 +28,13 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
      * @return
      */
     AccountInfoDTO getAccountInfo(@Param("account") String account, @Param("phone") String phone);
+
+    /**
+     * 获取到员工详情
+     * @param staffId
+     * @return
+     * @throws Exception
+     */
+    StaffInfoVO getStaffInfo(Integer staffId) throws Exception;
 
 }

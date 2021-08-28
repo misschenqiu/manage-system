@@ -53,6 +53,8 @@ public class MyAuthenticationSuccessHandler extends JSONAuthentication implement
         HashMap data = new HashMap<String, String>() {{
             put("account", userDetails.getUsername());
             put("token", tokenKey);
+            put("staffImg", userDetails.getStaffImg());
+            put("staffName", userDetails.getStaffName());
         }};
         Result result = Result.success(data, Constant.BaseStringInfoManage.SUCCESS);
         this.WriteJSON(request, response, result);

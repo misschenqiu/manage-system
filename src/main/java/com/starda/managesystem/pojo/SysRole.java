@@ -2,6 +2,9 @@ package com.starda.managesystem.pojo;
 
 import java.io.Serializable;
 import java.util.Date;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
 /**
@@ -10,6 +13,7 @@ import lombok.Data;
  */
 @Data
 public class SysRole implements Serializable {
+    @TableId(value="id",type= IdType.AUTO)
     private Integer id;
 
     /**
@@ -51,6 +55,11 @@ public class SysRole implements Serializable {
      * 角色编码
      */
     private String role_code;
+
+    /**
+     * 创建人id
+     */
+    private Integer create_account_id;
 
     private static final long serialVersionUID = 1L;
 }

@@ -35,7 +35,6 @@ public class AddressUrlPO implements Serializable {
     /**
      * 最小子级简称 ( 用于角色权限配置时展示 )
      */
-    @NotBlank(message = "子级菜单检称，不能为空")
     private String smilName;
 
     /**
@@ -47,13 +46,11 @@ public class AddressUrlPO implements Serializable {
     /**
      * 后端路径
      */
-    @NotBlank(message = "后端路径不能为空")
     private String url;
 
     /**
      * 后端路径描述
      */
-    @NotBlank(message = "后端路径描述")
     private String remark;
 
     /**

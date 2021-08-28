@@ -1,5 +1,7 @@
 package com.starda.managesystem.constant;
 
+import java.io.File;
+
 /**
  * @ProjectName: manage-system
  * @Package: com.starda.managesystem.constant
@@ -49,14 +51,19 @@ public interface Constant {
         /**
          * 设置文件上传 基本路径
          */
-        String BASE_FILE_PATH = "/file/img/";
-        String BASE_HEADER_PATH = "/header/img/";
+        String BASE_FILE_PATH = File.separator + "file"+ File.separator +"img" + File.separator;
+        String BASE_HEADER_PATH = File.separator + "header" + File.separator + "img" + File.separator;
 
         /**
          * 是否有子级  0.否 1.是
          */
         int CHILDREN_YES = 1;
         int CHILDREN_NO = 0;
+
+        /**
+         * 角色基本常量
+         */
+        String DEFT = "ROLE_";
     }
 
     /**

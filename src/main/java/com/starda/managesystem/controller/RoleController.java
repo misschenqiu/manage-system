@@ -1,5 +1,6 @@
 package com.starda.managesystem.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.starda.managesystem.config.Result;
 import com.starda.managesystem.config.annotation.AnnotationAuthor;
 import com.starda.managesystem.config.author.UserVO;
@@ -49,6 +50,13 @@ public class RoleController {
         return Result.success();
     }
 
+    /**
+     * 删除角色信息
+     * @param userVO
+     * @param roleId
+     * @return
+     * @throws Exception
+     */
     @PostMapping("/removeRoleInfo/{roleIds}")
     public Result removeRoleInfo(@AnnotationAuthor UserVO userVO, @PathVariable @NotBlank(message = "id不能为空") String roleId) throws Exception{
 
@@ -58,12 +66,34 @@ public class RoleController {
         return Result.success();
     }
 
+    /**
+     * 修改角色信息
+     * @param userVO
+     * @param po
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/updateRoleInfo")
+    public Result updateRoleInfo(@AnnotationAuthor UserVO userVO, @RequestBody @Valid RoleInsertPO po) throws Exception{
+
+        this.roleService.updateRoleInfo(userVO, po);
+
+        return Result.success();
+    }
+
+    /**
+     * 获取角色列表
+     * @param userVO
+     * @param po
+     * @return
+     * @throws Exception
+     */
     @PostMapping("getRoleInfoList")
     public Result getRoleInfoList (@AnnotationAuthor UserVO userVO, @RequestBody @Valid RoleSelectPO po) throws Exception{
 
-        List<RoleListVO> roleListVOS = this.roleService.selectRoleList(userVO, po);
+        Result roleListVOS = this.roleService.selectRoleList(userVO, po);
 
-        return Result.success();
+        return roleListVOS;
     }
 
 }

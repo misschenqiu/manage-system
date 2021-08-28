@@ -16,7 +16,6 @@ import javax.validation.constraints.NotBlank;
  * @author 
  */
 @Data
-@NotBlank
 @AllArgsConstructor
 @NoArgsConstructor
 public class SysAddress implements Serializable {

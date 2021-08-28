@@ -10,5 +10,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 
 @Mapper
+@Deprecated
 public interface UserInfoMapper  extends BaseMapper<UserInfo>{
 }

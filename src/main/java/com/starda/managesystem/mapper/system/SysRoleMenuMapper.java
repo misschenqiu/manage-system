@@ -4,6 +4,7 @@ import com.github.yulichang.base.MPJBaseMapper;
 import com.starda.managesystem.pojo.SysRoleMenu;
 import com.starda.managesystem.pojo.dto.MenuAddressDTO;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -31,5 +32,12 @@ public interface SysRoleMenuMapper extends MPJBaseMapper<SysRoleMenu> {
      * @throws Exception
      */
     List<MenuAddressDTO> getMenuAddressListAll() throws Exception;
+
+    /**
+     * 批量添加角色权限信息
+     * @param sysRoleMenus
+     * @throws Exception
+     */
+    void insertSysRoleMenuList(@Param("roleMenuList") List<SysRoleMenu> sysRoleMenus) throws Exception;
 
 }

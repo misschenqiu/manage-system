@@ -10,15 +10,15 @@
         <result column="sys_role_modified_time" jdbcType="TIMESTAMP" property="modified_time"/>
         <result column="sys_role_address" jdbcType="VARCHAR" property="address"/>
         <result column="sys_role_address_code" jdbcType="VARCHAR" property="address_code"/>
+        <result column="sys_role_role_code" property="role_code"/>
+        <result column="sys_role_create_account_id" property="create_account_id"/>
     </resultMap>
     <sql id="Base_Column_List">
-        sys_role
-        .
-        id
-        as sys_role_id, sys_role.role_name as sys_role_role_name, sys_role.remark as sys_role_remark,
+        sys_role.id as sys_role_id, sys_role.role_name as sys_role_role_name, sys_role.remark as sys_role_remark,
     sys_role.`status` as `sys_role_status`, sys_role.create_time as sys_role_create_time, 
     sys_role.modified_time as sys_role_modified_time, sys_role.address as sys_role_address, 
-    sys_role.address_code as sys_role_address_code
+    sys_role.address_code as sys_role_address_code, sys_role.role_code as sys_role_role_code,
+    sys_role.create_account_id as sys_role_create_account_id
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -68,6 +68,9 @@
             <if test="role_code != null">
                 role_code,
             </if>
+            <if test="create_account_id != null">
+                create_account_id,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="role_name != null">
@@ -93,6 +96,9 @@
             </if>
             <if test="role_code != null">
                 #{role_code},
+            </if>
+            <if test="create_account_id != null">
+                #{create_account_id},
             </if>
         </trim>
     </insert>
@@ -123,6 +129,9 @@
             <if test="role_code != null">
                 role_code = #{role_code},
             </if>
+            <if test="create_account_id != null">
+                create_account_id = #{create_account_id},
+            </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
@@ -136,5 +145,12 @@
             address       = #{address,jdbcType=VARCHAR},
             address_code  = #{address_code,jdbcType=VARCHAR}
         where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <!-- 批量修改角色权限 -->
+    <update id="updateRoleListById">
+        update sys_role
+        set `status` = 0
+        where id in <foreach collection="roleList" close=")" open="(" separator="," item="id">#{id,jdbcType=INTEGER}</foreach>
     </update>
 </mapper>

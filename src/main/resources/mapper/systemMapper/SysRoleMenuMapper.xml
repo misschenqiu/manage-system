@@ -60,6 +60,43 @@
       </if>
     </trim>
   </insert>
+
+  <!-- 批量添加角色权限信息 -->
+  <insert id="insertSysRoleMenuList">
+    insert into sys_role_menu
+        <foreach collection="roleMenuList" item="roleMenu" separator="," open="(" close=")">
+          <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="roleMenu.role_id != null">
+              role_id,
+            </if>
+            <if test="roleMenu.menu_id != null">
+              menu_id,
+            </if>
+            <if test="roleMenu.create_time != null">
+              create_time,
+            </if>
+            <if test="roleMenu.status != null">
+              `status`,
+            </if>
+          </trim>
+          <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="roleMenu.role_id != null">
+              #{roleMenu.role_id,jdbcType=INTEGER},
+            </if>
+            <if test="roleMenu.menu_id != null">
+              #{roleMenu.menu_id,jdbcType=INTEGER},
+            </if>
+            <if test="roleMenu.create_time != null">
+              #{roleMenu.create_time,jdbcType=TIMESTAMP},
+            </if>
+            <if test="roleMenu.status != null">
+              #{roleMenu.status,jdbcType=INTEGER},
+            </if>
+          </trim>
+        </foreach>
+
+  </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.starda.managesystem.pojo.SysRoleMenu">
     update sys_role_menu
     <set>

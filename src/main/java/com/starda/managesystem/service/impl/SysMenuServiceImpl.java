@@ -1,8 +1,10 @@
 package com.starda.managesystem.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.github.yulichang.wrapper.MPJLambdaWrapper;
+import com.starda.managesystem.constant.Constant;
 import com.starda.managesystem.mapper.system.SysMenuMapper;
 import com.starda.managesystem.mapper.system.SysRoleMapper;
 import com.starda.managesystem.mapper.system.SysRoleMenuMapper;
@@ -11,6 +13,7 @@ import com.starda.managesystem.pojo.SysRole;
 import com.starda.managesystem.pojo.SysRoleMenu;
 import com.starda.managesystem.pojo.dto.RoleInfoListDTO;
 import com.starda.managesystem.service.ISysMenuService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +31,7 @@ import java.util.List;
  */
 
 @Service
+@Log4j2
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements ISysMenuService {
 
     @Autowired
@@ -53,7 +57,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Override
     public List<RoleInfoListDTO> getRoleToAllMenusList() {
         // 获取全部角色信息
-        List<SysRole> roleList = this.roleMapper.selectList(null);
+        List<SysRole> roleList = this.roleMapper.selectList(new LambdaQueryWrapper<SysRole>().eq(SysRole::getStatus, Constant.BaseNumberManage.ONE));
 
         // 获取全部 角色 资源 中间表
         List<SysRoleMenu> roleMenuList = this.roleMenuMapper.selectList(null);

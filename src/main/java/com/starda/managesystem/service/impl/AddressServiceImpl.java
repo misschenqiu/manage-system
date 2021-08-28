@@ -1,7 +1,9 @@
 package com.starda.managesystem.service.impl;
 
 import cn.hutool.core.lang.UUID;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONArray;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -63,19 +65,6 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
         List<String> pathList = new ArrayList<>(Arrays.asList(po.getPath().split(",")));
         List<String> iconList = new ArrayList<>(Arrays.asList(po.getIcon().split(" ")));
 
-        // 路劲子级
-        SysMenu menu = new SysMenu();
-        menu.setMenu_name(pNameList.get(pNameList.size() - Constant.BaseNumberManage.ONE));
-        menu.setCode(po.getSmilName());
-        menu.setCreate_time(new Date());
-        menu.setUrl(po.getUrl());
-        menu.setAddress_url(addressUrlList.get(addressUrlList.size() - Constant.BaseNumberManage.ONE));
-        menu.setRemark(po.getRemark());
-        menu.setRoute(pathList.get(pathList.size() - Constant.BaseNumberManage.ONE));
-        menu.setIcon(iconList.get(iconList.size() - Constant.BaseNumberManage.ONE));
-        menuMapper.insertSelectiveMenu(menu);
-        Integer menuId = menu.getId();
-                log.info("添加权限，路径信息 menuId->{}" + menuId);
         int pId = 0;
         // 父级
         for (int i = 0; i < pNameList.size() - Constant.BaseNumberManage.ONE; i++) {
@@ -85,11 +74,11 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
                     address.setAddressName(pNameList.get(i));
                     address.setAddressUrl(addressUrlList.get(i));
                     address.setChildren(Constant.BaseStringInfoManage.CHILDREN_NO);
-                    address.setMenuId(menuId);
+                    address.setMenuId(0);
                     address.setPId(pId);
                     address.setRoute(pathList.get(i));
                     address.setIcon(iconList.get(i));
-                    this.baseMapper.insertSelective(address);
+                    this.insertSysAddress(address);
                     pId = address.getId();
                 }else {
                     SysAddress address = new SysAddress();
@@ -99,7 +88,7 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
                     address.setPId(pId);
                     address.setRoute(pathList.get(i));
                     address.setIcon(iconList.get(i));
-                    this.baseMapper.insertSelective(address);
+                    this.insertSysAddress(address);
                     pId = address.getId();
                 }
             }catch (Exception e){
@@ -107,6 +96,46 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
                 throw new ManageStarException(ExceptionEnums.ADDRESS_URL.getCode(), ExceptionEnums.ADDRESS_URL.getMessage());
             }
         }
+        // 路劲子级 如果没有后端路劲不添加
+        if(StrUtil.isEmpty(po.getAddressUrl())){
+            return;
+        }
+        SysMenu menu = new SysMenu();
+        menu.setMenu_name(pNameList.get(pNameList.size() - Constant.BaseNumberManage.ONE));
+        menu.setCode(po.getSmilName());
+        menu.setCreate_time(new Date());
+        menu.setUrl(po.getUrl());
+        menu.setAddress_url(addressUrlList.get(addressUrlList.size() - Constant.BaseNumberManage.ONE));
+        menu.setRemark(po.getRemark());
+        menu.setP_id(pId);
+        menu.setRoute(pathList.get(pathList.size() - Constant.BaseNumberManage.ONE));
+        menu.setIcon(iconList.get(iconList.size() - Constant.BaseNumberManage.ONE));
+        menuMapper.insertSelectiveMenu(menu);
+        Integer menuId = menu.getId();
+        log.info("添加权限，路径信息 menuId->{}" + menuId);
+    }
+
+    /**
+     * 添加权限地址
+     * @param address
+     * @return
+     * @throws Exception
+     */
+    private Integer insertSysAddress(SysAddress address) throws Exception{
+
+        // 1.查阅是否已经添加
+        LambdaQueryWrapper<SysAddress> wrapper = new LambdaQueryWrapper<SysAddress>();
+        List<SysAddress> addressList = this.baseMapper.selectList(wrapper.eq(SysAddress::getAddressName, address.getAddressName())
+                                                                        .eq(SysAddress::getAddressUrl, address.getAddressUrl())
+                                                                        .eq(SysAddress::getRoute, address.getRoute()));
+
+        if(null != addressList && !addressList.isEmpty()){
+            return addressList.get(Constant.BaseNumberManage.ZERO).getId();
+        }
+
+        // 2.添加数据
+        this.baseMapper.insertSelective(address);
+        return address.getId();
     }
 
     @Override
@@ -161,6 +190,9 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
                     .redirect(data.getRedirect())
                     .build());
         });
+
+        // 处理数据
+//        this.handleMenuAddressList(menuAddressVOList);
 
         return menuAddressVOList;
     }
@@ -243,7 +275,7 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
         // 取出子级
         for (MenuAddressDTO menuAddressDTO : menuAddressDTOS) {
             for (SysAddress address : addressList) {
-                if(address.getMenuId().equals(menuAddressDTO.getId())){
+                if(address.getId().equals(menuAddressDTO.getPId())){
                     menuAddressDTOSPrent.add(MenuAddressDTO.builder()
                             .addressUrl(address.getAddressUrl())
                             .addressName(address.getAddressName())
@@ -306,6 +338,14 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
         }
         // 继续赛选
         handleChildren(addressPrentList, addressChildrenList, menuAddressDTOS);
+    }
+
+    /**
+     * 处理树装数据
+     * @param menuAddressVOList
+     */
+    public void handleMenuAddressList(List<MenuAddressVO> menuAddressVOList){
+
     }
 
 

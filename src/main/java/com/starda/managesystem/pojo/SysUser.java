@@ -2,7 +2,9 @@ package com.starda.managesystem.pojo;
 
 import java.io.Serializable;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.starda.managesystem.common.AESEncryptHandler;
 import lombok.Data;
 
@@ -12,6 +14,7 @@ import lombok.Data;
  */
 @Data
 public class SysUser implements Serializable {
+    @TableId(value="id",type= IdType.AUTO)
     private Integer id;
 
     /**

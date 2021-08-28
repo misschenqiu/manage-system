@@ -42,7 +42,8 @@
         from sys_user sys_user
         left join sys_staff staff on sys_user.id = staff.user_id
         <where>
-          sys_user.status = 1
+          sys_user.status = 1 and
+          staff.status = 1
         <if test="account != null and account != ''">
           and account = #{account}
         </if>
@@ -50,6 +51,37 @@
           and phone = #{phone}
         </if>
         </where>
+    </select>
+
+  <!-- 员工详情 -->
+  <resultMap id="Base_Staff_Info_Result" type="com.starda.managesystem.pojo.vo.staff.StaffInfoVO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="account" jdbcType="VARCHAR" property="account" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="phone" jdbcType="VARCHAR" property="phone" />
+    <result column="address_code" jdbcType="VARCHAR" property="addressCode" />
+    <result column="sex" property="sex" />
+    <result column="user_height" property="userHeight" />
+    <result column="user_id" property="userId" />
+    <result column="userName" jdbcType="VARCHAR" property="userName" />
+    <result column="head_img" property="headImg"/>
+    <result column="identity" property="identity"/>
+    <result column="position" property="position"/>
+    <result column="remark" property="remark"/>
+    <result column="createTime" property="createTime"/>
+  </resultMap>
+
+    <!-- 获取到员工详情 -->
+    <select id="getStaffInfo" resultMap="Base_Staff_Info_Result">
+      select sst.id, su.account ,sst.phone, su.address , su.address_code, sst.username as userName, sst.sex, sst.user_height,
+             DATE_FORMAT(sst.create_time,'%Y-%m-%d %H:%i:%s') as createTime, sst.head_img, sst.user_id, sst.remark,
+             sst.position, sst.identity
+            from sys_staff sst
+                left join sys_user su on su.id = sst.user_id
+            <where>
+              sst.id = #{staffId}
+                and sst.status = 1
+            </where>
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">

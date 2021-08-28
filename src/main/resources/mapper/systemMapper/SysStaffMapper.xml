@@ -195,4 +195,63 @@
       update_time = #{update_time,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!-- 批量操作修改 -->
+    <update id="updateByStaffIds">
+      update sys_staff
+      set status = 0
+      where id in <foreach collection="staffIds" item="id" separator="," open="(" close=")">#{id,jdbcType=INTEGER}</foreach>
+    </update>
+
+  <resultMap id="Base_staff_list" type="com.starda.managesystem.pojo.vo.staff.StaffInfoListVO">
+    <id column="id" property="id"/>
+    <result column="username" property="username"/>
+    <result column="sex" property="sex"/>
+    <result column="user_height" property="userHeight"/>
+    <result column="phone" property="phone"/>
+    <result column="create_time" property="createTime"/>
+    <result column="identity" property="identity"/>
+    <result column="head_img" property="headImg"/>
+    <result column="position" property="position"/>
+    <result column="remark" property="remark"/>
+    <result column="accountName" property="accountName"/>
+  </resultMap>
+
+  <!-- 获取员工列表 -->
+  <select id="getAccountInfoList" resultMap="Base_staff_list" parameterType="com.starda.managesystem.pojo.po.staff.StaffQueryPO">
+    select stf.id,
+           stf.username,
+           stf.sex,
+           stf.user_height,
+           stf.phone,
+            DATE_FORMAT(stf.create_time,'%Y-%m-%d %H:%i:%s') as create_time,
+           stf.head_img,
+           stf.identity,
+           stf.position,
+          <if test="accountId != null">
+            stf1.username as accountName,
+          </if>
+           stf.remark
+    from sys_staff stf
+    <if test="accountId != null">
+      left join sys_staff stf1 on stf1.user_id = stf.create_account_id
+    </if>
+        <where>
+          stf.`status` = 1
+          <if test="accountId != null">
+             and stf.create_account_id = #{accountId}
+          </if>
+            <if test="userName != null and userName != ''">
+              and stf.username like concat('%', #{userName}, '%')
+            </if>
+            <if test="startTime != null">
+                and <![CDATA[stf.create_time >= #{startTime}]]>
+            </if>
+            <if test="endTime != null">
+              and <![CDATA[stf.create_time <= #{endTime}]]>
+            </if>
+        </where>
+     order by stf.create_time desc
+  </select>
+
 </mapper>
