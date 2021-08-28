@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -19,6 +21,7 @@ public class SysRole implements Serializable {
     /**
      * 角色名
      */
+    @JsonProperty(value = "roleName")
     private String role_name;
 
     /**

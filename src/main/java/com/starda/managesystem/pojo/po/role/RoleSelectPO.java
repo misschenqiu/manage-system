@@ -28,7 +28,7 @@ public class RoleSelectPO {
     /**
      * 是否是最大管理员
      */
-    private Boolean maxManger = false;
+    private Integer accountId;
 
     /**
      * 当前页

@@ -24,13 +24,13 @@ public class RoleInsertPO {
     private Integer id;
 
     /**
-     * 角色名
+     *  角色名
      */
     @NotBlank(message = "角色名不能为空")
     private String roleName;
 
     /**
-     * 角色编码
+     * 地区名
      */
     private String addressName;
 
@@ -40,7 +40,7 @@ public class RoleInsertPO {
     private String addressCode;
 
     /**
-     * 说明
+     *  说明
      */
     private String remark;
 

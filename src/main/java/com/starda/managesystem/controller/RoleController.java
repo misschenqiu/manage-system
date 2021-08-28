@@ -53,14 +53,14 @@ public class RoleController {
     /**
      * 删除角色信息
      * @param userVO
-     * @param roleId
+     * @param roleIds 角色id 多个用逗号隔开
      * @return
      * @throws Exception
      */
     @PostMapping("/removeRoleInfo/{roleIds}")
-    public Result removeRoleInfo(@AnnotationAuthor UserVO userVO, @PathVariable @NotBlank(message = "id不能为空") String roleId) throws Exception{
+    public Result removeRoleInfo(@AnnotationAuthor UserVO userVO, @PathVariable @NotBlank(message = "id不能为空") String roleIds) throws Exception{
 
-        List<String> roleList = new ArrayList<String>(Arrays.asList(roleId.split(",")));
+        List<String> roleList = new ArrayList<String>(Arrays.asList(roleIds.split(",")));
         this.roleService.deleteRole(roleList.stream().map(data->Integer.valueOf(data)).collect(Collectors.toList()));
 
         return Result.success();

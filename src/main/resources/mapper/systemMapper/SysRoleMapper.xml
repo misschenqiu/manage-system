@@ -14,7 +14,10 @@
         <result column="sys_role_create_account_id" property="create_account_id"/>
     </resultMap>
     <sql id="Base_Column_List">
-        sys_role.id as sys_role_id, sys_role.role_name as sys_role_role_name, sys_role.remark as sys_role_remark,
+        sys_role
+        .
+        id
+        as sys_role_id, sys_role.role_name as sys_role_role_name, sys_role.remark as sys_role_remark,
     sys_role.`status` as `sys_role_status`, sys_role.create_time as sys_role_create_time, 
     sys_role.modified_time as sys_role_modified_time, sys_role.address as sys_role_address, 
     sys_role.address_code as sys_role_address_code, sys_role.role_code as sys_role_role_code,
@@ -41,25 +44,53 @@
     <select id="selectRoleByAccountId" resultMap="Base_role_list_by_account">
 
         select sr.id, sr.role_name, sr.remark, DATE_FORMAT(sr.create_time,'%Y-%m-%d %H:%i:%s') as create_time,
-               sr.address,sr.address_code,sur.user_id
-            from sys_role sr
-                right join sys_user_role sur on sur.role_id = sr.id
-                    <where>
-                        sr.status = 1
-                        and sur.user_id = #{accountId}
-                    </where>
+        sr.address,sr.address_code,sur.user_id
+        from sys_role sr
+        right join sys_user_role sur on sur.role_id = sr.id
+        <where>
+            sr.status = 1
+            and sur.user_id = #{accountId}
+        </where>
     </select>
 
     <select id="selectRoleByAccountIds" resultMap="Base_role_list_by_account">
 
         select sr.id, sr.role_name, sr.remark, DATE_FORMAT(sr.create_time,'%Y-%m-%d %H:%i:%s') as create_time,
-               sr.address,sr.address_code,sur.user_id
+        sr.address,sr.address_code,sur.user_id
         from sys_role sr
         right join sys_user_role sur on sur.role_id = sr.id
         <where>
             sr.status = 1
-            and sur.user_id in <foreach collection="accountIds" item="accountId" separator="," open="(" close=")">#{accountId}</foreach>
+            and sur.user_id in
+            <foreach collection="accountIds" item="accountId" separator="," open="(" close=")">#{accountId}</foreach>
         </where>
+    </select>
+
+    <select id="selectRolePage" resultType="com.starda.managesystem.pojo.dto.role.RoleDTO">
+        select
+        sr.id,
+        sr.role_name as roleName,
+        sr.remark,
+        sr.`status`,
+        sr.create_time as createTime,
+        sr.modified_time as modifiedTime,
+        sr.address,
+        sr.address_code as addressCode,
+        sr.role_code as roleCode,
+        sr.create_account_id as createAccountId
+               from sys_role sr
+        where
+        sr.status = 1
+        <if test="role.addressCode != null and role.addressCode !=''">
+            and  sr.address_code = #{role.addressCode}
+        </if>
+        <if test="role.accountId != null">
+            and sr.create_account_id = #{role.accountId}
+        </if>
+        <if test="role.roleName != null and role.roleName != ''">
+            and sr.role_name like concat('%',#{role.roleName},'%')
+        </if>
+              order by sr.create_time desc
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
@@ -144,7 +175,7 @@
             <if test="role_name != null">
                 role_name = #{role_name,jdbcType=VARCHAR},
             </if>
-            <if test="remark != null">
+            <if test="remark != null and remark != ''">
                 remark = #{remark,jdbcType=VARCHAR},
             </if>
             <if test="status != null">
@@ -156,10 +187,10 @@
             <if test="modified_time != null">
                 modified_time = #{modified_time,jdbcType=TIMESTAMP},
             </if>
-            <if test="address != null">
+            <if test="address != null and address != ''">
                 address = #{address,jdbcType=VARCHAR},
             </if>
-            <if test="address_code != null">
+            <if test="address_code != null and address_code !=''">
                 address_code = #{address_code,jdbcType=VARCHAR},
             </if>
             <if test="role_code != null">
@@ -187,6 +218,7 @@
     <update id="updateRoleListById">
         update sys_role
         set `status` = 0
-        where id in <foreach collection="roleList" close=")" open="(" separator="," item="id">#{id,jdbcType=INTEGER}</foreach>
+        where id in
+        <foreach collection="roleList" close=")" open="(" separator="," item="id">#{id,jdbcType=INTEGER}</foreach>
     </update>
 </mapper>

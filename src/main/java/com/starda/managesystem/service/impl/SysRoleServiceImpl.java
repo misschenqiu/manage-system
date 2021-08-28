@@ -1,8 +1,10 @@
 package com.starda.managesystem.service.impl;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.starda.managesystem.common.SecurityPasswordCommon;
@@ -17,6 +19,7 @@ import com.starda.managesystem.pojo.SysRole;
 import com.starda.managesystem.pojo.SysRoleMenu;
 import com.starda.managesystem.pojo.SysUserRole;
 import com.starda.managesystem.pojo.dto.RoleListDTO;
+import com.starda.managesystem.pojo.dto.role.RoleDTO;
 import com.starda.managesystem.pojo.po.role.RoleInsertPO;
 import com.starda.managesystem.pojo.po.role.RoleSelectPO;
 import com.starda.managesystem.pojo.vo.role.RoleListVO;
@@ -29,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ProjectName: manage-system
@@ -57,7 +61,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         List<SysRole> roleList = this.baseMapper.selectList(new LambdaQueryWrapper<SysRole>()
                 .eq(SysRole::getRole_name, po.getRoleName())
                 .eq(SysRole::getStatus, Constant.BaseNumberManage.ONE));
-        if(null != roleList || !roleList.isEmpty()){
+        if(null != roleList && !roleList.isEmpty()){
             throw new ManageStarException("角色名称已存在！");
         }
 
@@ -96,11 +100,13 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Transactional(rollbackFor = Exception.class)
     public void updateRoleInfo(UserVO user, RoleInsertPO po) throws Exception {
         // 1.检查名称和编码是否存在
-        List<SysRole> roleList = this.baseMapper.selectList(new LambdaQueryWrapper<SysRole>()
-                .eq(SysRole::getRole_name, po.getRoleName())
-                .eq(SysRole::getStatus, Constant.BaseNumberManage.ONE));
-        if(null != roleList || !roleList.isEmpty()){
-            throw new ManageStarException("角色名称已存在！");
+        if(StrUtil.isNotBlank(po.getRoleName())) {
+            List<SysRole> roleList = this.baseMapper.selectList(new LambdaQueryWrapper<SysRole>()
+                    .eq(SysRole::getRole_name, po.getRoleName())
+                    .eq(SysRole::getStatus, Constant.BaseNumberManage.ONE));
+            if (null != roleList && !roleList.isEmpty() && roleList.size() > 1) {
+                throw new ManageStarException("角色名称已存在！");
+            }
         }
 
         // 2.保存角色
@@ -149,23 +155,21 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     public Result<RoleListVO> selectRoleList(UserVO userVO, RoleSelectPO po) throws Exception {
 
         // 判断是否是最大管理员
-        if(userVO.getAuthorities().contains(Constant.BaseStringInfoManage.MANAGE)){
-            po.setMaxManger(true);
+        if(!userVO.getAuthorities().contains(Constant.BaseStringInfoManage.MANAGE)){
+            po.setAccountId(userVO.getId());
         }
 
-        Page<SysRole> sysRolePage = this.baseMapper.selectPage(new Page<SysRole>(po.getCurrentPage(), po.getPageSize()), new LambdaQueryWrapper<SysRole>()
-                .eq(SysRole::getStatus, Constant.BaseNumberManage.ONE)
-                .eq(po.getMaxManger(), SysRole::getCreate_account_id, userVO.getId())
-                .orderByDesc(SysRole::getCreate_time));
+        IPage<RoleDTO> sysRolePage = this.baseMapper.selectRolePage(new Page<RoleDTO>(po.getCurrentPage(), po.getPageSize()), po);
 
         List<RoleListVO> roleListVOS = new ArrayList<RoleListVO>();
         sysRolePage.getRecords().stream().forEach(role->{
             roleListVOS.add(RoleListVO.builder()
                     .address(role.getAddress())
                     .id(role.getId())
-                    .roleName(role.getRole_name())
+                    .roleName(role.getRoleName())
                     .remark(role.getRemark())
-                    .createTime(DateUtil.formatDateTime(role.getCreate_time()))
+                    .createTime(DateUtil.formatDateTime(role.getCreateTime()))
+                    .addressCode(role.getAddressCode())
                     .build());
         });
 
