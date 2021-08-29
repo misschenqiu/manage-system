@@ -7,6 +7,7 @@ import com.starda.managesystem.config.author.UserVO;
 import com.starda.managesystem.pojo.UserInfo;
 import com.starda.managesystem.pojo.po.staff.*;
 import com.starda.managesystem.pojo.vo.staff.AccountInfoListVO;
+import com.starda.managesystem.pojo.vo.staff.AccountInfoVO;
 import com.starda.managesystem.pojo.vo.staff.StaffInfoListVO;
 import com.starda.managesystem.pojo.vo.staff.StaffInfoVO;
 import com.starda.managesystem.service.IUserInfoService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,6 +58,21 @@ public class UserController {
         IPage<AccountInfoListVO> page = this.userInfoService.getAccountList(userVO, accountListPO);
 
         return Result.ok().resultPage(page.getRecords(), page.getCurrent(), page.getSize(), page.getTotal());
+    }
+
+    /**
+     * 账号详情
+     * @param userVO
+     * @param accountId
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/getAccountUserInfo/{accountId}")
+    public Result getAccountUserInfo(@AnnotationAuthor UserVO userVO, @PathVariable @NotNull(message = "账号id不能为空") Integer accountId) throws Exception{
+
+        AccountInfoVO accountInfo = this.userInfoService.getAccountUserInfo(userVO, accountId);
+
+        return Result.ok().resultPage(accountInfo);
     }
 
     /**

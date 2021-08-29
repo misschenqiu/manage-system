@@ -29,6 +29,7 @@ import com.starda.managesystem.pojo.dto.staff.StaffDTO;
 import com.starda.managesystem.pojo.po.staff.*;
 import com.starda.managesystem.pojo.vo.role.RoleListVO;
 import com.starda.managesystem.pojo.vo.staff.AccountInfoListVO;
+import com.starda.managesystem.pojo.vo.staff.AccountInfoVO;
 import com.starda.managesystem.pojo.vo.staff.StaffInfoListVO;
 import com.starda.managesystem.pojo.vo.staff.StaffInfoVO;
 import com.starda.managesystem.service.ISysRoleService;
@@ -104,6 +105,24 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
         });
         log.info("有角色的账号信息");
         return accountInfoListVOIPage;
+    }
+
+    @Override
+    public AccountInfoVO getAccountUserInfo(UserVO user, Integer accountId) throws Exception {
+        // 获取账号信息
+        AccountInfoVO accountInfoVO = new AccountInfoVO();
+        if(accountId == null || accountId < Constant.BaseNumberManage.ZERO){
+            accountInfoVO = this.getBaseMapper().getAccountUserInfo(user.getId());
+        }else{
+            accountInfoVO = this.getBaseMapper().getAccountUserInfo(accountId);
+        }
+        // 获取到角色信息
+        List<Integer> accountIds = new ArrayList<Integer>();
+        accountIds.add(accountInfoVO.getId());
+        // 填充角色信息
+        List<RoleListDTO> roleByAccountIdsList = this.roleService.getRoleByAccountIdsList(accountIds);
+        accountInfoVO.setRoleListVOList(BeanUtil.copyToList(roleByAccountIdsList, RoleListVO.class));
+        return accountInfoVO;
     }
 
     @Override

@@ -112,6 +112,27 @@
             order by su.id desc
     </select>
 
+  <resultMap id="Base_account_info" type="com.starda.managesystem.pojo.vo.staff.AccountInfoVO">
+    <id column="id" property="id"/>
+    <result column="address" property="address"/>
+    <result column="account" property="accountName"/>
+    <result column="phone" property="phone"/>
+    <result column="remark" property="remark"/>
+    <result column="" property="addressCode"/>
+  </resultMap>
+
+  <!-- 账号信息列表 -->
+  <select id="getAccountUserInfo" resultMap="Base_account_info">
+    select su.id,su.account,su.address,stf.remark,stf.phone,su.address_code
+    from sys_user su, sys_staff stf
+    <where>
+      su.status = 1
+      and stf.user_id = su.id
+      and su.id = #{accountId}
+    </where>
+    order by su.id desc
+  </select>
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from sys_user
     where id = #{id,jdbcType=INTEGER}

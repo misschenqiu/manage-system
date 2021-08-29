@@ -7,6 +7,7 @@ import com.starda.managesystem.pojo.SysUser;
 import com.starda.managesystem.pojo.dto.AccountInfoDTO;
 import com.starda.managesystem.pojo.po.staff.AccountListPO;
 import com.starda.managesystem.pojo.vo.staff.AccountInfoListVO;
+import com.starda.managesystem.pojo.vo.staff.AccountInfoVO;
 import com.starda.managesystem.pojo.vo.staff.StaffInfoVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -49,5 +50,13 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
      * @throws Exception
      */
     IPage<AccountInfoListVO> getAccountList(Page<AccountInfoListVO> page, @Param("account") AccountListPO accountListPO) throws Exception;
+
+    /**
+     * 获取账号详情
+     * @param accountId
+     * @return
+     * @throws Exception
+     */
+    AccountInfoVO getAccountUserInfo(@Param("accountId") Integer accountId) throws Exception;
 
 }

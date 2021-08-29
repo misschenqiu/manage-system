@@ -5,6 +5,7 @@ import com.starda.managesystem.config.author.UserVO;
 import com.starda.managesystem.pojo.dto.AccountInfoDTO;
 import com.starda.managesystem.pojo.po.staff.*;
 import com.starda.managesystem.pojo.vo.staff.AccountInfoListVO;
+import com.starda.managesystem.pojo.vo.staff.AccountInfoVO;
 import com.starda.managesystem.pojo.vo.staff.StaffInfoListVO;
 import com.starda.managesystem.pojo.vo.staff.StaffInfoVO;
 
@@ -32,6 +33,15 @@ public interface IUserInfoService {
      * @throws Exception
      */
     IPage<AccountInfoListVO> getAccountList(UserVO user, AccountListPO accountListPO) throws Exception;
+
+    /**
+     * 账号详情
+     * @param user
+     * @param accountId
+     * @return
+     * @throws Exception
+     */
+    AccountInfoVO getAccountUserInfo(UserVO user, Integer accountId) throws Exception;
 
     /**
      * 删除啊账号信息
