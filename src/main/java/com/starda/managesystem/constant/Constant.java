@@ -70,17 +70,27 @@ public interface Constant {
      * 基本数字管理
      */
     interface BaseNumberManage{
+        Integer ONE = 1;
+        Integer TWO = 2;
+        Integer THREE = 3;
+        Integer FOUR = 4;
+        Integer FIVE = 5;
+        Integer SIX = 6;
+        Integer SEVEN = 7;
+        Integer EIGHT = 8;
+        Integer NINE = 9;
+        Integer TEN = 10;
+        Integer ZERO = 0;
+    }
+
+    /**
+     * 文件类型数据
+     */
+    interface BaseFileType{
+        // 头像
         int ONE = 1;
+        // 工作照
         int TWO = 2;
-        int THREE = 3;
-        int FOUR = 4;
-        int FIVE = 5;
-        int SIX = 6;
-        int SEVEN = 7;
-        int EIGHT = 8;
-        int NINE = 9;
-        int TEN = 10;
-        int ZERO = 0;
     }
 
 }

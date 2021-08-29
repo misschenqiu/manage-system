@@ -132,10 +132,11 @@
         <result column="route" property="path"/>
         <result column="icon" property="icon"/>
         <result column="redirect" property="redirect"/>
+        <result column="p_id" property="pId"/>
     </resultMap>
 
     <select id="getMenuAddressList" parameterType="list" resultMap="Base_Menu_List">
-        select sm.id,sm.menu_name,sm.code,sm.address_url,sm.remark,sm.route,sm.icon,sm.redirect
+        select sm.id,sm.menu_name,sm.code,sm.address_url,sm.remark,sm.route,sm.icon,sm.redirect, sm.p_id
         from sys_menu sm
         right join sys_role_menu srm on sm.id = srm.menu_id
         <where>
@@ -157,7 +158,8 @@
                sm.remark,
                sm.route,
                sm.icon,
-               sm.redirect
+               sm.redirect,
+                sm.p_id
         from sys_menu sm
     </select>
 

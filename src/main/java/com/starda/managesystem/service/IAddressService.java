@@ -6,6 +6,7 @@ import com.starda.managesystem.pojo.dto.MenuAddressDTO;
 import com.starda.managesystem.pojo.po.address.AddressUrlPO;
 import com.starda.managesystem.pojo.vo.AddressVO;
 import com.starda.managesystem.pojo.vo.MenuAddressVO;
+import com.starda.managesystem.pojo.vo.role.MenuAddressListVO;
 import com.starda.managesystem.pojo.vo.role.MenuRoleChoiceVO;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public interface IAddressService {
      * @return
      * @throws Exception
      */
-    List<MenuAddressDTO> getAddressList(UserVO vo) throws Exception;
+    List<MenuAddressListVO> getAddressList(UserVO vo) throws Exception;
 
     /**
      * 获取前端页面返回数据
@@ -50,7 +51,7 @@ public interface IAddressService {
      * @return
      * @throws Exception
      */
-    List<MenuRoleChoiceVO> getMenuAddressChoiceList(UserVO vo) throws Exception;
+    List<MenuAddressListVO> getMenuAddressChoiceList(UserVO vo) throws Exception;
 
     /**
      * 删除 路由

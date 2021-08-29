@@ -1,5 +1,6 @@
 package com.starda.managesystem.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONArray;
@@ -8,8 +9,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.yulichang.interfaces.MPJBaseJoin;
-import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.starda.managesystem.config.ExceptionEnums;
 import com.starda.managesystem.config.author.UserVO;
 import com.starda.managesystem.constant.Constant;
@@ -25,16 +24,15 @@ import com.starda.managesystem.pojo.dto.MenuAddressDTO;
 import com.starda.managesystem.pojo.po.address.AddressUrlPO;
 import com.starda.managesystem.pojo.vo.AddressVO;
 import com.starda.managesystem.pojo.vo.MenuAddressVO;
+import com.starda.managesystem.pojo.vo.role.MenuAddressListVO;
 import com.starda.managesystem.pojo.vo.role.MenuRoleChoiceVO;
 import com.starda.managesystem.service.IAddressService;
+import com.starda.managesystem.util.BeanCopyUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -139,15 +137,22 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
     }
 
     @Override
-    public List<MenuAddressDTO> getAddressList(UserVO vo) throws Exception {
-
-        // 1. 获取改角色下的所有资源
-        List<SysRole> roleList = JSONArray.parseArray(vo.getRoleListString(), SysRole.class);
-        log.info("角色信息是否转换成功-》" + roleList.size());
-        // 权限数据
+    public List<MenuAddressListVO> getAddressList(UserVO vo) throws Exception {
+        boolean flash = false;
+        List<SysRole> roleList = new ArrayList<SysRole>();
+        // 判断是列表还是 菜单
+        if(StrUtil.isNotBlank(vo.getRoleListString())) {
+            // 1. 获取改角色下的所有资源
+            roleList = JSONArray.parseArray(vo.getRoleListString(), SysRole.class);
+            log.info("角色信息是否转换成功-》" + roleList.size());
+            // 权限数据
+            List<SysRole> roleAdmin = roleList.stream().filter(param -> param.getRole_code().contains(Constant.BaseStringInfoManage.MANAGE)).collect(Collectors.toList());
+            if(roleAdmin != null && !roleAdmin.isEmpty()){
+                flash = true;
+            }
+        }
         List<MenuAddressDTO> menuAddressDTOS = new ArrayList<MenuAddressDTO>();
-        List<SysRole> roleAdmin = roleList.stream().filter(param->param.getRole_code().equals(Constant.BaseStringInfoManage.MANAGE)).collect(Collectors.toList());
-        if(null == roleAdmin || roleAdmin.isEmpty()){
+         if(flash){
             List<Integer> role = roleList.stream().map(roleId->roleId.getId()).collect(Collectors.toList());
             log.info("角色 id ->{}" + role);
             if(role.size() == 0 || role.isEmpty()){
@@ -165,58 +170,29 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
         List<SysAddress> addressList = this.baseMapper.selectList(new QueryWrapper<SysAddress>());
 
         // 便利处理数据
-        this.handleAddress(addressList, menuAddressDTOS);
+        List<MenuAddressListVO> menuAddressVOList = this.handleAddress(addressList, menuAddressDTOS, StrUtil.isNotBlank(vo.getRoleListString()));
 
-        return menuAddressDTOS;
+        return menuAddressVOList;
     }
 
     @Override
     public List<MenuAddressVO> getMenuAddressList(UserVO vo) throws Exception {
 
         // 1. 获取改角色下数据
-        List<MenuAddressDTO> menuAddressDTOS = this.getAddressList(vo);
+        List<MenuAddressVO> menuAddressDTOS = BeanUtil.copyToList(this.getAddressList(vo), MenuAddressVO.class);
         log.info("获取到的角色下所有数据-》{}" + menuAddressDTOS.size());
-        // 返回数据
-        List<MenuAddressVO> menuAddressVOList = new ArrayList<MenuAddressVO>();
 
-        menuAddressDTOS.stream().forEach(data ->{
-            menuAddressVOList.add(MenuAddressVO.builder()
-                    .id(data.getId())
-                    .component(data.getAddressUrl())
-                    .title(data.getAddressName())
-                    .pId(data.getPId())
-                    .path(data.getPath())
-                    .icon(data.getIcon())
-                    .redirect(data.getRedirect())
-                    .build());
-        });
-
-        // 处理数据
-//        this.handleMenuAddressList(menuAddressVOList);
-
-        return menuAddressVOList;
+        return menuAddressDTOS;
     }
 
     @Override
-    public List<MenuRoleChoiceVO> getMenuAddressChoiceList(UserVO vo) throws Exception {
+    public List<MenuAddressListVO> getMenuAddressChoiceList(UserVO vo) throws Exception {
 
         // 1. 获取改角色下数据
-        List<MenuAddressDTO> menuAddressDTOS = this.getAddressList(vo);
-        log.info("获取到的角色下所有数据-》{}" + menuAddressDTOS.size());
+        vo.setRoleListString(null);
+        List<MenuAddressListVO> menuAddressVOList = this.getAddressList(vo);
+        log.info("获取到的角色下所有数据-》{}" + menuAddressVOList.size());
         // 返回数据
-        List<MenuRoleChoiceVO> menuAddressVOList = new ArrayList<MenuRoleChoiceVO>();
-
-        menuAddressDTOS.stream().forEach(data ->{
-            menuAddressVOList.add(MenuRoleChoiceVO.builder()
-                    .id(data.getId())
-                    .title(data.getAddressName())
-                    .pId(data.getPId())
-                    .icon(data.getIcon())
-                    .remark(data.getRemark())
-                    .smilName(data.getSmilName())
-                    .build());
-        });
-
         return menuAddressVOList;
     }
 
@@ -264,89 +240,109 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
      * 便利 处理子父级
      * @param addressList 父级
      * @param menuAddressDTOS 子级
+     * @param flash  判断是否是 权限列表 ture 是查询 查单 flash 权限列表
      */
-    private void handleAddress(List<SysAddress> addressList, List<MenuAddressDTO> menuAddressDTOS){
+    private List<MenuAddressListVO> handleAddress(List<SysAddress> addressList, List<MenuAddressDTO> menuAddressDTOS, boolean flash){
 
-        // 子级数据
-        List<SysAddress> addressListPrent = new ArrayList<SysAddress>();
-        List<SysAddress> addressListChildren = new ArrayList<SysAddress>();
-        List<MenuAddressDTO> menuAddressDTOSPrent = new ArrayList<MenuAddressDTO>();
+        boolean children = false;
+        // 父级 id
+        Set<Integer> pid = new HashSet<Integer>();
+
+        // 转换数据
+        HashMap<String, String> mapping = new HashMap<String, String>();
+        mapping.put("urlName", "title");
+        mapping.put("icon", "meta");
+        mapping.put("menuId", "sort");
+        mapping.put("addressUrl", "component");
+        mapping.put("route", "path");
+        List<MenuAddressListVO> menuAddressVOList = BeanCopyUtil.copyToList(addressList, MenuAddressListVO.class, mapping);
 
         // 取出子级
-        for (MenuAddressDTO menuAddressDTO : menuAddressDTOS) {
-            for (SysAddress address : addressList) {
-                if(address.getId().equals(menuAddressDTO.getPId())){
-                    menuAddressDTOSPrent.add(MenuAddressDTO.builder()
-                            .addressUrl(address.getAddressUrl())
-                            .addressName(address.getAddressName())
-                            .icon(address.getIcon())
-                            .id(address.getId())
-                            .pId(address.getId())
-                            .path(address.getRoute())
-                            .redirect(address.getRedirect())
-                            .build());
-                    addressListChildren.add(address);
-                    // 填充父级id
-                    menuAddressDTO.setPId(address.getId());
-                }else {
-                    addressListPrent.add(address);
-                }
+        if(menuAddressDTOS == null || menuAddressDTOS.isEmpty() || menuAddressDTOS.size() < 1){
+            children = true;
+        }else {
+            Map<Integer, List<MenuAddressDTO>> collect = menuAddressDTOS.stream().collect(Collectors.groupingBy(MenuAddressDTO::getPId));
+            pid = collect.keySet();
+            // 赋值详情数据
+            if(!flash){
+                menuAddressVOList.stream().forEach(menu->{
+                    menu.setAddressInfo(collect.get(menu.getId()));
+                });
+                children = true;
             }
         }
+        
+        // 子级数据
+        List<MenuAddressListVO> addressListPrent = menuAddressVOList.stream().filter(menu->menu.getPId().equals(Constant.BaseNumberManage.ZERO)).collect(Collectors.toList());
+        List<MenuAddressListVO> addressListChildren = menuAddressVOList.stream().filter(menu->!menu.getPId().equals(Constant.BaseNumberManage.ZERO)).collect(Collectors.toList());
 
-        // 遍历子级数据
-        this.handleChildren(addressListPrent, addressListChildren, menuAddressDTOSPrent);
+        // 处理父级数据，前端页面显示
+        this.handleChildren(addressListPrent, addressListChildren);
+        
+        // 判断是否有权限
+        if(children){
+            return addressListPrent;
+        }
+        
+        // 处理展现数据
+        this.handleDataShow(pid, addressListPrent);
 
-        //添加数据
-        menuAddressDTOS.addAll(menuAddressDTOSPrent);
+        return addressListPrent;
     }
 
     /**
      * 处理迭代数据
      * @param addressListPrent
      * @param addressListChildren
-     * @param menuAddressDTOS
      */
-    private void handleChildren(List<SysAddress> addressListPrent, List<SysAddress> addressListChildren, List<MenuAddressDTO> menuAddressDTOS){
-
-        // 子级数据
-        List<SysAddress> addressPrentList = new ArrayList<SysAddress>();
-        List<SysAddress> addressChildrenList = new ArrayList<SysAddress>();
+    private void handleChildren(List<MenuAddressListVO> addressListPrent, List<MenuAddressListVO> addressListChildren){
 
         // 取出子级
-        for (SysAddress children : addressListChildren) {
-            for (SysAddress prent : addressListPrent) {
+        for (MenuAddressListVO prent : addressListPrent) {
+            // 子级数据
+            List<MenuAddressListVO> addressPrentList = new ArrayList<MenuAddressListVO>();
+            List<MenuAddressListVO> addressChildrenList = new ArrayList<MenuAddressListVO>();
+
+            for (MenuAddressListVO children : addressListChildren) {
                 if(prent.getId().equals(children.getPId())){
-                    menuAddressDTOS.add(MenuAddressDTO.builder()
-                            .addressUrl(prent.getAddressUrl())
-                            .addressName(prent.getAddressName())
-                            .icon(prent.getIcon())
-                            .id(prent.getId())
-                            .pId(prent.getPId())
-                            .path(prent.getRoute())
-                            .redirect(prent.getRedirect())
-                            .build());
-                    addressChildrenList.add(prent);
+                    addressPrentList.add(children);
                 }else {
-                    addressPrentList.add(prent);
+                    addressChildrenList.add(prent);
                 }
             }
+            // 判断是否还需要循环
+            if(addressChildrenList == null || addressChildrenList.isEmpty()){
+                return;
+            }
+            // 赛选剩余的数据
+            this.handleChildren(addressPrentList, addressChildrenList);
+            // 赛选完了，填入子类
+            prent.setChildren(addressPrentList);
         }
-        // 判断是否还需要循环
-        if(addressChildrenList == null || addressChildrenList.isEmpty()){
-            return;
-        }
-        // 继续赛选
-        handleChildren(addressPrentList, addressChildrenList, menuAddressDTOS);
+
     }
 
     /**
-     * 处理树装数据
+     * 处理展示数据
+     * @param pid 子级父级id
      * @param menuAddressVOList
      */
-    public void handleMenuAddressList(List<MenuAddressVO> menuAddressVOList){
+    public void handleDataShow(Set<Integer> pid, List<MenuAddressListVO> menuAddressVOList){
+        List<MenuAddressListVO> menuAddressVOChildren = new ArrayList<MenuAddressListVO>();
+        // 赛选父级数据
+        for (MenuAddressListVO menuAddressVO : menuAddressVOList) {
+            if(menuAddressVO != null && !menuAddressVO.getChildren().isEmpty()){
+                handleDataShow(pid, menuAddressVO.getChildren());
+            }
+            if(pid.contains(menuAddressVO.getId())){
+                menuAddressVOChildren.add(menuAddressVO);
+            }
+        }
+
+        // 最终权限
+        menuAddressVOList.clear();
+        menuAddressVOList.addAll(menuAddressVOChildren);
 
     }
-
 
 }

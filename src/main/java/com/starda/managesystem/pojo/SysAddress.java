@@ -33,7 +33,7 @@ public class SysAddress implements Serializable {
     private String addressName;
 
     /**
-     * 路径id
+     * 排序
      */
     private Integer menuId;
 
@@ -61,6 +61,11 @@ public class SysAddress implements Serializable {
      * 前端自用
      */
     private String redirect;
+
+    /**
+     * 路径名字
+     */
+    private String urlName;
 
     private static final long serialVersionUID = 1L;
 }

@@ -10,6 +10,7 @@ import com.starda.managesystem.exceptions.ManageStarException;
 import com.starda.managesystem.pojo.po.address.AddressUrlPO;
 import com.starda.managesystem.pojo.vo.AddressVO;
 import com.starda.managesystem.pojo.vo.MenuAddressVO;
+import com.starda.managesystem.pojo.vo.role.MenuAddressListVO;
 import com.starda.managesystem.pojo.vo.role.MenuRoleChoiceVO;
 import com.starda.managesystem.service.IAddressService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +73,7 @@ public class AddressController {
     @PostMapping("getMenuAddressList")
     public Result getMenuAddressList(@AnnotationAuthor UserVO userVO) throws Exception{
 
-        List<MenuRoleChoiceVO> menuAddressDTOList = this.addressService.getMenuAddressChoiceList(userVO);
+        List<MenuAddressListVO> menuAddressDTOList = this.addressService.getMenuAddressChoiceList(userVO);
 
         return Result.ok().resultPage(menuAddressDTOList);
     }

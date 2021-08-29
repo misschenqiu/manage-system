@@ -1,7 +1,10 @@
 package com.starda.managesystem.pojo.vo;
 
+import com.starda.managesystem.pojo.vo.role.MenuAddressListVO;
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @ProjectName: manage-system
@@ -14,7 +17,6 @@ import lombok.Data;
  */
 
 @Data
-@Builder
 public class MenuAddressVO {
 
     private Integer id;
@@ -40,13 +42,23 @@ public class MenuAddressVO {
     private Integer pId;
 
     /**
-     * 图标
+     * 包装名字
      */
-    private String icon;
+    private String meta;
 
     /**
      * 前端自用
      */
     private String redirect;
+
+    /**
+     * 排序
+     */
+    private Integer sort;
+
+    /**
+     * 子类
+     */
+    private List<MenuAddressListVO> children;
 
 }

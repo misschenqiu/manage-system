@@ -28,11 +28,11 @@ public class FileServiceImpl implements IFileService {
         switch (type){
             // 头像
             case Constant
-                    .BaseNumberManage.ONE:
+                    .BaseFileType.ONE:
                 imgUrl = FileLoadOrDownUtil.uploadFileImg(multipartFile, null);
                 break;
             // 工作照
-            case Constant.BaseNumberManage.TWO:
+            case Constant.BaseFileType.TWO:
                 imgUrl = FileLoadOrDownUtil.uploadFileImg(multipartFile, Constant.BaseStringInfoManage.BASE_HEADER_PATH);
                 break;
         }
