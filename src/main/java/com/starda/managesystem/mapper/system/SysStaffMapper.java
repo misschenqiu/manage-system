@@ -43,6 +43,6 @@ public interface SysStaffMapper extends MPJBaseMapper<SysStaff> {
      * @return
      * @throws Exception
      */
-    IPage<StaffInfoListVO> getAccountInfoList(Page<StaffInfoListVO> page, StaffQueryPO po) throws Exception;
+    IPage<StaffInfoListVO> getAccountInfoList(Page<StaffInfoListVO> page, @Param("staff") StaffQueryPO po) throws Exception;
 
 }

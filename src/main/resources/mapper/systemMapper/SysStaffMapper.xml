@@ -96,7 +96,7 @@
         #{username,jdbcType=VARCHAR},
       </if>
       <if test="sex != null">
-        #{sex,jdbcType=INTEGER},
+        #{sex},
       </if>
       <if test="user_height != null">
         #{user_height,jdbcType=DOUBLE},
@@ -140,7 +140,7 @@
         username = #{username,jdbcType=VARCHAR},
       </if>
       <if test="sex != null">
-        sex = #{sex,jdbcType=INTEGER},
+        sex = #{sex},
       </if>
       <if test="user_height != null">
         user_height = #{user_height,jdbcType=DOUBLE},
@@ -235,27 +235,27 @@
            stf.head_img,
            stf.identity,
            stf.position,
-          <if test="accountId != null">
+          <if test="staff.accountId != null">
             stf1.username as accountName,
           </if>
            stf.remark
     from sys_staff stf
-    <if test="accountId != null">
+    <if test="staff.accountId != null">
       left join sys_staff stf1 on stf1.user_id = stf.create_account_id
     </if>
         <where>
           stf.`status` = 1
-          <if test="accountId != null">
-             and stf.create_account_id = #{accountId}
+          <if test="staff.accountId != null">
+             and stf.create_account_id = #{staff.accountId}
           </if>
-            <if test="userName != null and userName != ''">
-              and stf.username like concat('%', #{userName}, '%')
+            <if test="staff.userName != null and staff.userName != ''">
+              and stf.username like concat('%', #{staff.userName}, '%')
             </if>
-            <if test="startTime != null">
-                and <![CDATA[stf.create_time >= #{startTime}]]>
+            <if test="staff.startTime != null">
+                and <![CDATA[stf.create_time >= #{staff.startTime}]]>
             </if>
-            <if test="endTime != null">
-              and <![CDATA[stf.create_time <= #{endTime}]]>
+            <if test="staff.endTime != null">
+              and <![CDATA[stf.create_time <= #{staff.endTime}]]>
             </if>
         </where>
      order by stf.create_time desc

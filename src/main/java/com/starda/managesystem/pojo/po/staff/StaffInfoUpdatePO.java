@@ -19,7 +19,6 @@ import javax.validation.constraints.NotNull;
 @Data
 public class StaffInfoUpdatePO {
 
-    @NotNull(message = "员工id不能为空")
     private Integer id;
 
     /**

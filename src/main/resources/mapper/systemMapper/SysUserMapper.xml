@@ -99,14 +99,14 @@
             <where>
                 su.status = 1
               and stf.user_id = su.id
-                <if test="accountId != null">
-                  and stf.create_account_id = #{accountId}
+                <if test="account.accountId != null">
+                  and stf.create_account_id = #{account.accountId}
                 </if>
-                <if test="accountName != null and accountName !=''">
-                  and account like concat('%', #{accountName}, '%')
+                <if test="account.accountName != null and account.accountName !=''">
+                  and account like concat('%', #{account.accountName}, '%')
                 </if>
-              <if test="addressCode != null and addressCode !=''">
-                and su.address_code = #{addressCode}
+              <if test="account.addressCode != null and account.addressCode !=''">
+                and su.address_code = #{account.addressCode}
               </if>
             </where>
             order by su.id desc

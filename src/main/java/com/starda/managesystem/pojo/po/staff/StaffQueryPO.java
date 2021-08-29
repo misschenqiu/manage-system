@@ -3,6 +3,7 @@ package com.starda.managesystem.pojo.po.staff;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -38,11 +39,13 @@ public class StaffQueryPO {
     /**
      * 当前页
      */
+    @NotNull(message = "请填写页码")
     private Integer currentPage;
 
     /**
      * 显示条数
      */
+    @NotNull(message = "请填写显示条数")
     private Integer pageSize;
 
     /**

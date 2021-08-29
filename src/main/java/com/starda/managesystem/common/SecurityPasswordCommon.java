@@ -46,12 +46,13 @@ public class SecurityPasswordCommon {
 
     /**
      * 判断密码的准确性
-     * @param oldPassword
-     * @param password
+     * @param oldPassword 旧密码
+     * @param password 输入未加密密码
      * @return
      */
-    public static boolean isPassword(String oldPassword, String password){
-        return password.equals(password(oldPassword));
+    public static boolean isPassword(String password, String oldPassword){
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.matches(password, oldPassword);
     }
 
 }

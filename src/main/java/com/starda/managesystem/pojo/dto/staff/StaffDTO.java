@@ -1,22 +1,25 @@
-package com.starda.managesystem.pojo;
+package com.starda.managesystem.pojo.dto.staff;
 
-import java.io.Serializable;
-import java.util.Date;
-
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.starda.managesystem.common.AESEncryptHandler;
 import com.starda.managesystem.pojo.enums.UserTypeEnums;
 import lombok.Data;
 
+import java.util.Date;
+
 /**
- * sys_staff
- * @author 
+ * @ProjectName: manage-system
+ * @Package: com.starda.managesystem.pojo.dto.staff
+ * @ClassName: StaffDTO
+ * @Author: chenqiu
+ * @Description:
+ * @Date: 2021/8/29 16:17
+ * @Version: 1.0
  */
+
 @Data
-public class SysStaff implements Serializable {
-    @TableId(value="id",type= IdType.AUTO)
+public class StaffDTO {
+
     private Integer id;
 
     /**
@@ -32,7 +35,7 @@ public class SysStaff implements Serializable {
     /**
      * 身高
      */
-    private Double user_height;
+    private Double userHeight;
 
     /**
      * 电话号码
@@ -43,7 +46,7 @@ public class SysStaff implements Serializable {
     /**
      * 创建时间
      */
-    private Date create_time;
+    private Date createTime;
 
     /**
      * 是否可用,0:不可用，1：可用
@@ -58,12 +61,12 @@ public class SysStaff implements Serializable {
     /**
      * 头像
      */
-    private String head_img;
+    private String headImg;
 
     /**
      * 账号id
      */
-    private Integer user_id;
+    private Integer userId;
 
     /**
      * 职位
@@ -78,12 +81,11 @@ public class SysStaff implements Serializable {
     /**
      * 创建账号
      */
-    private Integer create_account_id;
+    private Integer createAccountId;
 
     /**
      * 修改时间
      */
-    private Date update_time;
+    private Date updateTime;
 
-    private static final long serialVersionUID = 1L;
 }

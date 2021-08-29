@@ -2,6 +2,8 @@ package com.starda.managesystem.pojo.po.staff;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @ProjectName: manage-system
  * @Package: com.starda.managesystem.pojo.po.staff
@@ -18,11 +20,13 @@ public class AccountListPO {
     /**
      * 当前页
      */
+    @NotNull(message = "当前页不能为空")
     private Integer currentPage;
 
     /**
      * 显示条数
      */
+    @NotNull(message = "显示条数不能为空")
     private Integer pageSize;
 
     /**

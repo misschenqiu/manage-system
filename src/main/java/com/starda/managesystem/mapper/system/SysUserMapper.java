@@ -48,6 +48,6 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
      * @return
      * @throws Exception
      */
-    IPage<AccountInfoListVO> getAccountList(Page<AccountInfoListVO> page, AccountListPO accountListPO) throws Exception;
+    IPage<AccountInfoListVO> getAccountList(Page<AccountInfoListVO> page, @Param("account") AccountListPO accountListPO) throws Exception;
 
 }

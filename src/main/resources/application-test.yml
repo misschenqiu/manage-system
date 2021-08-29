@@ -13,6 +13,12 @@ spring:
     password: Qiudaye90900..
     username: root
 
+#文件大小
+  servlet:
+    multipart:
+      max-file-size: 4MB
+      max-request-size: 32MB
+
   # 配置plus
   mybatis-plus:
     #配置mybatis-plus xml 路径

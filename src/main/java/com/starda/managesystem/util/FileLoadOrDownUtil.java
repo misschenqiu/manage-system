@@ -54,7 +54,9 @@ public class FileLoadOrDownUtil {
             FileUtil.mkdir(folder);
         }
         String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmmssSSS")) + File.separator + multipartFile.getOriginalFilename();
-        String path = folder + fileName;
+        File directory = new File("");//参数为空
+        String courseFile = directory.getCanonicalPath() ;
+        String path = courseFile + folder + fileName;
         File file = new File(path);
         if (FileUtil.exist(file)) {
             throw new ManageStarException(ExceptionEnums.FILE_EXIST.getCode(), ExceptionEnums.FILE_EXIST.getMessage());

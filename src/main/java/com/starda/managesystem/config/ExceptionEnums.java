@@ -37,6 +37,7 @@ public enum ExceptionEnums {
     USER_ACCOUNT_UPDATE_ID("2012","修改失败"),
     USER_ACCOUNT_CANCELLATION("2013","注销失败"),
     USER_ACCOUNT_AGAIN_PASSWORD("2014","两次密码不对"),
+    USER_ACCOUNT_NOT_OPERATION("2010","禁止修改自己账号信息"),
 
     /* 业务错误 */
     NO_PERMISSION("3001", "没有权限"),

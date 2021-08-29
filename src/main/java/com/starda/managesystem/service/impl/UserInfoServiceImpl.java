@@ -24,6 +24,8 @@ import com.starda.managesystem.pojo.SysUser;
 import com.starda.managesystem.pojo.SysUserRole;
 import com.starda.managesystem.pojo.dto.AccountInfoDTO;
 import com.starda.managesystem.pojo.dto.RoleListDTO;
+import com.starda.managesystem.pojo.dto.role.RoleDTO;
+import com.starda.managesystem.pojo.dto.staff.StaffDTO;
 import com.starda.managesystem.pojo.po.staff.*;
 import com.starda.managesystem.pojo.vo.role.RoleListVO;
 import com.starda.managesystem.pojo.vo.staff.AccountInfoListVO;
@@ -97,6 +99,8 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
         // 整合数据
         accountInfoListVOIPage.getRecords().stream().forEach(account->{
             account.setRoleListVOList(BeanUtil.copyToList(collect.get(account.getId()), RoleListVO.class));
+            // 脱敏处理
+            account.setPhone(DesensitizedUtil.mobilePhone(account.getPhone()));
         });
         log.info("有角色的账号信息");
         return accountInfoListVOIPage;
@@ -119,7 +123,7 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
         });
         this.updateBatchById(userList);
         // 2.删除员工表
-        if (type != null && type == Constant.BaseNumberManage.ONE) {
+        if (type != null && type.equals(Constant.BaseNumberManage.ONE)) {
             this.staffMapper.updateByAccountIds(accountIds);
         }
 
@@ -139,14 +143,21 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
         }
         // 获取角色信息
         MPJLambdaWrapper<SysRole> wrapper = new MPJLambdaWrapper<SysRole>();
-        List<SysRole> roleList = this.sysRoleMapper.selectJoinList(SysRole.class, wrapper
+        List<RoleDTO> roleDtoList = this.sysRoleMapper.selectJoinList(RoleDTO.class, wrapper
                 .selectAll(SysRole.class)
-                .select(SysRole::getId)
-                .select(SysUserRole::getUser_id)
                 .rightJoin(SysUserRole.class, SysUserRole::getRole_id, SysRole::getId)
                 .eq(SysUserRole::getUser_id, accountInfo.getId())
                 .eq(SysRole::getStatus, Constant.BaseNumberManage.ONE)
                 .eq(SysUserRole::getStatus, Constant.BaseNumberManage.ONE));
+        // 映射字段
+        HashMap<String,String> mapping = new HashMap<String, String>();
+        mapping.put("roleName", "role_name");
+        mapping.put("createTime", "create_time");
+        mapping.put("modifiedTime", "modified_time");
+        mapping.put("addressCode", "address_code");
+        mapping.put("roleCode", "role_code");
+        mapping.put("createAccountId", "create_account_id");
+        List<SysRole> roleList = BeanCopyUtil.copyToList(roleDtoList, SysRole.class, mapping);
         accountInfo.setRoleList(roleList);
         return accountInfo;
     }
@@ -179,7 +190,7 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
     public void insertStaffInfo(UserVO user, StaffInfoPO staffInfo) throws Exception {
         // 1.判断账号是否存在
         List<SysUser> userList = this.getBaseMapper().selectList(new LambdaQueryWrapper<SysUser>().eq(SysUser::getAccount, staffInfo.getAccount()));
-        if (null != userList || !userList.isEmpty()) {
+        if (null != userList && !userList.isEmpty()) {
             throw new ManageStarException(ExceptionEnums.USER_ACCOUNT_DISABLE.getCode(), ExceptionEnums.USER_ACCOUNT_DISABLE.getMessage());
         }
         // 2，保存账号
@@ -194,13 +205,14 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
 
         // 3，保存员工信息
         HashMap<String, String> mapping = new HashMap<String, String>();
-        mapping.put("user_height", "userHeight");
-        mapping.put("head_img", "headImg");
-        mapping.put("username", "userName");
+        mapping.put("userHeight", "user_height");
+        mapping.put("headImg", "head_img");
+        mapping.put("userName", "username");
         SysStaff staff = BeanCopyUtil.toBean(staffInfo, SysStaff.class, mapping);
         staff.setStatus(Constant.BaseNumberManage.ONE);
         staff.setCreate_account_id(user.getId());
         staff.setUser_id(sysUser.getId());
+        staff.setCreate_time(new Date());
         this.staffMapper.insertSelective(staff);
         log.info("添加员工成功");
 
@@ -238,11 +250,11 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
             return;
         }
         // 0.获取到员工信息
-        List<SysStaff> staffs = this.staffMapper.selectList(new LambdaQueryWrapper<SysStaff>().in(SysStaff::getId, staffIds));
+        List<StaffDTO> staffs = this.staffMapper.selectJoinList(StaffDTO.class, new MPJLambdaWrapper<SysStaff>().selectAll(SysStaff.class).in(SysStaff::getId, staffIds));
         // 1.删除员工表
         this.staffMapper.updateByStaffIds(staffIds);
         // 2.删除账号表
-        List<Integer> accountIds = staffs.stream().map(staff -> staff.getUser_id()).collect(Collectors.toList());
+        List<Integer> accountIds = staffs.stream().map(staff -> staff.getUserId()).collect(Collectors.toList());
 
         List<SysUser> userList = new ArrayList<SysUser>();
         accountIds.stream().forEach(userId -> {
@@ -261,9 +273,9 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
 
         // 分装数据
         HashMap<String, String> mapping = new HashMap<String, String>();
-        mapping.put("user_height", "userHeight");
-        mapping.put("head_img", "headImg");
-        mapping.put("username", "userName");
+        mapping.put("userHeight", "user_height");
+        mapping.put("headImg", "head_img");
+        mapping.put("userName", "username");
         SysStaff staff = BeanCopyUtil.toBean(staffInfo, SysStaff.class, mapping);
         staff.setUpdate_time(new Date());
         // 修改自己
@@ -297,7 +309,7 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
 
         // 本人不能修改
         if (user.getId().equals(accountInfoPO.getAccountId())) {
-            throw new ManageStarException(ExceptionEnums.USER_ACCOUNT_NOT_STATUS.getCode(), ExceptionEnums.USER_ACCOUNT_NOT_STATUS.getMessage());
+            throw new ManageStarException(ExceptionEnums.USER_ACCOUNT_NOT_OPERATION.getCode(), ExceptionEnums.USER_ACCOUNT_NOT_OPERATION.getMessage());
         }
         // 修改用户信息
         SysUser account = new SysUser();
@@ -305,6 +317,10 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
         account.setAddress_code(accountInfoPO.getAddressCode());
         account.setId(accountInfoPO.getAccountId());
         this.getBaseMapper().updateByPrimaryKeySelective(account);
+
+        if(null == accountInfoPO.getRoleIds() || accountInfoPO.getRoleIds().isEmpty()){
+            return;
+        }
 
         // 修改权限信息
         this.roleService.removeRoleUserByAccountIds(accountInfoPO.getAccountId());
@@ -317,12 +333,13 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
     public void updateAccountPassword(UserVO user, AccountPasswordPO password) throws Exception {
 
         // 两次密码的准确性
-        if (password.getNewPassword().equals(password.getAgainPassword())) {
+        if (!password.getNewPassword().equals(password.getAgainPassword())) {
             throw new ManageStarException(ExceptionEnums.USER_ACCOUNT_AGAIN_PASSWORD.getCode(), ExceptionEnums.USER_ACCOUNT_AGAIN_PASSWORD.getMessage());
         }
 
         // 判断原来密码的正确性
-        if (!SecurityPasswordCommon.isPassword(password.getOldPassword(), user.getPassword())) {
+        SysUser sysUser = this.getBaseMapper().selectOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getId, user.getId()));
+        if (!SecurityPasswordCommon.isPassword(password.getOldPassword(), sysUser.getPassword())) {
             throw new ManageStarException(ExceptionEnums.USER_CREDENTIALS_ERROR.getCode(), ExceptionEnums.USER_CREDENTIALS_ERROR.getMessage());
         }
 

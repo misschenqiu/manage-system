@@ -70,22 +70,15 @@
     <!-- 批量添加信息 -->
     <insert id="insertRoleUser">
         insert into sys_user_role
-        <foreach collection="userRoles" close=")" open="(" separator="," item="userRole">
             <trim prefix="(" suffix=")" suffixOverrides=",">
-                <if test="userRole.role_id != null">
                     role_id,
-                </if>
-                <if test="userRole.user_id != null">
                     user_id,
-                </if>
-                <if test="userRole.create_time != null">
                     create_time,
-                </if>
-                <if test="userRole.status != null">
-                    `status`,
-                </if>
+                    `status`
             </trim>
-            <trim prefix="values (" suffix=")" suffixOverrides=",">
+        values
+        <foreach collection="userRoles" separator="," item="userRole">
+            <trim prefix="(" suffix=")" suffixOverrides=",">
                 <if test="userRole.role_id != null">
                     #{userRole.role_id,jdbcType=INTEGER},
                 </if>
