@@ -1,5 +1,6 @@
 package com.starda.managesystem.config.author;
 
+import com.starda.managesystem.config.Result;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -38,6 +39,7 @@ public class WebSecurityCorsFilter implements Filter {
         res.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type, Accept, x-requested-with, Cache-Control");
         res.setHeader("Access-Control-Allow-Credentials", "true");
         res.setContentType("application/json;charset=UTF-8");
+        res.setStatus(200);
         chain.doFilter(request, res);
     }
     @Override

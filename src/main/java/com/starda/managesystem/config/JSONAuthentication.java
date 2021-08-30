@@ -36,6 +36,7 @@ public class JSONAuthentication {
         response.setHeader("Access-Control-Allow-Methods", request.getMethod());
         response.setHeader("Access-Control-Allow-Credentials","true");
         response.setHeader("Access-Control-Allow-Headers", request.getHeader("Access-Control-Request-Headers"));
+        response.setStatus(200);
         //输出JSON
         PrintWriter out = response.getWriter();
         out.write(new ObjectMapper().writeValueAsString(data));

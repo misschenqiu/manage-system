@@ -43,6 +43,7 @@ public class HandleException {
      * @return
      */
     @ExceptionHandler(ManageStarException.class)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Result systemManageException(ManageStarException e) {
         log.info("只定义异常处理" + e.getMessage());
@@ -60,7 +61,7 @@ public class HandleException {
      * @return
      */
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Result handleBindGetException(MethodArgumentNotValidException ex) {
         // 获取所有异常
@@ -79,7 +80,7 @@ public class HandleException {
      * @return
      */
     @ExceptionHandler(value = ValidationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Result handleBindException(ValidationException ex) {
         // 获取所有异常
@@ -101,6 +102,7 @@ public class HandleException {
      * @return
      */
     @ExceptionHandler(MissingServletRequestParameterException.class)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Result handleMissingServletRequestParameterException(MissingServletRequestParameterException ex) {
         log.error("参数异常信息：" + ex.getMessage());
@@ -114,6 +116,7 @@ public class HandleException {
      * @return
      */
     @ExceptionHandler(BindException.class)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Result bindParamException(BindException e) {
         Map<String, String> errorList = new HashMap<String, String>();
@@ -130,6 +133,7 @@ public class HandleException {
      * @return
      */
     @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
     public Result bootException(Exception e) {
         log.error("全局错误" + e.getMessage());

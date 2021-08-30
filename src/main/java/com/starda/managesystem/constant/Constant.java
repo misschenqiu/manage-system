@@ -37,7 +37,7 @@ public interface Constant {
 
         // 本地缓存最大数
         long NUMBER = 1000;
-        long TIME_CACHE = 12 * 60;
+        long TIME_CACHE = 12 * 60 * 60;
         /**
          * 请求投中 特定参数
          */

@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -25,7 +26,6 @@ import com.starda.managesystem.pojo.po.address.AddressUrlPO;
 import com.starda.managesystem.pojo.vo.AddressVO;
 import com.starda.managesystem.pojo.vo.MenuAddressVO;
 import com.starda.managesystem.pojo.vo.role.MenuAddressListVO;
-import com.starda.managesystem.pojo.vo.role.MenuRoleChoiceVO;
 import com.starda.managesystem.service.IAddressService;
 import com.starda.managesystem.util.BeanCopyUtil;
 import lombok.extern.log4j.Log4j2;
@@ -250,12 +250,17 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
 
         // 转换数据
         HashMap<String, String> mapping = new HashMap<String, String>();
-        mapping.put("urlName", "title");
-        mapping.put("icon", "meta");
+        mapping.put("urlName", "name");
         mapping.put("menuId", "sort");
+        mapping.put("icon", "icons");
         mapping.put("addressUrl", "component");
         mapping.put("route", "path");
         List<MenuAddressListVO> menuAddressVOList = BeanCopyUtil.copyToList(addressList, MenuAddressListVO.class, mapping);
+
+        // 解析对象
+        menuAddressVOList.stream().forEach(menu->{
+            menu.setMeta(JSONObject.parseObject(menu.getIcons(), HashMap.class));
+        });
 
         // 取出子级
         if(menuAddressDTOS == null || menuAddressDTOS.isEmpty() || menuAddressDTOS.size() < 1){
@@ -324,14 +329,14 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
 
     /**
      * 处理展示数据
-     * @param pid 子级父级id
+     * @param pid 子级父级id TODO 待完成 菜单目录展示
      * @param menuAddressVOList
      */
     public void handleDataShow(Set<Integer> pid, List<MenuAddressListVO> menuAddressVOList){
         List<MenuAddressListVO> menuAddressVOChildren = new ArrayList<MenuAddressListVO>();
         // 赛选父级数据
         for (MenuAddressListVO menuAddressVO : menuAddressVOList) {
-            if(menuAddressVO != null && !menuAddressVO.getChildren().isEmpty()){
+            if(menuAddressVO.getChildren() != null && !menuAddressVO.getChildren().isEmpty()){
                 handleDataShow(pid, menuAddressVO.getChildren());
             }
             if(pid.contains(menuAddressVO.getId())){

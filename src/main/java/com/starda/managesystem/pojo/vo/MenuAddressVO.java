@@ -1,9 +1,11 @@
 package com.starda.managesystem.pojo.vo;
 
 import com.starda.managesystem.pojo.vo.role.MenuAddressListVO;
+import com.starda.managesystem.pojo.vo.role.MetaVO;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -24,7 +26,7 @@ public class MenuAddressVO {
     /**
      * 路径名
      */
-    private String title;
+    private String name;
 
     /**
      * 路径地址
@@ -44,7 +46,8 @@ public class MenuAddressVO {
     /**
      * 包装名字
      */
-    private String meta;
+    private String icons;
+    private HashMap<String, Object> meta;
 
     /**
      * 前端自用
