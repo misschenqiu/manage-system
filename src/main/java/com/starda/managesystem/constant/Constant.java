@@ -93,4 +93,17 @@ public interface Constant {
         int TWO = 2;
     }
 
+    /**
+     * 消息提醒是否修改
+     * 1.开启 2.删除 3.重复提醒
+     */
+    interface ReminderType{
+        // 开启
+        int UPDATE_REMINDER = 1;
+        // 删除
+        int DELETE_REMINDER = 2;
+        // 重提提醒
+        int UPDATE_AGAIN = 3;
+    }
+
 }

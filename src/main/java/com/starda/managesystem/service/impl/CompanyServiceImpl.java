@@ -63,7 +63,8 @@ public class CompanyServiceImpl extends ServiceImpl<ManageCompanyMapper, ManageC
     public void updateCompanyInfo(UserVO user, CompanyUpdatePO company) throws Exception {
         // 检查单位信息
         ManageCompany companyInfo = this.getBaseMapper().selectOne(new LambdaQueryWrapper<ManageCompany>()
-        .eq(ManageCompany::getCompanyStatus, Constant.BaseNumberManage.ONE).eq(ManageCompany::getId, company.getId()));
+                .eq(ManageCompany::getCompanyStatus, Constant.BaseNumberManage.ONE)
+                .eq(ManageCompany::getId, company.getId()));
         if(companyInfo == null){
             return;
         }
@@ -101,12 +102,16 @@ public class CompanyServiceImpl extends ServiceImpl<ManageCompanyMapper, ManageC
 
     @Override
     public CompanyListVO getCompanyInfo(UserVO user, Integer companyId) throws Exception {
-
+        boolean flash = false;
+        // 判断权限
+        if(user.getAuthorities().contains(Constant.BaseStringInfoManage.MANAGE)){
+            flash = true;
+        }
         // 查看是不是自己操作的
         ManageCompany company = this.getBaseMapper().selectOne(new LambdaQueryWrapper<ManageCompany>()
                 .eq(ManageCompany::getId, companyId)
                 .eq(ManageCompany::getCompanyStatus, Constant.BaseNumberManage.ONE)
-                .eq(ManageCompany::getCreateAccountId, user.getId()));
+                .eq(flash, ManageCompany::getCreateAccountId, user.getId()));
         if(company == null){
             return null;
         }

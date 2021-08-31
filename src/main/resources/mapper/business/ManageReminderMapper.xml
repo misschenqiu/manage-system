@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starda.managesystem.mapper.business.ManageReminderMapper">
+  <resultMap id="BaseResultMap" type="com.starda.managesystem.pojo.ManageReminder">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="reminder_name" jdbcType="VARCHAR" property="reminderName" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_account_id" jdbcType="INTEGER" property="createAccountId" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="reminder_open" jdbcType="INTEGER" property="reminderOpen" />
+    <result column="again_number" jdbcType="INTEGER" property="againNumber" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="again" jdbcType="INTEGER" property="again" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, reminder_name, content, `status`, create_time, create_account_id, update_time, 
+    reminder_open, again_number, create_user_name, again, remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from manage_reminder
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from manage_reminder
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.ManageReminder" useGeneratedKeys="true">
+    insert into manage_reminder (reminder_name, content, `status`, 
+      create_time, create_account_id, update_time, 
+      reminder_open, again_number, create_user_name, 
+      again, remark)
+    values (#{reminderName,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createAccountId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{reminderOpen,jdbcType=INTEGER}, #{againNumber,jdbcType=INTEGER}, #{createUserName,jdbcType=VARCHAR}, 
+      #{again,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.ManageReminder" useGeneratedKeys="true">
+    insert into manage_reminder
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="reminderName != null">
+        reminder_name,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="createAccountId != null">
+        create_account_id,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="reminderOpen != null">
+        reminder_open,
+      </if>
+      <if test="againNumber != null">
+        again_number,
+      </if>
+      <if test="createUserName != null">
+        create_user_name,
+      </if>
+      <if test="again != null">
+        again,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="reminderName != null">
+        #{reminderName,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccountId != null">
+        #{createAccountId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reminderOpen != null">
+        #{reminderOpen,jdbcType=INTEGER},
+      </if>
+      <if test="againNumber != null">
+        #{againNumber,jdbcType=INTEGER},
+      </if>
+      <if test="createUserName != null">
+        #{createUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="again != null">
+        #{again,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.starda.managesystem.pojo.ManageReminder">
+    update manage_reminder
+    <set>
+      <if test="reminderName != null">
+        reminder_name = #{reminderName,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createAccountId != null">
+        create_account_id = #{createAccountId,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reminderOpen != null">
+        reminder_open = #{reminderOpen,jdbcType=INTEGER},
+      </if>
+      <if test="againNumber != null">
+        again_number = #{againNumber,jdbcType=INTEGER},
+      </if>
+      <if test="createUserName != null">
+        create_user_name = #{createUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="again != null">
+        again = #{again,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.starda.managesystem.pojo.ManageReminder">
+    update manage_reminder
+    set reminder_name = #{reminderName,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=INTEGER},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      create_account_id = #{createAccountId,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      reminder_open = #{reminderOpen,jdbcType=INTEGER},
+      again_number = #{againNumber,jdbcType=INTEGER},
+      create_user_name = #{createUserName,jdbcType=VARCHAR},
+      again = #{again,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
