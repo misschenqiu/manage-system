@@ -115,7 +115,7 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.starda.managesystem.pojo.ManageReminder">
     update manage_reminder
     <set>
-      <if test="reminderName != null">
+      <if test="reminderName != null and reminderName != ''">
         reminder_name = #{reminderName,jdbcType=VARCHAR},
       </if>
       <if test="content != null">

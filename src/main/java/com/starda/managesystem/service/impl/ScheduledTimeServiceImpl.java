@@ -101,6 +101,7 @@ public class ScheduledTimeServiceImpl extends ServiceImpl<ManageReminderMapper, 
                     if (po.getAgain() == null){
                         throw new ManageStarException("是否再次提前！");
                     }
+                    reminder.setAgain(po.getAgain());
                     break;
             }
             this.getBaseMapper().update(reminder, new LambdaQueryWrapper<ManageReminder>()
@@ -129,7 +130,7 @@ public class ScheduledTimeServiceImpl extends ServiceImpl<ManageReminderMapper, 
         }
         // 获取到单位信息
         List<CompanySmilDTO> manageCompanies = this.reCompMapper.selectJoinList(CompanySmilDTO.class, new MPJLambdaWrapper<ManageReComp>()
-                .selectAll(CompanySmilDTO.class)
+                .selectAll(ManageCompany.class)
                 .select(ManageReComp::getReminderId)
                 .leftJoin(ManageCompany.class, ManageCompany::getId, ManageReComp::getCompanyId)
                 .in(ManageReComp::getReminderId, reminderIds)

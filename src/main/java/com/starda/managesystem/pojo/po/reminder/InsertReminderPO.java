@@ -39,11 +39,6 @@ public class InsertReminderPO {
     private Integer againNumber;
 
     /**
-     * 创建人信息
-     */
-    private String createUserName;
-
-    /**
      * 是否重复提醒 0.否 1.是
      */
     private Integer again;
