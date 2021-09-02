@@ -67,16 +67,14 @@ public interface IAddressService {
      * @throws Exception
      * @return
      */
-    Integer addManageAddress(String addressName) throws Exception;
+    String addManageAddress(String addressName) throws Exception;
 
     /**
      * 获取管理地址数据
-     * @param currentPage 当前页
-     * @param pageSize 页码大小
      * @return
      * @throws Exception
      */
-    IPage<AddressVO> getManageAddress(Integer currentPage, Integer pageSize) throws Exception;
+    List<AddressVO> getManageAddress() throws Exception;
 
     /**
      * 删除管理地址

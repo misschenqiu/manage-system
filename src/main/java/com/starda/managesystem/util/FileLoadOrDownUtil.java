@@ -53,7 +53,7 @@ public class FileLoadOrDownUtil {
         if (!FileUtil.exist(folder)) {
             FileUtil.mkdir(folder);
         }
-        String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmmssSSS")) + File.separator + multipartFile.getOriginalFilename();
+        String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + File.separator + multipartFile.getOriginalFilename();
         File directory = new File("");//参数为空
         String courseFile = directory.getCanonicalPath() ;
         String path = courseFile + folder + fileName;

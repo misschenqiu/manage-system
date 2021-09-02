@@ -105,28 +105,22 @@ public class AddressController {
             throw new ManageStarException(ExceptionEnums.PARAM_NOT_COMPLETE.getCode(), ExceptionEnums.PARAM_NOT_COMPLETE.getMessage());
         }
 
-        int id = this.addressService.addManageAddress(addressName);
+        String code = this.addressService.addManageAddress(addressName);
 
-        return Result.ok().resultPage(id);
+        return Result.ok().resultPage(code);
     }
 
     /**
      * 获取到管理地址
-     * @param currentPage 显示条数
-     * @param pageSize 页码
      * @return
      * @throws Exception
      */
-    @PostMapping("getAddress/{currentPage}/{pageSize}")
-    public Result getManageAddress(@PathVariable("currentPage")Integer currentPage, @PathVariable("pageSize")Integer pageSize) throws Exception{
+    @PostMapping("getAddress")
+    public Result getManageAddress() throws Exception{
 
-        if(currentPage == null || pageSize == null){
-            throw new ManageStarException(ExceptionEnums.PARAM_NOT_COMPLETE.getCode(), ExceptionEnums.PARAM_NOT_COMPLETE.getMessage());
-        }
+        List<AddressVO> pageData = this.addressService.getManageAddress();
 
-        IPage<AddressVO> pageData = this.addressService.getManageAddress(currentPage, pageSize);
-
-        return Result.ok().resultPage(pageData.getRecords(), pageData.getCurrent(), pageData.getSize(), pageData.getTotal());
+        return Result.ok().resultPage(pageData);
     }
 
     /**

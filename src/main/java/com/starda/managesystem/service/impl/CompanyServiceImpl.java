@@ -15,8 +15,10 @@ import com.starda.managesystem.pojo.po.company.CompanyInsertPO;
 import com.starda.managesystem.pojo.po.company.CompanyQueryPO;
 import com.starda.managesystem.pojo.po.company.CompanyUpdatePO;
 import com.starda.managesystem.pojo.vo.company.CompanyListVO;
+import com.starda.managesystem.service.IAddressService;
 import com.starda.managesystem.service.ICompanyService;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -36,8 +38,15 @@ import java.util.List;
 @Log4j2
 public class CompanyServiceImpl extends ServiceImpl<ManageCompanyMapper, ManageCompany> implements ICompanyService {
 
+    @Autowired
+    private IAddressService addressService;
+
     @Override
     public void insertCompanyInfo(UserVO user, CompanyInsertPO company) throws Exception {
+        // 获取地址
+        if(StrUtil.isNotBlank(company.getAddress())){
+            company.setAddressCode(this.addressService.addManageAddress(company.getAddress()));
+        }
         ManageCompany manageCompany = BeanUtil.toBean(company, ManageCompany.class);
         manageCompany.setCreateAccountId(user.getId());
         manageCompany.setCreateTime(new Date());
@@ -61,6 +70,10 @@ public class CompanyServiceImpl extends ServiceImpl<ManageCompanyMapper, ManageC
 
     @Override
     public void updateCompanyInfo(UserVO user, CompanyUpdatePO company) throws Exception {
+        // 检查地址
+        if(StrUtil.isNotBlank(company.getAddress())){
+            company.setAddressCode(addressService.addManageAddress(company.getAddress()));
+        }
         // 检查单位信息
         ManageCompany companyInfo = this.getBaseMapper().selectOne(new LambdaQueryWrapper<ManageCompany>()
                 .eq(ManageCompany::getCompanyStatus, Constant.BaseNumberManage.ONE)

@@ -32,11 +32,17 @@ public interface SysAddressMapper extends MPJBaseMapper<SysAddress> {
     int insertAddress(ManageAddress address);
 
     /**
-     * 获取到管理地址列表
-     * @param page
+     * 查询是否又数据
+     * @param addressName
      * @return
      */
-    IPage<AddressVO> getAddressList(Page<AddressVO> page);
+    AddressVO getManageAddress(String addressName);
+
+    /**
+     * 获取到管理地址列表
+     * @return
+     */
+    List<AddressVO> getAddressList();
 
     /**
      * 删除管理地址

@@ -14,10 +14,14 @@
     <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
     <result column="again" jdbcType="INTEGER" property="again" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="reminder_time" jdbcType="TIMESTAMP" property="reminderTime" />
+    <result column="one_week" jdbcType="INTEGER" property="oneWeek" />
+    <result column="week_type" jdbcType="INTEGER" property="weekType" />
   </resultMap>
   <sql id="Base_Column_List">
     id, reminder_name, content, `status`, create_time, create_account_id, update_time, 
-    reminder_open, again_number, create_user_name, again, remark
+    reminder_open, again_number, create_user_name, again, remark, reminder_time, one_week, 
+    week_type
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -33,11 +37,13 @@
     insert into manage_reminder (reminder_name, content, `status`, 
       create_time, create_account_id, update_time, 
       reminder_open, again_number, create_user_name, 
-      again, remark)
+      again, remark, reminder_time, 
+      one_week, week_type)
     values (#{reminderName,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{createAccountId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{reminderOpen,jdbcType=INTEGER}, #{againNumber,jdbcType=INTEGER}, #{createUserName,jdbcType=VARCHAR}, 
-      #{again,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR})
+      #{again,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{reminderTime,jdbcType=TIMESTAMP}, 
+      #{oneWeek,jdbcType=INTEGER}, #{weekType,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.ManageReminder" useGeneratedKeys="true">
     insert into manage_reminder
@@ -75,6 +81,15 @@
       <if test="remark != null">
         remark,
       </if>
+      <if test="reminderTime != null">
+        reminder_time,
+      </if>
+      <if test="oneWeek != null">
+        one_week,
+      </if>
+      <if test="weekType != null">
+        week_type,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="reminderName != null">
@@ -110,12 +125,21 @@
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
       </if>
+      <if test="reminderTime != null">
+        #{reminderTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="oneWeek != null">
+        #{oneWeek,jdbcType=INTEGER},
+      </if>
+      <if test="weekType != null">
+        #{weekType,jdbcType=INTEGER},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.starda.managesystem.pojo.ManageReminder">
     update manage_reminder
     <set>
-      <if test="reminderName != null and reminderName != ''">
+      <if test="reminderName != null">
         reminder_name = #{reminderName,jdbcType=VARCHAR},
       </if>
       <if test="content != null">
@@ -148,6 +172,15 @@
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
       </if>
+      <if test="reminderTime != null">
+        reminder_time = #{reminderTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="oneWeek != null">
+        one_week = #{oneWeek,jdbcType=INTEGER},
+      </if>
+      <if test="weekType != null">
+        week_type = #{weekType,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -163,7 +196,10 @@
       again_number = #{againNumber,jdbcType=INTEGER},
       create_user_name = #{createUserName,jdbcType=VARCHAR},
       again = #{again,jdbcType=INTEGER},
-      remark = #{remark,jdbcType=VARCHAR}
+      remark = #{remark,jdbcType=VARCHAR},
+      reminder_time = #{reminderTime,jdbcType=TIMESTAMP},
+      one_week = #{oneWeek,jdbcType=INTEGER},
+      week_type = #{weekType,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

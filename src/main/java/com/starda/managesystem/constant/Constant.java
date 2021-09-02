@@ -51,8 +51,8 @@ public interface Constant {
         /**
          * 设置文件上传 基本路径
          */
-        String BASE_FILE_PATH = File.separator + "file"+ File.separator +"img" + File.separator;
-        String BASE_HEADER_PATH = File.separator + "header" + File.separator + "img" + File.separator;
+        String BASE_FILE_PATH = File.separator + "img"+ File.separator + "file"+ File.separator;
+        String BASE_HEADER_PATH = File.separator + "img"+ File.separator + "header" + File.separator;
 
         /**
          * 是否有子级  0.否 1.是

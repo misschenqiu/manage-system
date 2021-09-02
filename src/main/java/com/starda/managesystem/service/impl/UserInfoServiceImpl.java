@@ -32,6 +32,7 @@ import com.starda.managesystem.pojo.vo.staff.AccountInfoListVO;
 import com.starda.managesystem.pojo.vo.staff.AccountInfoVO;
 import com.starda.managesystem.pojo.vo.staff.StaffInfoListVO;
 import com.starda.managesystem.pojo.vo.staff.StaffInfoVO;
+import com.starda.managesystem.service.IAddressService;
 import com.starda.managesystem.service.ISysRoleService;
 import com.starda.managesystem.service.IUserInfoService;
 import com.starda.managesystem.util.AES;
@@ -69,6 +70,9 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
 
     @Autowired
     private ISysRoleService roleService;
+
+    @Autowired
+    private IAddressService addressService;
 
     @Override
     public Object getUserInfo() {
@@ -207,6 +211,10 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insertStaffInfo(UserVO user, StaffInfoPO staffInfo) throws Exception {
+        // 获取地址
+        if(StrUtil.isNotBlank(staffInfo.getAddress())){
+            staffInfo.setAddressCode(this.addressService.addManageAddress(staffInfo.getAddress()));
+        }
         // 1.判断账号是否存在
         List<SysUser> userList = this.getBaseMapper().selectList(new LambdaQueryWrapper<SysUser>().eq(SysUser::getAccount, staffInfo.getAccount()));
         if (null != userList && !userList.isEmpty()) {
@@ -325,7 +333,10 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateAccountInfo(UserVO user, AccountInfoPO accountInfoPO) throws Exception {
-
+        // 获取地址
+        if(StrUtil.isNotBlank(accountInfoPO.getAddress())){
+            accountInfoPO.setAddressCode(this.addressService.addManageAddress(accountInfoPO.getAddress()));
+        }
         // 本人不能修改
         if (user.getId().equals(accountInfoPO.getAccountId())) {
             throw new ManageStarException(ExceptionEnums.USER_ACCOUNT_NOT_OPERATION.getCode(), ExceptionEnums.USER_ACCOUNT_NOT_OPERATION.getMessage());

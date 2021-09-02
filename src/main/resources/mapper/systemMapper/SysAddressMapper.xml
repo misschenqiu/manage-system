@@ -24,7 +24,7 @@
 
   <!-- 获取管理地址 -->
   <select id="getAddressList" resultType="com.starda.managesystem.pojo.vo.AddressVO">
-    select address as addressName, address_code as addressCode from manage_address where status = 1
+    select address as addressName, address_code as addressCode from manage_address
   </select>
 
 
@@ -183,5 +183,9 @@
                 </if>
             </where>
   </select>
-  
+
+  <select id="getManageAddress" resultType="com.starda.managesystem.pojo.vo.AddressVO">
+    select address as addressName, address_code as addressCode from manage_address where address = #{addressName}
+  </select>
+
 </mapper>

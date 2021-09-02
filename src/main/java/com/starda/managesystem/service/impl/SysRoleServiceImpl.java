@@ -23,6 +23,7 @@ import com.starda.managesystem.pojo.dto.role.RoleDTO;
 import com.starda.managesystem.pojo.po.role.RoleInsertPO;
 import com.starda.managesystem.pojo.po.role.RoleSelectPO;
 import com.starda.managesystem.pojo.vo.role.RoleListVO;
+import com.starda.managesystem.service.IAddressService;
 import com.starda.managesystem.service.ISysRoleService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,9 +55,16 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Autowired
     private SysUserRoleMapper userRoleMapper;
 
+    @Autowired
+    private IAddressService addressService;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insertRole(UserVO user, RoleInsertPO po) throws Exception {
+        // 处理地址
+        if(StrUtil.isNotBlank(po.getAddressName())){
+            po.setAddressCode(this.addressService.addManageAddress(po.getAddressName()));
+        }
         // 1.检查名称和编码是否存在
         List<SysRole> roleList = this.baseMapper.selectList(new LambdaQueryWrapper<SysRole>()
                 .eq(SysRole::getRole_name, po.getRoleName())
@@ -99,6 +107,10 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateRoleInfo(UserVO user, RoleInsertPO po) throws Exception {
+        // 处理地址
+        if(StrUtil.isNotBlank(po.getAddressName())){
+            po.setAddressCode(this.addressService.addManageAddress(po.getAddressName()));
+        }
         // 1.检查名称和编码是否存在
         if(StrUtil.isNotBlank(po.getRoleName())) {
             List<SysRole> roleList = this.baseMapper.selectList(new LambdaQueryWrapper<SysRole>()

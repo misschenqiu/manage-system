@@ -1,8 +1,6 @@
 package com.starda.managesystem.pojo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -11,10 +9,7 @@ import java.util.Date;
  * manage_reminder
  * @author 
  */
-
-@Data
 public class ManageReminder implements Serializable {
-    @TableId(value="id",type= IdType.AUTO)
     private Integer id;
 
     /**
@@ -72,7 +67,142 @@ public class ManageReminder implements Serializable {
      */
     private String remark;
 
+    /**
+     * 提醒时间
+     */
+    private Date reminderTime;
+
+    /**
+     * 1.单次提醒，2.周期提醒
+     */
+    private Integer oneWeek;
+
+    /**
+     * 周期提醒类型 1.月，2.季，3.半年 4。全年
+     */
+    private Integer weekType;
+
     private static final long serialVersionUID = 1L;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getReminderName() {
+        return reminderName;
+    }
+
+    public void setReminderName(String reminderName) {
+        this.reminderName = reminderName;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Integer getCreateAccountId() {
+        return createAccountId;
+    }
+
+    public void setCreateAccountId(Integer createAccountId) {
+        this.createAccountId = createAccountId;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    public Integer getReminderOpen() {
+        return reminderOpen;
+    }
+
+    public void setReminderOpen(Integer reminderOpen) {
+        this.reminderOpen = reminderOpen;
+    }
+
+    public Integer getAgainNumber() {
+        return againNumber;
+    }
+
+    public void setAgainNumber(Integer againNumber) {
+        this.againNumber = againNumber;
+    }
+
+    public String getCreateUserName() {
+        return createUserName;
+    }
+
+    public void setCreateUserName(String createUserName) {
+        this.createUserName = createUserName;
+    }
+
+    public Integer getAgain() {
+        return again;
+    }
+
+    public void setAgain(Integer again) {
+        this.again = again;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
+    public Date getReminderTime() {
+        return reminderTime;
+    }
+
+    public void setReminderTime(Date reminderTime) {
+        this.reminderTime = reminderTime;
+    }
+
+    public Integer getOneWeek() {
+        return oneWeek;
+    }
+
+    public void setOneWeek(Integer oneWeek) {
+        this.oneWeek = oneWeek;
+    }
+
+    public Integer getWeekType() {
+        return weekType;
+    }
+
+    public void setWeekType(Integer weekType) {
+        this.weekType = weekType;
+    }
 
     @Override
     public boolean equals(Object that) {
@@ -97,7 +227,10 @@ public class ManageReminder implements Serializable {
             && (this.getAgainNumber() == null ? other.getAgainNumber() == null : this.getAgainNumber().equals(other.getAgainNumber()))
             && (this.getCreateUserName() == null ? other.getCreateUserName() == null : this.getCreateUserName().equals(other.getCreateUserName()))
             && (this.getAgain() == null ? other.getAgain() == null : this.getAgain().equals(other.getAgain()))
-            && (this.getRemark() == null ? other.getRemark() == null : this.getRemark().equals(other.getRemark()));
+            && (this.getRemark() == null ? other.getRemark() == null : this.getRemark().equals(other.getRemark()))
+            && (this.getReminderTime() == null ? other.getReminderTime() == null : this.getReminderTime().equals(other.getReminderTime()))
+            && (this.getOneWeek() == null ? other.getOneWeek() == null : this.getOneWeek().equals(other.getOneWeek()))
+            && (this.getWeekType() == null ? other.getWeekType() == null : this.getWeekType().equals(other.getWeekType()));
     }
 
     @Override
@@ -116,6 +249,9 @@ public class ManageReminder implements Serializable {
         result = prime * result + ((getCreateUserName() == null) ? 0 : getCreateUserName().hashCode());
         result = prime * result + ((getAgain() == null) ? 0 : getAgain().hashCode());
         result = prime * result + ((getRemark() == null) ? 0 : getRemark().hashCode());
+        result = prime * result + ((getReminderTime() == null) ? 0 : getReminderTime().hashCode());
+        result = prime * result + ((getOneWeek() == null) ? 0 : getOneWeek().hashCode());
+        result = prime * result + ((getWeekType() == null) ? 0 : getWeekType().hashCode());
         return result;
     }
 
@@ -137,6 +273,9 @@ public class ManageReminder implements Serializable {
         sb.append(", createUserName=").append(createUserName);
         sb.append(", again=").append(again);
         sb.append(", remark=").append(remark);
+        sb.append(", reminderTime=").append(reminderTime);
+        sb.append(", oneWeek=").append(oneWeek);
+        sb.append(", weekType=").append(weekType);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

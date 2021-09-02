@@ -64,6 +64,21 @@ public class ReminderListVO {
     private String remark;
 
     /**
+     * 提醒时间
+     */
+    private Date reminderTime;
+
+    /**
+     * 1.单次提醒，2.周期提醒
+     */
+    private Integer oneWeek;
+
+    /**
+     * 周期提醒类型 1.月，2.季，3.半年 4。全年
+     */
+    private Integer weekType;
+
+    /**
      * 合作单位信息
      */
     private List<CompanySmilVO> companyName;

@@ -1,7 +1,10 @@
 package com.starda.managesystem.pojo.po.reminder;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,6 +20,7 @@ import java.util.List;
 @Data
 public class ReminderUpdatePO {
 
+    @NotNull(message = "请选择修改对象")
     private Integer id;
     /**
      * 消息名称
@@ -47,6 +51,24 @@ public class ReminderUpdatePO {
      * 描述
      */
     private String remark;
+
+    /**
+     * 提醒时间
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+    @NotNull(message = "请选择提醒时间")
+    private Date reminderTime;
+
+    /**
+     * 1.单次提醒，2.周期提醒
+     */
+    @NotNull(message = "请设置 单次或者周期")
+    private Integer oneWeek;
+
+    /**
+     * 周期提醒类型 1.月，2.季，3.半年 4。全年
+     */
+    private Integer weekType;
 
     /**
      * 单位信息

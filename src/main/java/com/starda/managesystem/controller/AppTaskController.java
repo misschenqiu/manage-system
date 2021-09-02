@@ -1,6 +1,6 @@
 package com.starda.managesystem.controller;
 
-import com.starda.managesystem.service.IBusinessTaskService;
+import com.starda.managesystem.service.IAppTaskBusinessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -8,18 +8,18 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @ProjectName: manage-system
  * @Package: com.starda.managesystem.controller
- * @ClassName: TaskController
+ * @ClassName: AppTaskController
  * @Author: chenqiu
- * @Description: 任务管理
- * @Date: 2021/8/27 22:35
+ * @Description:
+ * @Date: 2021/9/1 15:13
  * @Version: 1.0
  */
 
 @RestController
-@RequestMapping("/task/business")
-public class TaskController {
+@RequestMapping("/app/business")
+public class AppTaskController {
 
     @Autowired
-    private IBusinessTaskService businessTaskService;
+    private IAppTaskBusinessService appTaskBusinessService;
 
 }

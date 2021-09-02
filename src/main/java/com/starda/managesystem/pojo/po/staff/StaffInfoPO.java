@@ -38,12 +38,11 @@ public class StaffInfoPO {
     /**
      * 归属地
      */
-    @NotBlank(message = "归属地不能为空")
     private String address;
 
     /**
      * 编码
-     */@NotBlank(message = "归属编码不能为空")
+     */
     private String addressCode;
 
     /**

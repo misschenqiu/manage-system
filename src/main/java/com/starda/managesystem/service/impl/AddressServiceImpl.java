@@ -211,20 +211,27 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
     }
 
     @Override
-    public Integer addManageAddress(String addressName) throws Exception {
+    public String addManageAddress(String addressName) throws Exception {
+        // 检查是否又数据
+        AddressVO one = this.baseMapper.getManageAddress(addressName);
+        if(one != null){
+            return one.getAddressCode();
+        }
+        // 添加数据
         ManageAddress address = new ManageAddress();
+        String code = UUID.fastUUID().toString().replaceAll("-", "");
         address.setAddressName(addressName);
-        address.setAddressCode(UUID.fastUUID().toString().replaceAll("-", ""));
+        address.setAddressCode(code);
         address.setStatus(Constant.BaseStringInfoManage.CHILDREN_YES);
 
         this.baseMapper.insertAddress(address);
-        return address.getId();
+        return code;
     }
 
     @Override
-    public IPage<AddressVO> getManageAddress(Integer currentPage, Integer pageSize) throws Exception {
+    public List<AddressVO> getManageAddress() throws Exception {
 
-        IPage<AddressVO> addressVOIPage = this.baseMapper.getAddressList(new Page<AddressVO>(currentPage, pageSize));
+        List<AddressVO> addressVOIPage = this.baseMapper.getAddressList();
 
         return addressVOIPage;
     }
