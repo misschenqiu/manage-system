@@ -89,10 +89,10 @@ public class CompanyServiceImpl extends ServiceImpl<ManageCompanyMapper, ManageC
 
     @Override
     public Result<CompanyListVO> getCompanyInfoList(UserVO user, CompanyQueryPO po) throws Exception {
-        boolean flash = false;
+        boolean flash = true;
         // 判断权限
         if(user.getAuthorities().contains(Constant.BaseStringInfoManage.MANAGE)){
-            flash = true;
+            flash = false;
         }
 
         Page<ManageCompany> manageCompanyPage = this.getBaseMapper().selectPage(new Page<ManageCompany>(po.getCurrentPage(), po.getPageSize()), new LambdaQueryWrapper<ManageCompany>()
@@ -115,10 +115,10 @@ public class CompanyServiceImpl extends ServiceImpl<ManageCompanyMapper, ManageC
 
     @Override
     public CompanyListVO getCompanyInfo(UserVO user, Integer companyId) throws Exception {
-        boolean flash = false;
+        boolean flash = true;
         // 判断权限
         if(user.getAuthorities().contains(Constant.BaseStringInfoManage.MANAGE)){
-            flash = true;
+            flash = false;
         }
         // 查看是不是自己操作的
         ManageCompany company = this.getBaseMapper().selectOne(new LambdaQueryWrapper<ManageCompany>()

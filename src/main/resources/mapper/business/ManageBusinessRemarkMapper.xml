@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starda.managesystem.mapper.business.ManageBusinessRemarkMapper">
+  <resultMap id="BaseResultMap" type="com.starda.managesystem.pojo.ManageBusinessRemark">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_account_id" jdbcType="INTEGER" property="createAccountId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_user" jdbcType="INTEGER" property="updateUser" />
+    <result column="update_user_name" jdbcType="VARCHAR" property="updateUserName" />
+    <result column="remark_img" jdbcType="VARCHAR" property="remarkImg" />
+    <result column="business_info_id" jdbcType="INTEGER" property="businessInfoId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, remark, create_account_id, create_user_name, update_time, update_user, update_user_name, 
+    remark_img, business_info_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from manage_business_remark
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from manage_business_remark
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.ManageBusinessRemark" useGeneratedKeys="true">
+    insert into manage_business_remark (remark, create_account_id, create_user_name, 
+      update_time, update_user, update_user_name, 
+      remark_img, business_info_id)
+    values (#{remark,jdbcType=VARCHAR}, #{createAccountId,jdbcType=INTEGER}, #{createUserName,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=INTEGER}, #{updateUserName,jdbcType=VARCHAR}, 
+      #{remarkImg,jdbcType=VARCHAR}, #{businessInfoId,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.ManageBusinessRemark" useGeneratedKeys="true">
+    insert into manage_business_remark
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="createAccountId != null">
+        create_account_id,
+      </if>
+      <if test="createUserName != null">
+        create_user_name,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateUser != null">
+        update_user,
+      </if>
+      <if test="updateUserName != null">
+        update_user_name,
+      </if>
+      <if test="remarkImg != null">
+        remark_img,
+      </if>
+      <if test="businessInfoId != null">
+        business_info_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createAccountId != null">
+        #{createAccountId,jdbcType=INTEGER},
+      </if>
+      <if test="createUserName != null">
+        #{createUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="updateUserName != null">
+        #{updateUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="remarkImg != null">
+        #{remarkImg,jdbcType=VARCHAR},
+      </if>
+      <if test="businessInfoId != null">
+        #{businessInfoId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.starda.managesystem.pojo.ManageBusinessRemark">
+    update manage_business_remark
+    <set>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createAccountId != null">
+        create_account_id = #{createAccountId,jdbcType=INTEGER},
+      </if>
+      <if test="createUserName != null">
+        create_user_name = #{createUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null">
+        update_user = #{updateUser,jdbcType=INTEGER},
+      </if>
+      <if test="updateUserName != null">
+        update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="remarkImg != null">
+        remark_img = #{remarkImg,jdbcType=VARCHAR},
+      </if>
+      <if test="businessInfoId != null">
+        business_info_id = #{businessInfoId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.starda.managesystem.pojo.ManageBusinessRemark">
+    update manage_business_remark
+    set remark = #{remark,jdbcType=VARCHAR},
+      create_account_id = #{createAccountId,jdbcType=INTEGER},
+      create_user_name = #{createUserName,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=INTEGER},
+      update_user_name = #{updateUserName,jdbcType=VARCHAR},
+      remark_img = #{remarkImg,jdbcType=VARCHAR},
+      business_info_id = #{businessInfoId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

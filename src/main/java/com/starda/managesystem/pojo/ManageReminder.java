@@ -1,5 +1,7 @@
 package com.starda.managesystem.pojo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
@@ -10,6 +12,7 @@ import java.util.Date;
  * @author 
  */
 public class ManageReminder implements Serializable {
+    @TableId(value="id",type= IdType.AUTO)
     private Integer id;
 
     /**

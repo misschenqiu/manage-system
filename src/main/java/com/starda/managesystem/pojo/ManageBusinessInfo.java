@@ -1,5 +1,9 @@
 package com.starda.managesystem.pojo;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.Data;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -8,7 +12,10 @@ import java.util.Date;
  * manage_business_info
  * @author 
  */
+
+@Data
 public class ManageBusinessInfo implements Serializable {
+    @TableId(value="id",type= IdType.AUTO)
     private Integer id;
 
     /**
@@ -96,151 +103,27 @@ public class ManageBusinessInfo implements Serializable {
      */
     private Integer updateAccount;
 
+    /**
+     * 0.未结束，1.终止  2. 未到款  3.完成 4.退回 5.驳回
+     */
+    private Integer finish;
+
+    /**
+     * 任务层次
+     */
+    private Integer level;
+
+    /**
+     * 是否可用,0:不可用，1：可用  
+     */
+    private Integer status;
+
+    /**
+     * 完成时间
+     */
+    private Date finishTime;
+
     private static final long serialVersionUID = 1L;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Integer getPid() {
-        return pid;
-    }
-
-    public void setPid(Integer pid) {
-        this.pid = pid;
-    }
-
-    public Integer getBusinessId() {
-        return businessId;
-    }
-
-    public void setBusinessId(Integer businessId) {
-        this.businessId = businessId;
-    }
-
-    public String getTaskName() {
-        return taskName;
-    }
-
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
-    }
-
-    public Integer getStaffId() {
-        return staffId;
-    }
-
-    public void setStaffId(Integer staffId) {
-        this.staffId = staffId;
-    }
-
-    public String getStaffName() {
-        return staffName;
-    }
-
-    public void setStaffName(String staffName) {
-        this.staffName = staffName;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public BigDecimal getMoney() {
-        return money;
-    }
-
-    public void setMoney(BigDecimal money) {
-        this.money = money;
-    }
-
-    public String getBusinessAddress() {
-        return businessAddress;
-    }
-
-    public void setBusinessAddress(String businessAddress) {
-        this.businessAddress = businessAddress;
-    }
-
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
-
-    public String getDimension() {
-        return dimension;
-    }
-
-    public void setDimension(String dimension) {
-        this.dimension = dimension;
-    }
-
-    public String getBusinessFile() {
-        return businessFile;
-    }
-
-    public void setBusinessFile(String businessFile) {
-        this.businessFile = businessFile;
-    }
-
-    public String getPartName() {
-        return partName;
-    }
-
-    public void setPartName(String partName) {
-        this.partName = partName;
-    }
-
-    public Integer getCreateAccountId() {
-        return createAccountId;
-    }
-
-    public void setCreateAccountId(Integer createAccountId) {
-        this.createAccountId = createAccountId;
-    }
-
-    public String getCreateUser() {
-        return createUser;
-    }
-
-    public void setCreateUser(String createUser) {
-        this.createUser = createUser;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    public Integer getUpdateAccount() {
-        return updateAccount;
-    }
-
-    public void setUpdateAccount(Integer updateAccount) {
-        this.updateAccount = updateAccount;
-    }
 
     @Override
     public boolean equals(Object that) {
@@ -271,7 +154,11 @@ public class ManageBusinessInfo implements Serializable {
             && (this.getCreateAccountId() == null ? other.getCreateAccountId() == null : this.getCreateAccountId().equals(other.getCreateAccountId()))
             && (this.getCreateUser() == null ? other.getCreateUser() == null : this.getCreateUser().equals(other.getCreateUser()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()))
-            && (this.getUpdateAccount() == null ? other.getUpdateAccount() == null : this.getUpdateAccount().equals(other.getUpdateAccount()));
+            && (this.getUpdateAccount() == null ? other.getUpdateAccount() == null : this.getUpdateAccount().equals(other.getUpdateAccount()))
+            && (this.getFinish() == null ? other.getFinish() == null : this.getFinish().equals(other.getFinish()))
+            && (this.getLevel() == null ? other.getLevel() == null : this.getLevel().equals(other.getLevel()))
+            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
+            && (this.getFinishTime() == null ? other.getFinishTime() == null : this.getFinishTime().equals(other.getFinishTime()));
     }
 
     @Override
@@ -296,6 +183,10 @@ public class ManageBusinessInfo implements Serializable {
         result = prime * result + ((getCreateUser() == null) ? 0 : getCreateUser().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         result = prime * result + ((getUpdateAccount() == null) ? 0 : getUpdateAccount().hashCode());
+        result = prime * result + ((getFinish() == null) ? 0 : getFinish().hashCode());
+        result = prime * result + ((getLevel() == null) ? 0 : getLevel().hashCode());
+        result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
+        result = prime * result + ((getFinishTime() == null) ? 0 : getFinishTime().hashCode());
         return result;
     }
 
@@ -323,6 +214,10 @@ public class ManageBusinessInfo implements Serializable {
         sb.append(", createUser=").append(createUser);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", updateAccount=").append(updateAccount);
+        sb.append(", finish=").append(finish);
+        sb.append(", level=").append(level);
+        sb.append(", status=").append(status);
+        sb.append(", finishTime=").append(finishTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

@@ -32,7 +32,6 @@ public class CompanyInsertPO {
     /**
      * 所属地编码
      */
-    @NotBlank(message = "所属地址编码不能为空")
     private String addressCode;
 
     /**

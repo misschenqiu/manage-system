@@ -106,4 +106,16 @@ public interface Constant {
         int UPDATE_AGAIN = 3;
     }
 
+    /**
+     * 详情状态 信息 0.未结束，1.终止  2. 未到款  3.完成 4.退回 5.驳回
+     */
+    interface TaskBusinessType{
+        int ZERO = 0;
+        int ONE = 1;
+        int TWE = 2;
+        int THREE = 3;
+        int FOUR = 4;
+        int FIVE = 5;
+    }
+
 }

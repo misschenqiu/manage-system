@@ -20,11 +20,15 @@
     <result column="create_user" jdbcType="VARCHAR" property="createUser" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_account" jdbcType="INTEGER" property="updateAccount" />
+    <result column="finish" jdbcType="INTEGER" property="finish" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="finish_time" jdbcType="TIMESTAMP" property="finishTime" />
   </resultMap>
   <sql id="Base_Column_List">
     id, pid, business_id, task_name, staff_id, staff_name, create_time, remark, money, 
     business_address, longitude, dimension, business_file, part_name, create_account_id, 
-    create_user, update_time, update_account
+    create_user, update_time, update_account, finish, `level`, `status`, finish_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -42,13 +46,17 @@
       remark, money, business_address, 
       longitude, dimension, business_file, 
       part_name, create_account_id, create_user, 
-      update_time, update_account)
+      update_time, update_account, finish, 
+      `level`, `status`, finish_time
+      )
     values (#{pid,jdbcType=INTEGER}, #{businessId,jdbcType=INTEGER}, #{taskName,jdbcType=VARCHAR}, 
       #{staffId,jdbcType=INTEGER}, #{staffName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{remark,jdbcType=VARCHAR}, #{money,jdbcType=DECIMAL}, #{businessAddress,jdbcType=VARCHAR}, 
       #{longitude,jdbcType=VARCHAR}, #{dimension,jdbcType=VARCHAR}, #{businessFile,jdbcType=VARCHAR}, 
       #{partName,jdbcType=VARCHAR}, #{createAccountId,jdbcType=INTEGER}, #{createUser,jdbcType=VARCHAR}, 
-      #{updateTime,jdbcType=TIMESTAMP}, #{updateAccount,jdbcType=INTEGER})
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateAccount,jdbcType=INTEGER}, #{finish,jdbcType=INTEGER}, 
+      #{level,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, #{finishTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.ManageBusinessInfo" useGeneratedKeys="true">
     insert into manage_business_info
@@ -104,6 +112,18 @@
       <if test="updateAccount != null">
         update_account,
       </if>
+      <if test="finish != null">
+        finish,
+      </if>
+      <if test="level != null">
+        `level`,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+      <if test="finishTime != null">
+        finish_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="pid != null">
@@ -156,6 +176,18 @@
       </if>
       <if test="updateAccount != null">
         #{updateAccount,jdbcType=INTEGER},
+      </if>
+      <if test="finish != null">
+        #{finish,jdbcType=INTEGER},
+      </if>
+      <if test="level != null">
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="finishTime != null">
+        #{finishTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -213,6 +245,18 @@
       <if test="updateAccount != null">
         update_account = #{updateAccount,jdbcType=INTEGER},
       </if>
+      <if test="finish != null">
+        finish = #{finish,jdbcType=INTEGER},
+      </if>
+      <if test="level != null">
+        `level` = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="finishTime != null">
+        finish_time = #{finishTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -234,7 +278,11 @@
       create_account_id = #{createAccountId,jdbcType=INTEGER},
       create_user = #{createUser,jdbcType=VARCHAR},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
-      update_account = #{updateAccount,jdbcType=INTEGER}
+      update_account = #{updateAccount,jdbcType=INTEGER},
+      finish = #{finish,jdbcType=INTEGER},
+      `level` = #{level,jdbcType=INTEGER},
+      `status` = #{status,jdbcType=INTEGER},
+      finish_time = #{finishTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

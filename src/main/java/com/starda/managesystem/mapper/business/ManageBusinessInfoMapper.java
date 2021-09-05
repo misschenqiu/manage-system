@@ -1,11 +1,12 @@
 package com.starda.managesystem.mapper.business;
 
+import com.github.yulichang.base.MPJBaseMapper;
 import com.starda.managesystem.pojo.ManageBusinessInfo;
+import org.apache.ibatis.annotations.Mapper;
 
-public interface ManageBusinessInfoMapper {
+@Mapper
+public interface ManageBusinessInfoMapper extends MPJBaseMapper<ManageBusinessInfo> {
     int deleteByPrimaryKey(Integer id);
-
-    int insert(ManageBusinessInfo record);
 
     int insertSelective(ManageBusinessInfo record);
 

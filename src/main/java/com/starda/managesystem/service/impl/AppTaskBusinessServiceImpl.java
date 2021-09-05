@@ -1,6 +1,8 @@
 package com.starda.managesystem.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.starda.managesystem.mapper.business.ManageBusinessInfoMapper;
+import com.starda.managesystem.pojo.ManageBusinessInfo;
 import com.starda.managesystem.service.IAppTaskBusinessService;
 import org.springframework.stereotype.Service;
 
@@ -15,5 +17,5 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class AppTaskBusinessServiceImpl extends ServiceImpl implements IAppTaskBusinessService {
+public class AppTaskBusinessServiceImpl extends ServiceImpl<ManageBusinessInfoMapper, ManageBusinessInfo> implements IAppTaskBusinessService {
 }

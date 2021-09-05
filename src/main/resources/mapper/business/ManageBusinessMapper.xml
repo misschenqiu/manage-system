@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starda.managesystem.mapper.business.ManageBusinessMapper">
+  <resultMap id="BaseResultMap" type="com.starda.managesystem.pojo.ManageBusiness">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="business_name" jdbcType="VARCHAR" property="businessName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_account_id" jdbcType="INTEGER" property="createAccountId" />
+    <result column="create_user_name" jdbcType="VARCHAR" property="createUserName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_account_id" jdbcType="INTEGER" property="updateAccountId" />
+    <result column="business_type" jdbcType="VARCHAR" property="businessType" />
+    <result column="company_id" jdbcType="INTEGER" property="companyId" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="business_sucess" jdbcType="INTEGER" property="businessSucess" />
+    <result column="end_time" jdbcType="TIMESTAMP" property="endTime" />
+    <result column="collect_money" jdbcType="INTEGER" property="collectMoney" />
+    <result column="Insurance_number" jdbcType="VARCHAR" property="insuranceNumber" />
+    <result column="dock_people" jdbcType="VARCHAR" property="dockPeople" />
+    <result column="dock_phone" jdbcType="VARCHAR" property="dockPhone" />
+    <result column="business_img" jdbcType="VARCHAR" property="businessImg" />
+    <result column="money" jdbcType="VARCHAR" property="money" />
+    <result column="Insurance_company" jdbcType="VARCHAR" property="insuranceCompany" />
+    <result column="Insurance_people" jdbcType="VARCHAR" property="insurancePeople" />
+    <result column="Insurance_phone" jdbcType="VARCHAR" property="insurancePhone" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, business_name, remark, create_account_id, create_user_name, create_time, update_time, 
+    update_account_id, business_type, company_id, company_name, business_sucess, end_time, 
+    collect_money, Insurance_number, dock_people, dock_phone, business_img, money, Insurance_company, 
+    Insurance_people, Insurance_phone, `status`
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from manage_business
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from manage_business
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.ManageBusiness" useGeneratedKeys="true">
+    insert into manage_business (business_name, remark, create_account_id, 
+      create_user_name, create_time, update_time, 
+      update_account_id, business_type, company_id, 
+      company_name, business_sucess, end_time, 
+      collect_money, Insurance_number, dock_people, 
+      dock_phone, business_img, money, 
+      Insurance_company, Insurance_people, Insurance_phone, 
+      `status`)
+    values (#{businessName,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{createAccountId,jdbcType=INTEGER}, 
+      #{createUserName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updateAccountId,jdbcType=INTEGER}, #{businessType,jdbcType=VARCHAR}, #{companyId,jdbcType=INTEGER}, 
+      #{companyName,jdbcType=VARCHAR}, #{businessSucess,jdbcType=INTEGER}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{collectMoney,jdbcType=INTEGER}, #{insuranceNumber,jdbcType=VARCHAR}, #{dockPeople,jdbcType=VARCHAR}, 
+      #{dockPhone,jdbcType=VARCHAR}, #{businessImg,jdbcType=VARCHAR}, #{money,jdbcType=VARCHAR}, 
+      #{insuranceCompany,jdbcType=VARCHAR}, #{insurancePeople,jdbcType=VARCHAR}, #{insurancePhone,jdbcType=VARCHAR}, 
+      #{status,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.ManageBusiness" useGeneratedKeys="true">
+    insert into manage_business
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="businessName != null">
+        business_name,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="createAccountId != null">
+        create_account_id,
+      </if>
+      <if test="createUserName != null">
+        create_user_name,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="updateAccountId != null">
+        update_account_id,
+      </if>
+      <if test="businessType != null">
+        business_type,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="businessSucess != null">
+        business_sucess,
+      </if>
+      <if test="endTime != null">
+        end_time,
+      </if>
+      <if test="collectMoney != null">
+        collect_money,
+      </if>
+      <if test="insuranceNumber != null">
+        Insurance_number,
+      </if>
+      <if test="dockPeople != null">
+        dock_people,
+      </if>
+      <if test="dockPhone != null">
+        dock_phone,
+      </if>
+      <if test="businessImg != null">
+        business_img,
+      </if>
+      <if test="money != null">
+        money,
+      </if>
+      <if test="insuranceCompany != null">
+        Insurance_company,
+      </if>
+      <if test="insurancePeople != null">
+        Insurance_people,
+      </if>
+      <if test="insurancePhone != null">
+        Insurance_phone,
+      </if>
+      <if test="status != null">
+        `status`,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="businessName != null">
+        #{businessName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createAccountId != null">
+        #{createAccountId,jdbcType=INTEGER},
+      </if>
+      <if test="createUserName != null">
+        #{createUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccountId != null">
+        #{updateAccountId,jdbcType=INTEGER},
+      </if>
+      <if test="businessType != null">
+        #{businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="businessSucess != null">
+        #{businessSucess,jdbcType=INTEGER},
+      </if>
+      <if test="endTime != null">
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="collectMoney != null">
+        #{collectMoney,jdbcType=INTEGER},
+      </if>
+      <if test="insuranceNumber != null">
+        #{insuranceNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="dockPeople != null">
+        #{dockPeople,jdbcType=VARCHAR},
+      </if>
+      <if test="dockPhone != null">
+        #{dockPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="businessImg != null">
+        #{businessImg,jdbcType=VARCHAR},
+      </if>
+      <if test="money != null">
+        #{money,jdbcType=VARCHAR},
+      </if>
+      <if test="insuranceCompany != null">
+        #{insuranceCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="insurancePeople != null">
+        #{insurancePeople,jdbcType=VARCHAR},
+      </if>
+      <if test="insurancePhone != null">
+        #{insurancePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.starda.managesystem.pojo.ManageBusiness">
+    update manage_business
+    <set>
+      <if test="businessName != null">
+        business_name = #{businessName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createAccountId != null">
+        create_account_id = #{createAccountId,jdbcType=INTEGER},
+      </if>
+      <if test="createUserName != null">
+        create_user_name = #{createUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateAccountId != null">
+        update_account_id = #{updateAccountId,jdbcType=INTEGER},
+      </if>
+      <if test="businessType != null">
+        business_type = #{businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="businessSucess != null">
+        business_sucess = #{businessSucess,jdbcType=INTEGER},
+      </if>
+      <if test="endTime != null">
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="collectMoney != null">
+        collect_money = #{collectMoney,jdbcType=INTEGER},
+      </if>
+      <if test="insuranceNumber != null">
+        Insurance_number = #{insuranceNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="dockPeople != null">
+        dock_people = #{dockPeople,jdbcType=VARCHAR},
+      </if>
+      <if test="dockPhone != null">
+        dock_phone = #{dockPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="businessImg != null">
+        business_img = #{businessImg,jdbcType=VARCHAR},
+      </if>
+      <if test="money != null">
+        money = #{money,jdbcType=VARCHAR},
+      </if>
+      <if test="insuranceCompany != null">
+        Insurance_company = #{insuranceCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="insurancePeople != null">
+        Insurance_people = #{insurancePeople,jdbcType=VARCHAR},
+      </if>
+      <if test="insurancePhone != null">
+        Insurance_phone = #{insurancePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        `status` = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.starda.managesystem.pojo.ManageBusiness">
+    update manage_business
+    set business_name = #{businessName,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      create_account_id = #{createAccountId,jdbcType=INTEGER},
+      create_user_name = #{createUserName,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      update_account_id = #{updateAccountId,jdbcType=INTEGER},
+      business_type = #{businessType,jdbcType=VARCHAR},
+      company_id = #{companyId,jdbcType=INTEGER},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      business_sucess = #{businessSucess,jdbcType=INTEGER},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      collect_money = #{collectMoney,jdbcType=INTEGER},
+      Insurance_number = #{insuranceNumber,jdbcType=VARCHAR},
+      dock_people = #{dockPeople,jdbcType=VARCHAR},
+      dock_phone = #{dockPhone,jdbcType=VARCHAR},
+      business_img = #{businessImg,jdbcType=VARCHAR},
+      money = #{money,jdbcType=VARCHAR},
+      Insurance_company = #{insuranceCompany,jdbcType=VARCHAR},
+      Insurance_people = #{insurancePeople,jdbcType=VARCHAR},
+      Insurance_phone = #{insurancePhone,jdbcType=VARCHAR},
+      `status` = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
