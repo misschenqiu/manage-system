@@ -106,6 +106,55 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
     }
 
     @Override
+    public TaskInfoVO getTaskInfo(UserVO user, ConfirmTaskPO businessId) throws Exception {
+        // 获取到任务信息
+        ManageBusinessInfo manageBusinessInfo = this.taskBusinessService.getOne(new LambdaQueryWrapper<ManageBusinessInfo>()
+                .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE)
+                .eq(ManageBusinessInfo::getId, businessId.getBusinessId()));
+        if (manageBusinessInfo == null) {
+            return null;
+        }
+        TaskInfoVO taskInfoVO = BeanUtil.toBean(manageBusinessInfo, TaskInfoVO.class);
+        // 获取到管理信息
+        List<TaskInfoRemarkVO> manageRemark = this.businessRemarkMapper.selectJoinList(TaskInfoRemarkVO.class, new MPJLambdaWrapper<ManageBusinessRemark>()
+                .selectAll(ManageBusinessRemark.class)
+                .eq(ManageBusinessRemark::getBusinessInfoId, manageBusinessInfo.getId())
+                .eq(ManageBusinessRemark::getRemarkType, Constant.BaseNumberManage.TWO));
+        if (null != manageRemark && !manageRemark.isEmpty()) {
+            taskInfoVO.setManageRemarkVO(manageRemark.get(Constant.BaseNumberManage.ZERO));
+        }
+        // 获取员工信息
+        List<TaskStaffInfoVO> taskStaffInfoVOList = this.businessRemarkMapper.selectJoinList(TaskStaffInfoVO.class, new MPJLambdaWrapper<ManageBusinessRemark>()
+                .selectAll(ManageBusinessRemark.class)
+                .selectAs(ManageBusinessRemark::getCreateUserName, TaskStaffInfoVO::getStaffName)
+                .selectAs(SysStaff::getHead_img, TaskStaffInfoVO::getStaffHeadImg)
+                .leftJoin(SysStaff.class, SysStaff::getId, ManageBusinessRemark::getCreateAccountId)
+                .eq(ManageBusinessRemark::getRemarkType, Constant.BaseNumberManage.ONE)
+                .eq(ManageBusinessRemark::getBusinessInfoId, manageBusinessInfo.getId()));
+        if (null == manageRemark || manageRemark.isEmpty()) {
+            return taskInfoVO;
+        }
+        taskInfoVO.setStaffInfoVO(taskStaffInfoVOList.get(Constant.BaseNumberManage.ZERO));
+        return taskInfoVO;
+    }
+
+    @Override
+    public void updateTaskInfo(UserVO user, UpdateTaskInfoPO taskInfo) throws Exception {
+        // 判断是否可以修改
+        ManageBusinessInfo taskBusinessInfo = this.taskBusinessService.getOne(new LambdaQueryWrapper<ManageBusinessInfo>()
+                .eq(ManageBusinessInfo::getId, taskInfo.getId())
+                .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE));
+        if(Constant.TaskBusinessType.CAN_UPDATE_AND_UPDATE.contains(taskBusinessInfo.getFinish())){
+            throw new ManageStarException("该任务已经完成，不能修改");
+        }
+        ManageBusinessInfo manageBusinessInfo = BeanUtil.toBean(taskInfo, ManageBusinessInfo.class);
+        manageBusinessInfo.setUpdateTime(new Date());
+        manageBusinessInfo.setUpdateAccount(user.getId());
+
+        this.taskBusinessService.updateById(manageBusinessInfo);
+    }
+
+    @Override
     public Result<TaskInfoLIstVO> getTaskInfoList(UserVO user, TaskInfoQueryPO po) throws Exception {
         //1. 获取到任务信息
         Page<ManageBusinessInfo> page = this.taskBusinessService.page(new Page<ManageBusinessInfo>(po.getCurrentPage(), po.getPageSize()), new LambdaQueryWrapper<ManageBusinessInfo>()

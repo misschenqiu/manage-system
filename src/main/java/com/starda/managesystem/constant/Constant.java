@@ -1,6 +1,9 @@
 package com.starda.managesystem.constant;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @ProjectName: manage-system
@@ -116,6 +119,7 @@ public interface Constant {
         int THREE = 3;
         int FOUR = 4;
         int FIVE = 5;
+        List<Integer> CAN_UPDATE_AND_UPDATE = new ArrayList<Integer>(Arrays.asList(new Integer[]{0,4,5}));
     }
 
 }

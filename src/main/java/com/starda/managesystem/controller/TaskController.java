@@ -5,10 +5,7 @@ import com.starda.managesystem.config.annotation.AnnotationAuthor;
 import com.starda.managesystem.config.author.UserVO;
 import com.starda.managesystem.pojo.po.CommonIdsPO;
 import com.starda.managesystem.pojo.po.business.*;
-import com.starda.managesystem.pojo.vo.business.BusinessInfoListVO;
-import com.starda.managesystem.pojo.vo.business.BusinessInfoVO;
-import com.starda.managesystem.pojo.vo.business.ConfirmTaskInfoListVO;
-import com.starda.managesystem.pojo.vo.business.TaskInfoLIstVO;
+import com.starda.managesystem.pojo.vo.business.*;
 import com.starda.managesystem.service.IBusinessTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -69,8 +66,9 @@ public class TaskController {
      * @throws Exception
      */
     @PostMapping("/updateTaskInfo")
-    public Result updateTaskInfo(@AnnotationAuthor UserVO user) throws Exception{
+    public Result updateTaskInfo(@AnnotationAuthor UserVO user, @RequestBody @Valid UpdateTaskInfoPO taskInfo) throws Exception{
 
+        this.businessTaskService.updateTaskInfo(user, taskInfo);
 
         return Result.success();
     }
@@ -96,10 +94,11 @@ public class TaskController {
      * @throws Exception
      */
     @PostMapping("/getTaskInfo")
-    public Result getTaskInfo(@AnnotationAuthor UserVO user) throws Exception{
+    public Result getTaskInfo(@AnnotationAuthor UserVO user,  @RequestBody @Valid ConfirmTaskPO businessId) throws Exception{
 
+        TaskInfoVO taskInfo = this.businessTaskService.getTaskInfo(user, businessId);
 
-        return Result.success();
+        return Result.ok().resultPage(taskInfo);
     }
 
     /**
