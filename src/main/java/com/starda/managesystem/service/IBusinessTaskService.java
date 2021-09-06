@@ -6,7 +6,10 @@ import com.starda.managesystem.pojo.po.CommonIdsPO;
 import com.starda.managesystem.pojo.po.business.*;
 import com.starda.managesystem.pojo.vo.business.BusinessInfoListVO;
 import com.starda.managesystem.pojo.vo.business.BusinessInfoVO;
+import com.starda.managesystem.pojo.vo.business.ConfirmTaskInfoListVO;
 import com.starda.managesystem.pojo.vo.business.TaskInfoLIstVO;
+
+import java.util.List;
 
 /**
  * @ProjectName: manage-system
@@ -50,7 +53,7 @@ public interface IBusinessTaskService {
      * @param po
      * @throws Exception
      */
-    void confirmTaskInfo(UserVO user, ConfirmTaskPO po) throws Exception;
+    List<ConfirmTaskInfoListVO> confirmTaskInfo(UserVO user, ConfirmTaskPO po) throws Exception;
 
     /****************** 业务信息 ********************/
 

@@ -57,6 +57,11 @@ public class ManageBusinessRemark implements Serializable {
      */
     private Integer businessInfoId;
 
+    /**
+     * 1.员工，2.管理员
+     */
+    private Integer remarkType;
+
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -79,7 +84,8 @@ public class ManageBusinessRemark implements Serializable {
             && (this.getUpdateUser() == null ? other.getUpdateUser() == null : this.getUpdateUser().equals(other.getUpdateUser()))
             && (this.getUpdateUserName() == null ? other.getUpdateUserName() == null : this.getUpdateUserName().equals(other.getUpdateUserName()))
             && (this.getRemarkImg() == null ? other.getRemarkImg() == null : this.getRemarkImg().equals(other.getRemarkImg()))
-            && (this.getBusinessInfoId() == null ? other.getBusinessInfoId() == null : this.getBusinessInfoId().equals(other.getBusinessInfoId()));
+            && (this.getBusinessInfoId() == null ? other.getBusinessInfoId() == null : this.getBusinessInfoId().equals(other.getBusinessInfoId()))
+            && (this.getRemarkType() == null ? other.getRemarkType() == null : this.getRemarkType().equals(other.getRemarkType()));
     }
 
     @Override
@@ -95,6 +101,7 @@ public class ManageBusinessRemark implements Serializable {
         result = prime * result + ((getUpdateUserName() == null) ? 0 : getUpdateUserName().hashCode());
         result = prime * result + ((getRemarkImg() == null) ? 0 : getRemarkImg().hashCode());
         result = prime * result + ((getBusinessInfoId() == null) ? 0 : getBusinessInfoId().hashCode());
+        result = prime * result + ((getRemarkType() == null) ? 0 : getRemarkType().hashCode());
         return result;
     }
 
@@ -113,6 +120,7 @@ public class ManageBusinessRemark implements Serializable {
         sb.append(", updateUserName=").append(updateUserName);
         sb.append(", remarkImg=").append(remarkImg);
         sb.append(", businessInfoId=").append(businessInfoId);
+        sb.append(", remarkType=").append(remarkType);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

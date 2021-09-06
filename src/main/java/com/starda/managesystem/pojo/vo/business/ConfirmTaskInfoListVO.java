@@ -3,21 +3,19 @@ package com.starda.managesystem.pojo.vo.business;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 /**
  * @ProjectName: manage-system
  * @Package: com.starda.managesystem.pojo.vo.business
- * @ClassName: TeaskInfoLIstVO
+ * @ClassName: ConfirmTaskInfoList
  * @Author: chenqiu
- * @Description: 任务详情列表
- * @Date: 2021/9/4 13:33
+ * @Description: 流程图信息实例
+ * @Date: 2021/9/6 23:08
  * @Version: 1.0
  */
-
 @Data
-public class TaskInfoLIstVO {
+public class ConfirmTaskInfoListVO {
 
     private Integer id;
 
@@ -30,11 +28,6 @@ public class TaskInfoLIstVO {
      * 任务名称
      */
     private String taskName;
-
-    /**
-     * 员工名称
-     */
-    private String staffName;
 
     /**
      * 创建时间
@@ -74,9 +67,10 @@ public class TaskInfoLIstVO {
 
 
     /**
-     * 0.未结束，1.终止  2. 未到款  3.完成 4.退回 5.驳回
+     * 0.未结束，1.终止  2. 未到款  3.完成
      */
     private Integer finish;
+    private String finishType;
 
     /**
      * 完成时间
@@ -85,8 +79,18 @@ public class TaskInfoLIstVO {
     private Date finishTime;
 
     /**
+     * 任务层次
+     */
+    private Integer level;
+
+    /**
      * 管理员备注
      */
     private TaskInfoRemarkVO manageRemarkVO;
+
+    /**
+     * 员工确认信息
+     */
+    private TaskStaffInfoVO staffInfoVO;
 
 }

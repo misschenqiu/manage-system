@@ -7,6 +7,7 @@ import com.starda.managesystem.pojo.po.CommonIdsPO;
 import com.starda.managesystem.pojo.po.business.*;
 import com.starda.managesystem.pojo.vo.business.BusinessInfoListVO;
 import com.starda.managesystem.pojo.vo.business.BusinessInfoVO;
+import com.starda.managesystem.pojo.vo.business.ConfirmTaskInfoListVO;
 import com.starda.managesystem.pojo.vo.business.TaskInfoLIstVO;
 import com.starda.managesystem.service.IBusinessTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * @ProjectName: manage-system
@@ -120,10 +122,11 @@ public class TaskController {
      * @throws Exception
      */
     @PostMapping("/getTaskInfoViw")
-    public Result getTaskInfoViw(@AnnotationAuthor UserVO user) throws Exception{
+    public Result getTaskInfoViw(@AnnotationAuthor UserVO user, @RequestBody @Valid ConfirmTaskPO businessId) throws Exception{
 
+        List<ConfirmTaskInfoListVO> confirmTaskInfoListVOS = this.businessTaskService.confirmTaskInfo(user, businessId);
 
-        return Result.success();
+        return Result.ok().resultPage(confirmTaskInfoListVOS);
     }
 
 

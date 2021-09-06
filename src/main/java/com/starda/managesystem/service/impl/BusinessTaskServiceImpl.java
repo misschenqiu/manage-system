@@ -15,12 +15,11 @@ import com.starda.managesystem.mapper.business.ManageBusinessRemarkMapper;
 import com.starda.managesystem.pojo.ManageBusiness;
 import com.starda.managesystem.pojo.ManageBusinessInfo;
 import com.starda.managesystem.pojo.ManageBusinessRemark;
+import com.starda.managesystem.pojo.SysStaff;
+import com.starda.managesystem.pojo.enums.FinishTimeEnums;
 import com.starda.managesystem.pojo.po.CommonIdsPO;
 import com.starda.managesystem.pojo.po.business.*;
-import com.starda.managesystem.pojo.vo.business.BusinessInfoListVO;
-import com.starda.managesystem.pojo.vo.business.BusinessInfoVO;
-import com.starda.managesystem.pojo.vo.business.TaskInfoLIstVO;
-import com.starda.managesystem.pojo.vo.business.TaskInfoRemarkVO;
+import com.starda.managesystem.pojo.vo.business.*;
 import com.starda.managesystem.service.IAppTaskBusinessService;
 import com.starda.managesystem.service.IBusinessTaskService;
 import lombok.extern.log4j.Log4j2;
@@ -132,8 +131,53 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
     }
 
     @Override
-    public void confirmTaskInfo(UserVO user, ConfirmTaskPO po) throws Exception {
+    public List<ConfirmTaskInfoListVO> confirmTaskInfo(UserVO user, ConfirmTaskPO po) throws Exception {
 
+        //1. 获取到改业务所有任务信息
+        List<ManageBusinessInfo> businessInfoList = this.taskBusinessService.list(new LambdaQueryWrapper<ManageBusinessInfo>()
+                .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE)
+                .eq(ManageBusinessInfo::getBusinessId, po.getBusinessId())
+                .orderByAsc(ManageBusinessInfo::getLevel));
+
+        //2. 获取到业务流程管理员确认信息
+        List<TaskInfoLIstVO> taskInfoLIstVOS = BeanUtil.copyToList(businessInfoList, TaskInfoLIstVO.class);
+        List<Integer> businessInfoIds = taskInfoLIstVOS.stream().map(taskInfo -> taskInfo.getId()).collect(Collectors.toList());
+        List<TaskInfoRemarkVO> taskInfoRemarkVOS = this.businessRemarkMapper.selectJoinList(TaskInfoRemarkVO.class, new MPJLambdaWrapper<ManageBusinessRemark>()
+                .selectAll(ManageBusinessRemark.class)
+                .eq(ManageBusinessRemark::getRemarkType, Constant.BaseNumberManage.TWO)
+                .in(businessInfoIds != null && !businessInfoIds.isEmpty(), ManageBusinessRemark::getBusinessInfoId, businessInfoIds));
+
+        //3. 获取到员工信息
+        List<TaskStaffInfoVO> taskStaffInfoVOList = this.businessRemarkMapper.selectJoinList(TaskStaffInfoVO.class, new MPJLambdaWrapper<ManageBusinessRemark>()
+                .selectAll(ManageBusinessRemark.class)
+                .selectAs(ManageBusinessRemark::getCreateUserName, TaskStaffInfoVO::getStaffName)
+                .selectAs(SysStaff::getHead_img, TaskStaffInfoVO::getStaffHeadImg)
+                .leftJoin(SysStaff.class, SysStaff::getId, ManageBusinessRemark::getCreateAccountId)
+                .eq(ManageBusinessRemark::getRemarkType, Constant.BaseNumberManage.ONE)
+                .in(businessInfoIds != null && !businessInfoIds.isEmpty(), ManageBusinessRemark::getBusinessInfoId, businessInfoIds));
+
+        //4. 处理数据
+        Map<Integer, List<TaskInfoRemarkVO>> manageMap = taskInfoRemarkVOS.stream().collect(Collectors.groupingBy(TaskInfoRemarkVO::getBusinessInfoId));
+        Map<Integer, List<TaskStaffInfoVO>> staffMap = taskStaffInfoVOList.stream().collect(Collectors.groupingBy(TaskStaffInfoVO::getBusinessInfoId));
+
+        List<ConfirmTaskInfoListVO> confirmTaskInfoListVOS = BeanUtil.copyToList(businessInfoList, ConfirmTaskInfoListVO.class);
+
+        confirmTaskInfoListVOS.stream().forEach(confirm -> {
+            // 管理员
+            List<TaskInfoRemarkVO> taskInfoRemarkList = manageMap.get(confirm.getId());
+            if (null != taskInfoRemarkList && !taskInfoRemarkList.isEmpty()) {
+                confirm.setManageRemarkVO(taskInfoRemarkList.get(Constant.BaseNumberManage.ZERO));
+            }
+            // 员工
+            List<TaskStaffInfoVO> staffList = staffMap.get(confirm.getId());
+            if (null != staffList && !staffList.isEmpty()) {
+                confirm.setStaffInfoVO(staffList.get(Constant.BaseNumberManage.ZERO));
+            }
+            // 状态处理
+            confirm.setFinishType(FinishTimeEnums.getMessage(confirm.getFinish()));
+        });
+
+        return confirmTaskInfoListVOS;
     }
 
     /*****         业务信息          *****/

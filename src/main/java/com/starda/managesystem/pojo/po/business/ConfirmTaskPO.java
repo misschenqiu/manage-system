@@ -26,6 +26,6 @@ public class ConfirmTaskPO {
     /**
      * 任务任务类型
      */
-
+    private Integer type;
 
 }
