@@ -180,7 +180,20 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
 
     @Override
     public void updateBusinessInfo(UserVO user, UpdateBusinessInfoPO businessInfo) throws Exception {
+        boolean flash = true;
+        if(user.getAuthorities().contains(Constant.BaseStringInfoManage.MANAGE)){
+            flash = false;
+        }
+        // 获取修改信息
+        ManageBusiness manageBusiness = this.getBaseMapper().selectByPrimaryKey(businessInfo.getId());
+        if(!flash && !manageBusiness.getCreateAccountId().equals(user.getId())){
+            throw new ManageStarException("对不起，你没有需改权限");
+        }
+        ManageBusiness manageBusinessInfo = BeanUtil.toBean(businessInfo, ManageBusiness.class);
+        manageBusinessInfo.setUpdateTime(new Date());
+        manageBusinessInfo.setUpdateAccountId(user.getId());
 
+        this.updateById(manageBusinessInfo);
     }
 
     @Override
