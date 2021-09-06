@@ -10,10 +10,7 @@ import com.starda.managesystem.pojo.vo.business.BusinessInfoVO;
 import com.starda.managesystem.pojo.vo.business.TaskInfoLIstVO;
 import com.starda.managesystem.service.IBusinessTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -167,9 +164,9 @@ public class TaskController {
      * @throws Exception
      */
     @PostMapping("/removeBusinessInfo")
-    public Result removeBusinessInfo(@AnnotationAuthor UserVO user, @RequestBody @Valid CommonIdsPO ids) throws Exception{
+    public Result removeBusinessInfo(@AnnotationAuthor UserVO user, @RequestBody @Valid CommonIdsPO idList) throws Exception{
 
-        this.businessTaskService.removeBusinessInfo(user, ids);
+        this.businessTaskService.removeBusinessInfo(user, idList);
 
         return Result.success();
     }
@@ -194,8 +191,8 @@ public class TaskController {
      * @return
      * @throws Exception
      */
-    @PostMapping("/queryBusinessInfo")
-    public Result queryBusinessInfo(@AnnotationAuthor UserVO user, @RequestBody @NotNull(message = "请选择业务") Integer businessId) throws Exception{
+    @PostMapping("/queryBusinessInfo/{businessId}")
+    public Result queryBusinessInfo(@AnnotationAuthor UserVO user,@PathVariable @NotNull(message = "请选择业务") Integer businessId) throws Exception{
 
         BusinessInfoVO businessInfo = this.businessTaskService.getBusinessInfo(user, businessId);
 

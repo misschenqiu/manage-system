@@ -133,7 +133,7 @@ public class HandleException {
      * @return
      */
     @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Result bootException(Exception e) {
         log.error("全局错误" + e.getMessage());

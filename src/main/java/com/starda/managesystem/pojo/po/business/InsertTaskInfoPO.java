@@ -4,7 +4,6 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 
 /**
  * @ProjectName: manage-system
@@ -33,7 +32,7 @@ public class InsertTaskInfoPO {
     /**
      * 员工id
      */
-    @NotBlank(message = "请选择员工")
+    @NotNull(message = "请选择员工")
     private Integer staffId;
 
     /**
@@ -50,7 +49,7 @@ public class InsertTaskInfoPO {
     /**
      * 员工提成
      */
-    private BigDecimal money;
+    private String money;
 
     /**
      * 业务地址

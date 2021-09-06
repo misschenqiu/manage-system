@@ -50,7 +50,7 @@ public class TaskInfoLIstVO {
     /**
      * 员工提成
      */
-    private BigDecimal money;
+    private String money;
 
     /**
      * 业务地址

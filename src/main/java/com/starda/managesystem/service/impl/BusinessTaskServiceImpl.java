@@ -97,7 +97,7 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
                 .eq(flash, ManageBusinessInfo::getCreateAccountId, user.getId())
                 .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE)
                 .in(ManageBusinessInfo::getFinish, finishType)
-                .in(ManageBusinessInfo::getId, ids));
+                .in(ManageBusinessInfo::getId, ids.getIds()));
         // 修改内容
         list.stream().forEach(param -> {
             param.setStatus(Constant.BaseNumberManage.ZERO);
@@ -117,6 +117,7 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         List<TaskInfoLIstVO> taskInfoLIstVOS = BeanUtil.copyToList(page.getRecords(), TaskInfoLIstVO.class);
         List<Integer> businessInfoIds = taskInfoLIstVOS.stream().map(taskInfo -> taskInfo.getId()).collect(Collectors.toList());
         List<TaskInfoRemarkVO> taskInfoRemarkVOS = this.businessRemarkMapper.selectJoinList(TaskInfoRemarkVO.class, new MPJLambdaWrapper<ManageBusinessRemark>()
+                .selectAll(ManageBusinessRemark.class)
                 .in(businessInfoIds != null && !businessInfoIds.isEmpty(), ManageBusinessRemark::getBusinessInfoId, businessInfoIds));
 
         // 处理数据
@@ -157,7 +158,7 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         // 查询是否有正在完成的任务，或者已经完成
         List<ManageBusinessInfo> list = this.taskBusinessService.list(new LambdaQueryWrapper<ManageBusinessInfo>()
                 .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE)
-                .in(ManageBusinessInfo::getBusinessId, ids));
+                .in(ManageBusinessInfo::getBusinessId, ids.getIds()));
         if (null != list && !list.isEmpty()) {
             throw new ManageStarException("业务存在任务详情，不能删除");
         }

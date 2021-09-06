@@ -10,7 +10,7 @@
     <result column="staff_name" jdbcType="VARCHAR" property="staffName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="money" jdbcType="DECIMAL" property="money" />
+    <result column="money" jdbcType="VARCHAR" property="money" />
     <result column="business_address" jdbcType="VARCHAR" property="businessAddress" />
     <result column="longitude" jdbcType="VARCHAR" property="longitude" />
     <result column="dimension" jdbcType="VARCHAR" property="dimension" />
@@ -51,7 +51,7 @@
       )
     values (#{pid,jdbcType=INTEGER}, #{businessId,jdbcType=INTEGER}, #{taskName,jdbcType=VARCHAR}, 
       #{staffId,jdbcType=INTEGER}, #{staffName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{remark,jdbcType=VARCHAR}, #{money,jdbcType=DECIMAL}, #{businessAddress,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{money,jdbcType=VARCHAR}, #{businessAddress,jdbcType=VARCHAR},
       #{longitude,jdbcType=VARCHAR}, #{dimension,jdbcType=VARCHAR}, #{businessFile,jdbcType=VARCHAR}, 
       #{partName,jdbcType=VARCHAR}, #{createAccountId,jdbcType=INTEGER}, #{createUser,jdbcType=VARCHAR}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{updateAccount,jdbcType=INTEGER}, #{finish,jdbcType=INTEGER}, 
@@ -148,7 +148,7 @@
         #{remark,jdbcType=VARCHAR},
       </if>
       <if test="money != null">
-        #{money,jdbcType=DECIMAL},
+        #{money,jdbcType=VARCHAR},
       </if>
       <if test="businessAddress != null">
         #{businessAddress,jdbcType=VARCHAR},
@@ -216,7 +216,7 @@
         remark = #{remark,jdbcType=VARCHAR},
       </if>
       <if test="money != null">
-        money = #{money,jdbcType=DECIMAL},
+        money = #{money,jdbcType=VARCHAR},
       </if>
       <if test="businessAddress != null">
         business_address = #{businessAddress,jdbcType=VARCHAR},
@@ -269,7 +269,7 @@
       staff_name = #{staffName,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       remark = #{remark,jdbcType=VARCHAR},
-      money = #{money,jdbcType=DECIMAL},
+      money = #{money,jdbcType=VARCHAR},
       business_address = #{businessAddress,jdbcType=VARCHAR},
       longitude = #{longitude,jdbcType=VARCHAR},
       dimension = #{dimension,jdbcType=VARCHAR},
