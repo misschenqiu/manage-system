@@ -1,6 +1,7 @@
 package com.starda.managesystem.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -63,9 +64,9 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
          */
         ManageBusinessInfo manageBusinessInfo = BeanUtil.toBean(taskInfo, ManageBusinessInfo.class);
         // 排序 父类
-        if(null == list || list.isEmpty()){
+        if (null == list || list.isEmpty()) {
             manageBusinessInfo.setLevel(Constant.BaseNumberManage.ONE);
-        }else {
+        } else {
             ManageBusinessInfo businessInfo = list.get(Constant.BaseNumberManage.ZERO);
             manageBusinessInfo.setLevel(businessInfo.getLevel() + Constant.BaseNumberManage.ONE);
             manageBusinessInfo.setPid(businessInfo.getId());
@@ -88,7 +89,7 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
     public void removeTaskInfo(UserVO user, CommonIdsPO ids) throws Exception {
         // 判断是否是大管理员
         boolean flash = false;
-        if(user.getAuthorities().contains(Constant.BaseStringInfoManage.MANAGE)){
+        if (user.getAuthorities().contains(Constant.BaseStringInfoManage.MANAGE)) {
             flash = true;
         }
         List<Integer> finishType = new ArrayList<Integer>(Arrays.asList(new Integer[]{Constant.TaskBusinessType.ZERO, Constant.TaskBusinessType.FOUR, Constant.TaskBusinessType.FIVE}));
@@ -98,7 +99,7 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
                 .in(ManageBusinessInfo::getFinish, finishType)
                 .in(ManageBusinessInfo::getId, ids));
         // 修改内容
-        list.stream().forEach(param->{
+        list.stream().forEach(param -> {
             param.setStatus(Constant.BaseNumberManage.ZERO);
         });
         this.taskBusinessService.updateBatchById(list);
@@ -116,13 +117,13 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         List<TaskInfoLIstVO> taskInfoLIstVOS = BeanUtil.copyToList(page.getRecords(), TaskInfoLIstVO.class);
         List<Integer> businessInfoIds = taskInfoLIstVOS.stream().map(taskInfo -> taskInfo.getId()).collect(Collectors.toList());
         List<TaskInfoRemarkVO> taskInfoRemarkVOS = this.businessRemarkMapper.selectJoinList(TaskInfoRemarkVO.class, new MPJLambdaWrapper<ManageBusinessRemark>()
-                .in(businessInfoIds != null && !businessInfoIds.isEmpty(),ManageBusinessRemark::getBusinessInfoId, businessInfoIds));
+                .in(businessInfoIds != null && !businessInfoIds.isEmpty(), ManageBusinessRemark::getBusinessInfoId, businessInfoIds));
 
         // 处理数据
         Map<Integer, List<TaskInfoRemarkVO>> integerListMap = taskInfoRemarkVOS.stream().collect(Collectors.groupingBy(TaskInfoRemarkVO::getBusinessInfoId));
-        taskInfoLIstVOS.stream().forEach(task->{
+        taskInfoLIstVOS.stream().forEach(task -> {
             List<TaskInfoRemarkVO> taskInfoRemarkList = integerListMap.get(task.getId());
-            if(null != taskInfoRemarkList && !taskInfoRemarkList.isEmpty()){
+            if (null != taskInfoRemarkList && !taskInfoRemarkList.isEmpty()) {
                 task.setManageRemarkVO(taskInfoRemarkList.get(Constant.BaseNumberManage.ZERO));
             }
         });
@@ -157,36 +158,50 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         List<ManageBusinessInfo> list = this.taskBusinessService.list(new LambdaQueryWrapper<ManageBusinessInfo>()
                 .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE)
                 .in(ManageBusinessInfo::getBusinessId, ids));
-        if(null != list && !list.isEmpty()){
+        if (null != list && !list.isEmpty()) {
             throw new ManageStarException("业务存在任务详情，不能删除");
         }
         // 查询是否是自己创建
         boolean flash = false;
-        if(user.getAuthorities().contains(Constant.BaseStringInfoManage.MANAGE)){
+        if (user.getAuthorities().contains(Constant.BaseStringInfoManage.MANAGE)) {
             flash = true;
         }
         List<ManageBusiness> removeIds = this.list(new LambdaQueryWrapper<ManageBusiness>().eq(flash, ManageBusiness::getCreateAccountId, user.getId())
                 .eq(ManageBusiness::getStatus, Constant.BaseNumberManage.ONE)
                 .in(ManageBusiness::getId, ids.getIds()));
         // 修改状态
-        removeIds.stream().forEach(businessInfo -> {businessInfo.setStatus(Constant.BaseNumberManage.ZERO);});
+        removeIds.stream().forEach(businessInfo -> {
+            businessInfo.setStatus(Constant.BaseNumberManage.ZERO);
+        });
         this.updateBatchById(removeIds);
     }
 
     @Override
     public Result<BusinessInfoListVO> getBusinessInfoList(UserVO user, QueryBusinessInfoPO po) throws Exception {
-        return null;
+        boolean flash = true;
+        if (user.getAuthorities().contains(Constant.BaseStringInfoManage.MANAGE)) {
+            flash = false;
+        }
+        // 获取数据
+        Page<ManageBusiness> manageBusinessPage = this.getBaseMapper().selectPage(new Page<ManageBusiness>(po.getCurrentPage(), po.getPageSize()), new LambdaQueryWrapper<ManageBusiness>()
+                .eq(ManageBusiness::getStatus, Constant.BaseNumberManage.ONE)
+                .eq(flash, ManageBusiness::getCreateAccountId, user.getId())
+                .eq(po.getBusinessSucess() != null, ManageBusiness::getBusinessSucess, po.getBusinessSucess())
+                .eq(po.getCollectMoney() != null, ManageBusiness::getCollectMoney, po.getCollectMoney())
+                .like(StrUtil.isNotBlank(po.getBusinessName()), ManageBusiness::getCreateUserName, po.getBusinessName())
+                .orderByDesc(ManageBusiness::getCreateTime));
+        return Result.ok().resultPage(BeanUtil.copyToList(manageBusinessPage.getRecords(), BusinessInfoListVO.class), manageBusinessPage.getCurrent(), manageBusinessPage.getSize(), manageBusinessPage.getTotal());
     }
 
     @Override
     public void updateBusinessInfo(UserVO user, UpdateBusinessInfoPO businessInfo) throws Exception {
         boolean flash = true;
-        if(user.getAuthorities().contains(Constant.BaseStringInfoManage.MANAGE)){
+        if (user.getAuthorities().contains(Constant.BaseStringInfoManage.MANAGE)) {
             flash = false;
         }
         // 获取修改信息
         ManageBusiness manageBusiness = this.getBaseMapper().selectByPrimaryKey(businessInfo.getId());
-        if(!flash && !manageBusiness.getCreateAccountId().equals(user.getId())){
+        if (!flash && !manageBusiness.getCreateAccountId().equals(user.getId())) {
             throw new ManageStarException("对不起，你没有需改权限");
         }
         ManageBusiness manageBusinessInfo = BeanUtil.toBean(businessInfo, ManageBusiness.class);
@@ -198,6 +213,17 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
 
     @Override
     public BusinessInfoVO getBusinessInfo(UserVO user, Integer businessId) throws Exception {
-        return null;
+        boolean flash = true;
+        // 判断权限
+        if (user.getAuthorities().contains(Constant.BaseStringInfoManage.MANAGE)) {
+            flash = false;
+        }
+        ManageBusiness manageBusiness = this.getBaseMapper().selectOne(new LambdaQueryWrapper<ManageBusiness>()
+                .eq(ManageBusiness::getId, businessId)
+                .eq(ManageBusiness::getStatus, Constant.BaseNumberManage.ONE)
+                .eq(flash, ManageBusiness::getCreateAccountId, user.getId()));
+        // 转参数
+        BusinessInfoVO businessInfoVO = BeanUtil.toBean(manageBusiness, BusinessInfoVO.class);
+        return businessInfoVO;
     }
 }

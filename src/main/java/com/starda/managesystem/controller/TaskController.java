@@ -55,7 +55,7 @@ public class TaskController {
      * @return
      * @throws Exception
      */
-    @PostMapping("/insertTaskInfo")
+    @PostMapping("/removeTaskInfo")
     public Result removeTaskInfo(@AnnotationAuthor UserVO user, @RequestBody @Valid CommonIdsPO taskInfo) throws Exception{
 
         this.businessTaskService.removeTaskInfo(user, taskInfo);
