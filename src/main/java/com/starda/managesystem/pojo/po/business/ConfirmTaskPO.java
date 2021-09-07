@@ -20,7 +20,7 @@ public class ConfirmTaskPO {
     /**
      * 业务id
      */
-    @NotNull(message = "业务id不能为空")
+    @NotNull(message = "id不能为空")
     private Integer businessId;
 
     /**
