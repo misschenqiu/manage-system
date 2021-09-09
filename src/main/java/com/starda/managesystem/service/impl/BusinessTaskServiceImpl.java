@@ -57,7 +57,8 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         List<ManageBusinessInfo> list = this.taskBusinessService.list(new LambdaQueryWrapper<ManageBusinessInfo>()
                 .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE)
                 .eq(ManageBusinessInfo::getBusinessId, taskInfo.getBusinessId())
-                .orderByDesc(ManageBusinessInfo::getLevel));
+                .orderByDesc(ManageBusinessInfo::getLevel)
+                .orderByDesc(ManageBusinessInfo::getCreateTime));
 
         /**
          * 分装参数
@@ -69,7 +70,6 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         } else {
             ManageBusinessInfo businessInfo = list.get(Constant.BaseNumberManage.ZERO);
             manageBusinessInfo.setLevel(businessInfo.getLevel() + Constant.BaseNumberManage.ONE);
-            manageBusinessInfo.setPid(businessInfo.getId());
         }
         // 状态
         manageBusinessInfo.setStatus(Constant.BaseNumberManage.ONE);
@@ -116,22 +116,34 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
             return null;
         }
         TaskInfoVO taskInfoVO = BeanUtil.toBean(manageBusinessInfo, TaskInfoVO.class);
-        // 获取到管理信息
-        List<TaskInfoRemarkVO> manageRemark = this.businessRemarkMapper.selectJoinList(TaskInfoRemarkVO.class, new MPJLambdaWrapper<ManageBusinessRemark>()
+        // 获取到管理 提交 信息
+        MPJLambdaWrapper<ManageBusinessRemark> manageWrapper = new MPJLambdaWrapper<ManageBusinessRemark>()
                 .selectAll(ManageBusinessRemark.class)
-                .eq(ManageBusinessRemark::getBusinessInfoId, manageBusinessInfo.getId())
-                .eq(ManageBusinessRemark::getRemarkType, Constant.BaseNumberManage.TWO));
+                .eq(ManageBusinessRemark::getRemarkType, Constant.PeopleType.STAFF);
+        if (manageBusinessInfo.getFinish().equals(Constant.TaskBusinessType.FIVE) && manageBusinessInfo.getPid() != null){
+            manageWrapper.eq(ManageBusinessRemark::getBusinessInfoId, manageBusinessInfo.getPid());
+        }else {
+            manageWrapper.eq(ManageBusinessRemark::getBusinessInfoId, manageBusinessInfo.getId());
+        }
+        List<TaskInfoRemarkVO> manageRemark = this.businessRemarkMapper.selectJoinList(TaskInfoRemarkVO.class, manageWrapper);
         if (null != manageRemark && !manageRemark.isEmpty()) {
             taskInfoVO.setManageRemarkVO(manageRemark.get(Constant.BaseNumberManage.ZERO));
         }
-        // 获取员工信息
-        List<TaskStaffInfoVO> taskStaffInfoVOList = this.businessRemarkMapper.selectJoinList(TaskStaffInfoVO.class, new MPJLambdaWrapper<ManageBusinessRemark>()
+
+        // 获取员工提交信息
+        MPJLambdaWrapper<ManageBusinessRemark> wrapper = new MPJLambdaWrapper<ManageBusinessRemark>()
                 .selectAll(ManageBusinessRemark.class)
                 .selectAs(ManageBusinessRemark::getCreateUserName, TaskStaffInfoVO::getStaffName)
                 .selectAs(SysStaff::getHead_img, TaskStaffInfoVO::getStaffHeadImg)
                 .leftJoin(SysStaff.class, SysStaff::getId, ManageBusinessRemark::getCreateAccountId)
-                .eq(ManageBusinessRemark::getRemarkType, Constant.BaseNumberManage.ONE)
-                .eq(ManageBusinessRemark::getBusinessInfoId, manageBusinessInfo.getId()));
+                .eq(ManageBusinessRemark::getRemarkType, Constant.PeopleType.STAFF);
+        if (manageBusinessInfo.getFinish().equals(Constant.TaskBusinessType.FOUR) && manageBusinessInfo.getPid() != null){
+            wrapper.eq(ManageBusinessRemark::getBusinessInfoId, manageBusinessInfo.getPid());
+        }else {
+            wrapper.eq(ManageBusinessRemark::getBusinessInfoId, manageBusinessInfo.getId());
+        }
+        // 获取员工信息
+        List<TaskStaffInfoVO> taskStaffInfoVOList = this.businessRemarkMapper.selectJoinList(TaskStaffInfoVO.class, wrapper);
         if (null == manageRemark || manageRemark.isEmpty()) {
             return taskInfoVO;
         }
@@ -258,11 +270,13 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
                 ManageBusinessInfo businessInfo = this.taskBusinessService.getById(confirm.getBusinessId());
                 // 1.修改已有数据状态
                 taskInfo.setFinish(Constant.TaskBusinessType.FIVE);
+                this.taskBusinessService.updateById(taskInfo);
                 // 添加新数据
                 businessInfo.setId(null);
                 businessInfo.setConfirmIssue(Constant.ConfirmTaskType.ONE);
                 businessInfo.setFinish(Constant.TaskBusinessType.FIVE);
                 businessInfo.setCreateTime(new Date());
+                businessInfo.setPid(confirm.getBusinessId());
                 businessInfo.setCreateAccountId(user.getId());
                 businessInfo.setCreateUser(user.getStaffName());
                 this.taskBusinessService.save(businessInfo);

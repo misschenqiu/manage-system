@@ -23,6 +23,7 @@ import com.starda.managesystem.service.IAppTaskBusinessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -109,15 +110,25 @@ public class AppTaskBusinessServiceImpl extends ServiceImpl<ManageBusinessInfoMa
         // 添加数据
         this.businessRemarkMapper.insertSelective(remark);
         // 处理数据
+        ManageBusinessInfo taskInfo = new ManageBusinessInfo();
         switch (po.getConfirmType()){
             // 完成
             case Constant.TaskBusinessType.THREE:
-                ManageBusinessInfo taskInfo = new ManageBusinessInfo();
                 taskInfo.setStaffSubmit(Constant.StaffSubmitType.SUBMIT_YES);
                 this.updateById(taskInfo);
                 break;
-            // 退回当前任务
+            // 退回当前任务 当前任务结束，新开一个任务
             case Constant.TaskBusinessType.FOUR:
+                taskInfo.setFinish(Constant.TaskBusinessType.FOUR);
+                this.updateById(taskInfo);
+                // 填充新数据
+                ManageBusinessInfo businessInfo = this.getById(po.getBusinessId());
+                businessInfo.setId(null);
+                businessInfo.setCreateTime(new Date());
+                businessInfo.setConfirmIssue(Constant.ConfirmTaskType.ZERO);
+                businessInfo.setFinish(Constant.TaskBusinessType.FOUR);
+                businessInfo.setPid(po.getBusinessId());
+                this.save(businessInfo);
                 break;
         }
 

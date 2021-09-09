@@ -9,7 +9,9 @@ import com.starda.managesystem.pojo.po.business.ConfirmTaskPO;
 import com.starda.managesystem.pojo.po.business.InsertTaskInfoPO;
 import com.starda.managesystem.pojo.vo.app.AppTaskInfoListVO;
 import com.starda.managesystem.pojo.vo.app.AppTaskInfoVO;
+import com.starda.managesystem.pojo.vo.business.TaskInfoVO;
 import com.starda.managesystem.service.IAppTaskBusinessService;
+import com.starda.managesystem.service.IBusinessTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,6 +36,9 @@ public class AppTaskController {
 
     @Autowired
     private IAppTaskBusinessService appTaskBusinessService;
+
+    @Autowired
+    private IBusinessTaskService taskService;
 
     /**
      * 获取app首页数据
@@ -75,9 +80,9 @@ public class AppTaskController {
     @PostMapping("getTaskInfo")
     public Result getTaskInfo(@AnnotationAuthor UserVO user, @RequestBody @Valid ConfirmTaskPO po) throws Exception{
 
-        AppTaskInfoVO appTaskInfoVO = this.appTaskBusinessService.getTaskInfo(user, po);
+        TaskInfoVO taskInfoVO = this.taskService.getTaskInfo(user, po);
 
-        return Result.ok().resultPage(appTaskInfoVO);
+        return Result.ok().resultPage(taskInfoVO);
     }
 
     /**
