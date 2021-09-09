@@ -25,6 +25,7 @@ import com.starda.managesystem.service.IBusinessTaskService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -180,13 +181,14 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
     }
 
     @Override
-    public List<ConfirmTaskInfoListVO> confirmTaskInfo(UserVO user, ConfirmTaskPO po) throws Exception {
+    public List<ConfirmTaskInfoListVO> confirmTaskInfoList(UserVO user, ConfirmTaskPO po) throws Exception {
 
         //1. 获取到改业务所有任务信息
         List<ManageBusinessInfo> businessInfoList = this.taskBusinessService.list(new LambdaQueryWrapper<ManageBusinessInfo>()
                 .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE)
                 .eq(ManageBusinessInfo::getBusinessId, po.getBusinessId())
-                .orderByAsc(ManageBusinessInfo::getLevel));
+                .orderByAsc(ManageBusinessInfo::getLevel)
+                .orderByDesc(ManageBusinessInfo::getCreateTime));
 
         //2. 获取到业务流程管理员确认信息
         List<TaskInfoLIstVO> taskInfoLIstVOS = BeanUtil.copyToList(businessInfoList, TaskInfoLIstVO.class);
@@ -227,6 +229,46 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         });
 
         return confirmTaskInfoListVOS;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void confirmTaskInfo(UserVO user, ConfirmTaskPO confirm) throws Exception{
+        // 填充数据
+        ManageBusinessRemark remark = new ManageBusinessRemark();
+        remark.setRemark(confirm.getRemark());
+        remark.setBusinessInfoId(confirm.getBusinessId());
+        remark.setCreateAccountId(user.getId());
+        remark.setCreateUserName(user.getStaffName());
+        remark.setRemarkType(Constant.PeopleType.MANAGE);
+        // 添加 信息列表
+        this.insertManageRemarkInfo(remark);
+        // 检测任务信息
+        ManageBusinessInfo taskInfo = new ManageBusinessInfo();
+        taskInfo.setId(confirm.getBusinessId());
+        switch (confirm.getType()){
+            // 完成
+            case Constant.TaskBusinessType.THREE:
+                taskInfo.setFinish(Constant.TaskBusinessType.THREE);
+                this.taskBusinessService.updateById(taskInfo);
+                break;
+            // 驳回 为了看到过程信息 驳回后，当前任务完成开启新的任务
+            case Constant.TaskBusinessType.FIVE:
+                // 获取驳回数据
+                ManageBusinessInfo businessInfo = this.taskBusinessService.getById(confirm.getBusinessId());
+                // 1.修改已有数据状态
+                taskInfo.setFinish(Constant.TaskBusinessType.FIVE);
+                // 添加新数据
+                businessInfo.setId(null);
+                businessInfo.setConfirmIssue(Constant.ConfirmTaskType.ONE);
+                businessInfo.setFinish(Constant.TaskBusinessType.FIVE);
+                businessInfo.setCreateTime(new Date());
+                businessInfo.setCreateAccountId(user.getId());
+                businessInfo.setCreateUser(user.getStaffName());
+                this.taskBusinessService.save(businessInfo);
+                break;
+        }
+
     }
 
     /*****         业务信息          *****/
@@ -320,4 +362,22 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         BusinessInfoVO businessInfoVO = BeanUtil.toBean(manageBusiness, BusinessInfoVO.class);
         return businessInfoVO;
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void insertManageRemarkInfo(ManageBusinessRemark remark) throws Exception{
+        // 判断该详情之前是否有未处理的数据
+        if (remark.getBusinessInfoId() == null){
+            throw new ManageStarException("业务id不能为空！");
+        }
+        ManageBusinessInfo beforeTaskInfo = this.taskBusinessService.getBeforeTaskInfo(remark.getBusinessInfoId());
+
+        if(beforeTaskInfo.getConfirmIssue() == Constant.ConfirmTaskType.ZERO || !beforeTaskInfo.getFinish().equals(Constant.TaskBusinessType.THREE)){
+            throw new ManageStarException("存在当前任务之前的任务未结束，不可操作");
+        }
+
+        this.businessRemarkMapper.insertSelective(remark);
+
+    }
+
 }

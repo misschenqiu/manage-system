@@ -72,4 +72,9 @@ public class StaffInfoListVO {
      */
     private String accountName;
 
+    /**
+     * 归宿地
+     */
+    private String address;
+
 }

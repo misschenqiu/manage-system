@@ -123,6 +123,16 @@ public class ManageBusinessInfo implements Serializable {
      */
     private Date finishTime;
 
+    /**
+     * 确认下发0.否 1.是
+     */
+    private Integer confirmIssue;
+
+    /**
+     * 员工是否已经提交 0.否 1.是
+     */
+    private Integer staffSubmit;
+
     private static final long serialVersionUID = 1L;
 
     @Override

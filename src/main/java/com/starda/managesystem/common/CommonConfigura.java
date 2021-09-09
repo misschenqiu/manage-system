@@ -73,5 +73,13 @@ public class CommonConfigura {
     }
 
 
+    /**
+     * 文件名
+     */
+    public static String getFileName(String fileName){
+        String fileType = fileName.substring(fileName.indexOf("."));
+
+        return System.currentTimeMillis() + fileType;
+    }
 
 }

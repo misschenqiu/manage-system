@@ -122,4 +122,36 @@ public interface Constant {
         List<Integer> CAN_UPDATE_AND_UPDATE = new ArrayList<Integer>(Arrays.asList(new Integer[]{0,4,5}));
     }
 
+    /**
+     * 确认下发0.否 1.是
+     */
+    interface ConfirmTaskType{
+        int ONE = 1;
+        int ZERO = 0;
+    }
+
+    /**
+     * 查看类型1.待完成 2.已完成
+     */
+    interface AppQueryType{
+        int ONE = 1;
+        int TWO = 2;
+    }
+
+    /**
+     * 人员类型 1.员工，2.管理员
+     */
+    interface  PeopleType{
+        int STAFF = 1;
+        int MANAGE = 2;
+    }
+
+    /**
+     * 员工是否已经提交 0.否 1.是
+     */
+    interface StaffSubmitType{
+        int SUBMIT_YES = 1;
+        int SUBMIT_NO = 0;
+    }
+
 }

@@ -24,11 +24,12 @@
     <result column="level" jdbcType="INTEGER" property="level" />
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="finish_time" jdbcType="TIMESTAMP" property="finishTime" />
+    <result column="confirm_issue" property="confirmIssue"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, pid, business_id, task_name, staff_id, staff_name, create_time, remark, money, 
     business_address, longitude, dimension, business_file, part_name, create_account_id, 
-    create_user, update_time, update_account, finish, `level`, `status`, finish_time
+    create_user, update_time, update_account, finish, `level`, `status`, finish_time, confirm_issue
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 

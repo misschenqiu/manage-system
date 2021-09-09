@@ -2,6 +2,8 @@ package com.starda.managesystem.pojo.po.app;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @ProjectName: manage-system
  * @Package: com.starda.managesystem.pojo.po.app
@@ -16,8 +18,9 @@ import lombok.Data;
 public class AppConfirmTaskPO {
 
     /**
-     * 确认属性 1.确认 2.退回
+     * 确认属性 3.确认 4.退回
      */
+    @NotNull(message = "确认信息不能为空")
     private Integer confirmType;
 
     /**
@@ -29,5 +32,11 @@ public class AppConfirmTaskPO {
      * 业务图片
      */
     private String taskImg;
+
+    /**
+     * 详情id
+     */
+    @NotNull(message = "任务id不能为空！")
+    private Integer businessId;
 
 }

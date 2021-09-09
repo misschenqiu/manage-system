@@ -3,6 +3,7 @@ package com.starda.managesystem.util;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
+import com.starda.managesystem.common.CommonConfigura;
 import com.starda.managesystem.config.ExceptionEnums;
 import com.starda.managesystem.constant.Constant;
 import com.starda.managesystem.exceptions.ManageStarException;
@@ -53,8 +54,9 @@ public class FileLoadOrDownUtil {
         if (!FileUtil.exist(folder)) {
             FileUtil.mkdir(folder);
         }
-        String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + File.separator + multipartFile.getOriginalFilename();
-        File directory = new File("");//参数为空
+        String fileName = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")) + File.separator + CommonConfigura.getFileName(multipartFile.getOriginalFilename());
+        //参数为空 获取当前目录地址
+        File directory = new File("");
         String courseFile = directory.getCanonicalPath() ;
         String path = courseFile + folder + fileName;
         File file = new File(path);

@@ -194,8 +194,8 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
         }
 
         IPage<StaffInfoListVO> staffList = this.staffMapper.getAccountInfoList(new Page<StaffInfoListVO>(po.getCurrentPage(), po.getPageSize()), po);
-        // 获取到创建人
 
+        // 获取到创建人
         staffList.getRecords().stream().forEach(staff -> {
             if (po.getAccountId() != null) {
                 staff.setAccountName(user.getStaffName());

@@ -26,6 +26,12 @@ public class ConfirmTaskPO {
     /**
      * 任务任务类型
      */
+    @NotNull(message = "执行类型不能为空")
     private Integer type;
+
+    /**
+     * 描述
+     */
+    private String remark;
 
 }

@@ -2,6 +2,7 @@ package com.starda.managesystem.service;
 
 import com.starda.managesystem.config.Result;
 import com.starda.managesystem.config.author.UserVO;
+import com.starda.managesystem.pojo.ManageBusinessRemark;
 import com.starda.managesystem.pojo.po.CommonIdsPO;
 import com.starda.managesystem.pojo.po.business.*;
 import com.starda.managesystem.pojo.vo.business.*;
@@ -62,12 +63,20 @@ public interface IBusinessTaskService {
     Result<TaskInfoLIstVO> getTaskInfoList(UserVO user, TaskInfoQueryPO po) throws Exception;
 
     /**
-     * 流程确认信息
+     * 流程图
      * @param user
      * @param po
      * @throws Exception
      */
-    List<ConfirmTaskInfoListVO> confirmTaskInfo(UserVO user, ConfirmTaskPO po) throws Exception;
+    List<ConfirmTaskInfoListVO> confirmTaskInfoList(UserVO user, ConfirmTaskPO po) throws Exception;
+
+    /**
+     * 确认当前任务
+     * @param user
+     * @param confirm
+     * @throws Exception
+     */
+    void confirmTaskInfo(UserVO user, ConfirmTaskPO confirm) throws Exception;
 
     /****************** 业务信息 ********************/
 
@@ -112,5 +121,12 @@ public interface IBusinessTaskService {
      * @throws Exception
      */
     BusinessInfoVO getBusinessInfo(UserVO user, Integer businessId) throws Exception;
+
+    /**
+     * 确认添加确认信息
+     * @param remark
+     * @throws Exception
+     */
+    void insertManageRemarkInfo(ManageBusinessRemark remark) throws Exception;
 
 }

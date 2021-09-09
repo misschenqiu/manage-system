@@ -7,6 +7,8 @@ import com.starda.managesystem.pojo.po.app.AppConfirmTaskPO;
 import com.starda.managesystem.pojo.po.app.AppTaskQueryPO;
 import com.starda.managesystem.pojo.po.business.ConfirmTaskPO;
 import com.starda.managesystem.pojo.po.business.InsertTaskInfoPO;
+import com.starda.managesystem.pojo.vo.app.AppTaskInfoListVO;
+import com.starda.managesystem.pojo.vo.app.AppTaskInfoVO;
 import com.starda.managesystem.service.IAppTaskBusinessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,7 +45,9 @@ public class AppTaskController {
     @PostMapping("getTaskInfoList")
     public Result getTaskInfoList(@AnnotationAuthor UserVO user, @RequestBody @Valid AppTaskQueryPO po) throws Exception{
 
-        return Result.success();
+        Result<AppTaskInfoListVO> taskInfoList = this.appTaskBusinessService.getTaskInfoList(user, po);
+
+        return taskInfoList;
     }
 
     /**
@@ -55,6 +59,8 @@ public class AppTaskController {
      */
     @PostMapping("confirmTaskInfo")
     public Result confirmTaskInfo(@AnnotationAuthor UserVO user, @RequestBody @Valid AppConfirmTaskPO po) throws Exception{
+
+        this.appTaskBusinessService.confirmTaskInfo(user, po);
 
         return Result.success();
     }
@@ -69,7 +75,9 @@ public class AppTaskController {
     @PostMapping("getTaskInfo")
     public Result getTaskInfo(@AnnotationAuthor UserVO user, @RequestBody @Valid ConfirmTaskPO po) throws Exception{
 
-        return Result.success();
+        AppTaskInfoVO appTaskInfoVO = this.appTaskBusinessService.getTaskInfo(user, po);
+
+        return Result.ok().resultPage(appTaskInfoVO);
     }
 
     /**

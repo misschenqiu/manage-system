@@ -85,6 +85,11 @@ public class TaskInfoLIstVO {
     private Date finishTime;
 
     /**
+     * 确认下发0.否 1.是
+     */
+    private Integer confirmIssue;
+
+    /**
      * 管理员备注
      */
     private TaskInfoRemarkVO manageRemarkVO;

@@ -108,8 +108,9 @@ public class TaskController {
      * @throws Exception
      */
     @PostMapping("/confirmTaskInfo")
-    public Result confirmTaskInfo(@AnnotationAuthor UserVO user) throws Exception{
+    public Result confirmTaskInfo(@AnnotationAuthor UserVO user, @RequestBody @Valid ConfirmTaskPO confirm) throws Exception{
 
+        this.businessTaskService.confirmTaskInfo(user, confirm);
 
         return Result.success();
     }
@@ -123,7 +124,7 @@ public class TaskController {
     @PostMapping("/getTaskInfoViw")
     public Result getTaskInfoViw(@AnnotationAuthor UserVO user, @RequestBody @Valid ConfirmTaskPO businessId) throws Exception{
 
-        List<ConfirmTaskInfoListVO> confirmTaskInfoListVOS = this.businessTaskService.confirmTaskInfo(user, businessId);
+        List<ConfirmTaskInfoListVO> confirmTaskInfoListVOS = this.businessTaskService.confirmTaskInfoList(user, businessId);
 
         return Result.ok().resultPage(confirmTaskInfoListVOS);
     }

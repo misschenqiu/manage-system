@@ -222,6 +222,7 @@
     <result column="position" property="position"/>
     <result column="remark" property="remark"/>
     <result column="accountName" property="accountName"/>
+    <result column="address" property="address"/>
   </resultMap>
 
   <!-- 获取员工列表 -->
@@ -235,11 +236,13 @@
            stf.head_img,
            stf.identity,
            stf.position,
+            su.address,
           <if test="staff.accountId != null">
             stf1.username as accountName,
           </if>
            stf.remark
     from sys_staff stf
+        left join sys_user su on su.id = stf.user_id
     <if test="staff.accountId != null">
       left join sys_staff stf1 on stf1.user_id = stf.create_account_id
     </if>
