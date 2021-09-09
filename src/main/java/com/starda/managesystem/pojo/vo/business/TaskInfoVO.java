@@ -31,6 +31,11 @@ public class TaskInfoVO {
     private String taskName;
 
     /**
+     * 员工id
+     */
+    private Integer staffId;
+
+    /**
      * 员工名称
      */
     private String staffName;
@@ -55,6 +60,16 @@ public class TaskInfoVO {
      * 业务地址
      */
     private String businessAddress;
+
+    /**
+     * 经度
+     */
+    private String longitude;
+
+    /**
+     * 维度
+     */
+    private String dimension;
 
     /**
      * 业务图

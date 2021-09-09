@@ -22,6 +22,7 @@ import com.starda.managesystem.pojo.vo.app.AppTaskInfoVO;
 import com.starda.managesystem.service.IAppTaskBusinessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -69,7 +70,7 @@ public class AppTaskBusinessServiceImpl extends ServiceImpl<ManageBusinessInfoMa
         queryWrapper.eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE);
         queryWrapper.eq(ManageBusinessInfo::getStaffId, user.getStaffId());
         queryWrapper.eq(ManageBusinessInfo::getConfirmIssue, Constant.ConfirmTaskType.ONE);
-        queryWrapper.orderByDesc(ManageBusinessInfo::getCreateTime);
+        queryWrapper.orderByDesc(ManageBusinessInfo::getCreateTime).orderByDesc(ManageBusinessInfo::getStaffSubmit);
 
         switch (po.getTaskType()){
             // 已完成的
@@ -92,6 +93,7 @@ public class AppTaskBusinessServiceImpl extends ServiceImpl<ManageBusinessInfoMa
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void confirmTaskInfo(UserVO user, AppConfirmTaskPO po) throws Exception {
         // 填充数据
         ManageBusinessRemark remark = new ManageBusinessRemark();
@@ -102,15 +104,17 @@ public class AppTaskBusinessServiceImpl extends ServiceImpl<ManageBusinessInfoMa
         remark.setCreateUserName(user.getStaffName());
         remark.setRemarkType(Constant.PeopleType.STAFF);
         // 添加 信息列表
-        ManageBusinessInfo beforeTaskInfo = this.getBeforeTaskInfo(remark.getBusinessInfoId());
-
-        if(beforeTaskInfo.getConfirmIssue() == Constant.ConfirmTaskType.ZERO || !beforeTaskInfo.getFinish().equals(Constant.TaskBusinessType.THREE)){
-            throw new ManageStarException("存在当前任务之前的任务未结束，不可操作");
+        ManageBusinessInfo beforeTaskInfo = this.getBeforeTaskInfo(po.getBusinessId());
+        if (beforeTaskInfo != null) {
+            if (beforeTaskInfo.getConfirmIssue() == Constant.ConfirmTaskType.ZERO || !beforeTaskInfo.getFinish().equals(Constant.TaskBusinessType.THREE)) {
+                throw new ManageStarException("存在当前任务之前的任务未结束，不可操作");
+            }
         }
         // 添加数据
         this.businessRemarkMapper.insertSelective(remark);
         // 处理数据
         ManageBusinessInfo taskInfo = new ManageBusinessInfo();
+        taskInfo.setId(po.getBusinessId());
         switch (po.getConfirmType()){
             // 完成
             case Constant.TaskBusinessType.THREE:
@@ -120,6 +124,7 @@ public class AppTaskBusinessServiceImpl extends ServiceImpl<ManageBusinessInfoMa
             // 退回当前任务 当前任务结束，新开一个任务
             case Constant.TaskBusinessType.FOUR:
                 taskInfo.setFinish(Constant.TaskBusinessType.FOUR);
+                taskInfo.setStaffSubmit(Constant.StaffSubmitType.SUBMIT_YES);
                 this.updateById(taskInfo);
                 // 填充新数据
                 ManageBusinessInfo businessInfo = this.getById(po.getBusinessId());

@@ -4,6 +4,7 @@ import com.starda.managesystem.config.Result;
 import com.starda.managesystem.config.author.UserVO;
 import com.starda.managesystem.pojo.ManageBusinessRemark;
 import com.starda.managesystem.pojo.po.CommonIdsPO;
+import com.starda.managesystem.pojo.po.CommonUpdateIdPO;
 import com.starda.managesystem.pojo.po.business.*;
 import com.starda.managesystem.pojo.vo.business.*;
 
@@ -61,6 +62,14 @@ public interface IBusinessTaskService {
      * @throws Exception
      */
     Result<TaskInfoLIstVO> getTaskInfoList(UserVO user, TaskInfoQueryPO po) throws Exception;
+
+    /**
+     * 下发任务
+     * @param user
+     * @param po
+     * @throws Exception
+     */
+    void confirmIssueTask(UserVO user, CommonUpdateIdPO po) throws Exception;
 
     /**
      * 流程图

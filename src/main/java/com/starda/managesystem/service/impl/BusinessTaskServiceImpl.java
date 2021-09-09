@@ -18,6 +18,7 @@ import com.starda.managesystem.pojo.ManageBusinessRemark;
 import com.starda.managesystem.pojo.SysStaff;
 import com.starda.managesystem.pojo.enums.FinishTimeEnums;
 import com.starda.managesystem.pojo.po.CommonIdsPO;
+import com.starda.managesystem.pojo.po.CommonUpdateIdPO;
 import com.starda.managesystem.pojo.po.business.*;
 import com.starda.managesystem.pojo.vo.business.*;
 import com.starda.managesystem.service.IAppTaskBusinessService;
@@ -119,10 +120,10 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         // 获取到管理 提交 信息
         MPJLambdaWrapper<ManageBusinessRemark> manageWrapper = new MPJLambdaWrapper<ManageBusinessRemark>()
                 .selectAll(ManageBusinessRemark.class)
-                .eq(ManageBusinessRemark::getRemarkType, Constant.PeopleType.STAFF);
-        if (manageBusinessInfo.getFinish().equals(Constant.TaskBusinessType.FIVE) && manageBusinessInfo.getPid() != null){
+                .eq(ManageBusinessRemark::getRemarkType, Constant.PeopleType.MANAGE);
+        if (manageBusinessInfo.getFinish().equals(Constant.TaskBusinessType.FIVE) && manageBusinessInfo.getPid() != null) {
             manageWrapper.eq(ManageBusinessRemark::getBusinessInfoId, manageBusinessInfo.getPid());
-        }else {
+        } else {
             manageWrapper.eq(ManageBusinessRemark::getBusinessInfoId, manageBusinessInfo.getId());
         }
         List<TaskInfoRemarkVO> manageRemark = this.businessRemarkMapper.selectJoinList(TaskInfoRemarkVO.class, manageWrapper);
@@ -137,9 +138,9 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
                 .selectAs(SysStaff::getHead_img, TaskStaffInfoVO::getStaffHeadImg)
                 .leftJoin(SysStaff.class, SysStaff::getId, ManageBusinessRemark::getCreateAccountId)
                 .eq(ManageBusinessRemark::getRemarkType, Constant.PeopleType.STAFF);
-        if (manageBusinessInfo.getFinish().equals(Constant.TaskBusinessType.FOUR) && manageBusinessInfo.getPid() != null){
+        if (manageBusinessInfo.getFinish().equals(Constant.TaskBusinessType.FOUR) && manageBusinessInfo.getPid() != null) {
             wrapper.eq(ManageBusinessRemark::getBusinessInfoId, manageBusinessInfo.getPid());
-        }else {
+        } else {
             wrapper.eq(ManageBusinessRemark::getBusinessInfoId, manageBusinessInfo.getId());
         }
         // 获取员工信息
@@ -157,7 +158,7 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         ManageBusinessInfo taskBusinessInfo = this.taskBusinessService.getOne(new LambdaQueryWrapper<ManageBusinessInfo>()
                 .eq(ManageBusinessInfo::getId, taskInfo.getId())
                 .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE));
-        if(Constant.TaskBusinessType.CAN_UPDATE_AND_UPDATE.contains(taskBusinessInfo.getFinish())){
+        if (Constant.TaskBusinessType.CAN_UPDATE_AND_UPDATE.contains(taskBusinessInfo.getFinish())) {
             throw new ManageStarException("该任务已经完成，不能修改");
         }
         ManageBusinessInfo manageBusinessInfo = BeanUtil.toBean(taskInfo, ManageBusinessInfo.class);
@@ -179,17 +180,42 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         List<Integer> businessInfoIds = taskInfoLIstVOS.stream().map(taskInfo -> taskInfo.getId()).collect(Collectors.toList());
         List<TaskInfoRemarkVO> taskInfoRemarkVOS = this.businessRemarkMapper.selectJoinList(TaskInfoRemarkVO.class, new MPJLambdaWrapper<ManageBusinessRemark>()
                 .selectAll(ManageBusinessRemark.class)
+                .eq(ManageBusinessRemark::getRemarkType, Constant.PeopleType.MANAGE)
+                .in(businessInfoIds != null && !businessInfoIds.isEmpty(), ManageBusinessRemark::getBusinessInfoId, businessInfoIds));
+
+        // 员工确认信息
+        List<TaskStaffInfoVO> taskStaffInfoVOList = this.businessRemarkMapper.selectJoinList(TaskStaffInfoVO.class, new MPJLambdaWrapper<ManageBusinessRemark>()
+                .selectAll(ManageBusinessRemark.class)
+                .selectAs(ManageBusinessRemark::getCreateUserName, TaskStaffInfoVO::getStaffName)
+                .selectAs(SysStaff::getHead_img, TaskStaffInfoVO::getStaffHeadImg)
+                .leftJoin(SysStaff.class, SysStaff::getId, ManageBusinessRemark::getCreateAccountId)
+                .eq(ManageBusinessRemark::getRemarkType, Constant.PeopleType.STAFF)
                 .in(businessInfoIds != null && !businessInfoIds.isEmpty(), ManageBusinessRemark::getBusinessInfoId, businessInfoIds));
 
         // 处理数据
+        Map<Integer, List<TaskStaffInfoVO>> staffMap = taskStaffInfoVOList.stream().collect(Collectors.groupingBy(TaskStaffInfoVO::getBusinessInfoId));
         Map<Integer, List<TaskInfoRemarkVO>> integerListMap = taskInfoRemarkVOS.stream().collect(Collectors.groupingBy(TaskInfoRemarkVO::getBusinessInfoId));
+
         taskInfoLIstVOS.stream().forEach(task -> {
             List<TaskInfoRemarkVO> taskInfoRemarkList = integerListMap.get(task.getId());
             if (null != taskInfoRemarkList && !taskInfoRemarkList.isEmpty()) {
                 task.setManageRemarkVO(taskInfoRemarkList.get(Constant.BaseNumberManage.ZERO));
             }
+            // 员工
+            List<TaskStaffInfoVO> staffList = staffMap.get(task.getId());
+            if (null != staffList && !staffList.isEmpty()) {
+                task.setStaffInfoVO(staffList.get(Constant.BaseNumberManage.ZERO));
+            }
         });
         return Result.ok().resultPage(taskInfoLIstVOS, page.getCurrent(), page.getSize(), page.getTotal());
+    }
+
+    @Override
+    public void confirmIssueTask(UserVO user, CommonUpdateIdPO po) throws Exception {
+        ManageBusinessInfo taskInfo = new ManageBusinessInfo();
+        taskInfo.setId(po.getId());
+        taskInfo.setConfirmIssue(Constant.ConfirmTaskType.ONE);
+        this.taskBusinessService.updateById(taskInfo);
     }
 
     @Override
@@ -245,7 +271,7 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void confirmTaskInfo(UserVO user, ConfirmTaskPO confirm) throws Exception{
+    public void confirmTaskInfo(UserVO user, ConfirmTaskPO confirm) throws Exception {
         // 填充数据
         ManageBusinessRemark remark = new ManageBusinessRemark();
         remark.setRemark(confirm.getRemark());
@@ -258,7 +284,7 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         // 检测任务信息
         ManageBusinessInfo taskInfo = new ManageBusinessInfo();
         taskInfo.setId(confirm.getBusinessId());
-        switch (confirm.getType()){
+        switch (confirm.getType()) {
             // 完成
             case Constant.TaskBusinessType.THREE:
                 taskInfo.setFinish(Constant.TaskBusinessType.THREE);
@@ -279,6 +305,7 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
                 businessInfo.setPid(confirm.getBusinessId());
                 businessInfo.setCreateAccountId(user.getId());
                 businessInfo.setCreateUser(user.getStaffName());
+                businessInfo.setStaffSubmit(Constant.StaffSubmitType.SUBMIT_NO);
                 this.taskBusinessService.save(businessInfo);
                 break;
         }
@@ -379,15 +406,23 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insertManageRemarkInfo(ManageBusinessRemark remark) throws Exception{
+    public void insertManageRemarkInfo(ManageBusinessRemark remark) throws Exception {
+        // 判断员工是否提交
+        ManageBusinessInfo manageBusinessInfo = this.taskBusinessService.getById(remark.getBusinessInfoId());
+        if (manageBusinessInfo.getStaffSubmit() == Constant.StaffSubmitType.SUBMIT_NO) {
+            throw new ManageStarException("请先提醒员工确认任务完成，在操作！");
+        }
+
         // 判断该详情之前是否有未处理的数据
-        if (remark.getBusinessInfoId() == null){
+        if (remark.getBusinessInfoId() == null) {
             throw new ManageStarException("业务id不能为空！");
         }
         ManageBusinessInfo beforeTaskInfo = this.taskBusinessService.getBeforeTaskInfo(remark.getBusinessInfoId());
 
-        if(beforeTaskInfo.getConfirmIssue() == Constant.ConfirmTaskType.ZERO || !beforeTaskInfo.getFinish().equals(Constant.TaskBusinessType.THREE)){
-            throw new ManageStarException("存在当前任务之前的任务未结束，不可操作");
+        if (beforeTaskInfo != null) {
+            if (beforeTaskInfo.getConfirmIssue() == Constant.ConfirmTaskType.ZERO || !beforeTaskInfo.getFinish().equals(Constant.TaskBusinessType.THREE)) {
+                throw new ManageStarException("存在当前任务之前的任务未结束，不可操作");
+            }
         }
 
         this.businessRemarkMapper.insertSelective(remark);

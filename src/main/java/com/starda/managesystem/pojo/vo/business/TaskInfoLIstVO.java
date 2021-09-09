@@ -94,4 +94,9 @@ public class TaskInfoLIstVO {
      */
     private TaskInfoRemarkVO manageRemarkVO;
 
+    /**
+     * 员工确认信息
+     */
+    private TaskStaffInfoVO staffInfoVO;
+
 }

@@ -4,6 +4,7 @@ import com.starda.managesystem.config.Result;
 import com.starda.managesystem.config.annotation.AnnotationAuthor;
 import com.starda.managesystem.config.author.UserVO;
 import com.starda.managesystem.pojo.po.CommonIdsPO;
+import com.starda.managesystem.pojo.po.CommonUpdateIdPO;
 import com.starda.managesystem.pojo.po.business.*;
 import com.starda.managesystem.pojo.vo.business.*;
 import com.starda.managesystem.service.IBusinessTaskService;
@@ -71,6 +72,19 @@ public class TaskController {
         this.businessTaskService.updateTaskInfo(user, taskInfo);
 
         return Result.success();
+    }
+
+    /**
+     * 下发任务
+     */
+    @PostMapping("confirmIssueTask")
+    public Result confirmIssueTask(@AnnotationAuthor UserVO user, @RequestBody @Valid CommonUpdateIdPO taskInfo) throws Exception{
+
+
+        this.businessTaskService.confirmIssueTask(user, taskInfo);
+
+        return Result.success();
+
     }
 
     /**

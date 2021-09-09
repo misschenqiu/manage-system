@@ -67,7 +67,7 @@ public class FileLoadOrDownUtil {
         if (file1.length() < 0) {
             throw new ManageStarException(ExceptionEnums.FILE_LOAD_FAIL.getCode(), ExceptionEnums.FILE_LOAD_FAIL.getMessage());
         }
-        return path;
+        return folder + fileName;
     }
 
     /**
