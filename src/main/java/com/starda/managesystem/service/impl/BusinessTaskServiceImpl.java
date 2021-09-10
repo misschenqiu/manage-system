@@ -93,12 +93,15 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         if (user.getAuthorities().contains(Constant.BaseStringInfoManage.MANAGE)) {
             flash = true;
         }
-        List<Integer> finishType = new ArrayList<Integer>(Arrays.asList(new Integer[]{Constant.TaskBusinessType.ZERO, Constant.TaskBusinessType.FOUR, Constant.TaskBusinessType.FIVE}));
         List<ManageBusinessInfo> list = this.taskBusinessService.list(new LambdaQueryWrapper<ManageBusinessInfo>()
                 .eq(flash, ManageBusinessInfo::getCreateAccountId, user.getId())
                 .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE)
-                .in(ManageBusinessInfo::getFinish, finishType)
+                .eq(ManageBusinessInfo::getFinish, Constant.TaskBusinessType.ZERO)
                 .in(ManageBusinessInfo::getId, ids.getIds()));
+        if(null == list || list.isEmpty()){
+            throw new ManageStarException("选择对象不能被删除！");
+        }
+
         // 修改内容
         list.stream().forEach(param -> {
             param.setStatus(Constant.BaseNumberManage.ZERO);
@@ -158,7 +161,7 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         ManageBusinessInfo taskBusinessInfo = this.taskBusinessService.getOne(new LambdaQueryWrapper<ManageBusinessInfo>()
                 .eq(ManageBusinessInfo::getId, taskInfo.getId())
                 .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE));
-        if (Constant.TaskBusinessType.CAN_UPDATE_AND_UPDATE.contains(taskBusinessInfo.getFinish())) {
+        if (taskBusinessInfo.getFinish().equals(Constant.TaskBusinessType.THREE)) {
             throw new ManageStarException("该任务已经完成，不能修改");
         }
         ManageBusinessInfo manageBusinessInfo = BeanUtil.toBean(taskInfo, ManageBusinessInfo.class);
@@ -212,6 +215,20 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
 
     @Override
     public void confirmIssueTask(UserVO user, CommonUpdateIdPO po) throws Exception {
+        // 判断前任务是否完成
+        ManageBusinessInfo businessInfo = this.taskBusinessService.getById(po.getId());
+        List<ManageBusinessInfo> businessInfos = this.taskBusinessService.list(new LambdaQueryWrapper<ManageBusinessInfo>()
+                .eq(ManageBusinessInfo::getBusinessId, businessInfo.getBusinessId())
+                .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE)
+                .eq(ManageBusinessInfo::getLevel, businessInfo.getLevel() - Constant.BaseNumberManage.ONE)
+                .orderByDesc(ManageBusinessInfo::getCreateTime));
+        if(null != businessInfos && !businessInfos.isEmpty()){
+            if(!businessInfos.get(Constant.BaseNumberManage.ZERO).getFinish().equals(Constant.TaskBusinessType.THREE)){
+               throw new ManageStarException("存在此任务之前的任务，没有下发！");
+            }
+        }
+
+        // 下发任务
         ManageBusinessInfo taskInfo = new ManageBusinessInfo();
         taskInfo.setId(po.getId());
         taskInfo.setConfirmIssue(Constant.ConfirmTaskType.ONE);

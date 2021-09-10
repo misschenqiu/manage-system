@@ -119,7 +119,7 @@ public interface Constant {
         int THREE = 3;
         int FOUR = 4;
         int FIVE = 5;
-        List<Integer> CAN_UPDATE_AND_UPDATE = new ArrayList<Integer>(Arrays.asList(new Integer[]{0,4,5}));
+        List<Integer> CAN_UPDATE_AND_UPDATE = new ArrayList<Integer>(Arrays.asList(new Integer[]{3,4,5}));
     }
 
     /**
