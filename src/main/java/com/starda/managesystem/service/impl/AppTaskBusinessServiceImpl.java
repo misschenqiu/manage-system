@@ -12,6 +12,7 @@ import com.starda.managesystem.constant.Constant;
 import com.starda.managesystem.exceptions.ManageStarException;
 import com.starda.managesystem.mapper.business.ManageBusinessInfoMapper;
 import com.starda.managesystem.mapper.business.ManageBusinessRemarkMapper;
+import com.starda.managesystem.pojo.ManageBusiness;
 import com.starda.managesystem.pojo.ManageBusinessInfo;
 import com.starda.managesystem.pojo.ManageBusinessRemark;
 import com.starda.managesystem.pojo.po.app.AppConfirmTaskPO;
@@ -66,7 +67,9 @@ public class AppTaskBusinessServiceImpl extends ServiceImpl<ManageBusinessInfoMa
     public Result<AppTaskInfoListVO> getTaskInfoList(UserVO user, AppTaskQueryPO po) throws Exception {
         // 封装条件
         MPJLambdaWrapper<ManageBusinessInfo> queryWrapper = new MPJLambdaWrapper<ManageBusinessInfo>();
-        queryWrapper.selectAll(ManageBusinessInfo.class);
+        queryWrapper.selectAll(ManageBusinessInfo.class)
+                .leftJoin(ManageBusiness.class, ManageBusiness::getId, ManageBusinessInfo::getBusinessId);
+        queryWrapper.eq(ManageBusiness::getStatus, Constant.BaseNumberManage.ONE);
         queryWrapper.eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE);
         queryWrapper.eq(ManageBusinessInfo::getStaffId, user.getStaffId());
         queryWrapper.eq(ManageBusinessInfo::getConfirmIssue, Constant.ConfirmTaskType.ONE);

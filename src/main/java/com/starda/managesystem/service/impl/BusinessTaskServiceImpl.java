@@ -174,7 +174,8 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
     @Override
     public Result<TaskInfoLIstVO> getTaskInfoList(UserVO user, TaskInfoQueryPO po) throws Exception {
         //1. 获取到任务信息
-        Page<ManageBusinessInfo> page = this.taskBusinessService.page(new Page<ManageBusinessInfo>(po.getCurrentPage(), po.getPageSize()), new LambdaQueryWrapper<ManageBusinessInfo>()
+        Page<ManageBusinessInfo> page = this.taskBusinessService.page(new Page<ManageBusinessInfo>(po.getCurrentPage(), po.getPageSize()),
+                new LambdaQueryWrapper<ManageBusinessInfo>()
                 .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE)
                 .eq(ManageBusinessInfo::getBusinessId, po.getBusinessId())
                 .orderByAsc(ManageBusinessInfo::getLevel));
@@ -297,7 +298,7 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         remark.setCreateUserName(user.getStaffName());
         remark.setRemarkType(Constant.PeopleType.MANAGE);
         // 添加 信息列表
-        this.insertManageRemarkInfo(remark);
+        this.insertManageRemarkInfo(user, remark);
         // 检测任务信息
         ManageBusinessInfo taskInfo = new ManageBusinessInfo();
         taskInfo.setId(confirm.getBusinessId());
@@ -305,6 +306,7 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
             // 完成
             case Constant.TaskBusinessType.THREE:
                 taskInfo.setFinish(Constant.TaskBusinessType.THREE);
+                taskInfo.setFinishTime(new Date());
                 this.taskBusinessService.updateById(taskInfo);
                 break;
             // 驳回 为了看到过程信息 驳回后，当前任务完成开启新的任务
@@ -326,6 +328,35 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
                 this.taskBusinessService.save(businessInfo);
                 break;
         }
+
+    }
+
+    @Override
+    public void confirmTaskSuccessOrMoney(UserVO user, ConfirmTaskPO confirm) throws Exception {
+        // 获取当前业务人的任务信息是否存在未完成
+        List<ManageBusinessInfo> businessInfos = this.taskBusinessService.list(new LambdaQueryWrapper<ManageBusinessInfo>()
+                .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE)
+                .eq(ManageBusinessInfo::getFinish, Constant.TaskBusinessType.ZERO)
+                .eq(ManageBusinessInfo::getBusinessId, confirm.getBusinessId())
+        );
+
+        if(null == businessInfos || businessInfos.isEmpty()){
+            throw new ManageStarException("该业务存在未完成业务，不能操作！");
+        }
+        ManageBusiness business = new ManageBusiness();
+        business.setId(confirm.getBusinessId());
+        switch (confirm.getType()){
+            // 回款
+            case Constant.BusinessType.ONE:
+                business.setCollectMoney(Constant.BaseNumberManage.ONE);
+                break;
+            // 完成
+            case Constant.BusinessType.TWO:
+                business.setBusinessSucess(Constant.BaseNumberManage.ONE);
+                break;
+        }
+
+        this.updateById(business);
 
     }
 
@@ -423,11 +454,20 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void insertManageRemarkInfo(ManageBusinessRemark remark) throws Exception {
+    public void insertManageRemarkInfo(UserVO user, ManageBusinessRemark remark) throws Exception {
+        boolean flash = true;
+        if (user.getAuthorities().contains(Constant.BaseStringInfoManage.MANAGE)){
+            flash = false;
+        }
+
         // 判断员工是否提交
         ManageBusinessInfo manageBusinessInfo = this.taskBusinessService.getById(remark.getBusinessInfoId());
         if (manageBusinessInfo.getStaffSubmit() == Constant.StaffSubmitType.SUBMIT_NO) {
             throw new ManageStarException("请先提醒员工确认任务完成，在操作！");
+        }
+        // 任务是否已经完成
+        if(manageBusinessInfo.getFinish() == Constant.TaskBusinessType.THREE && flash){
+            throw new ManageStarException("任务已经结束，不能在操作！");
         }
 
         // 判断该详情之前是否有未处理的数据

@@ -1,7 +1,9 @@
 package com.starda.managesystem.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.starda.managesystem.config.Result;
 import com.starda.managesystem.config.author.UserVO;
+import com.starda.managesystem.pojo.ManageBusiness;
 import com.starda.managesystem.pojo.ManageBusinessRemark;
 import com.starda.managesystem.pojo.po.CommonIdsPO;
 import com.starda.managesystem.pojo.po.CommonUpdateIdPO;
@@ -19,7 +21,7 @@ import java.util.List;
  * @Date: 2021/9/1 15:31
  * @Version: 1.0
  */
-public interface IBusinessTaskService {
+public interface IBusinessTaskService extends IService<ManageBusiness> {
 
     /**
      * 下发任务
@@ -87,6 +89,14 @@ public interface IBusinessTaskService {
      */
     void confirmTaskInfo(UserVO user, ConfirmTaskPO confirm) throws Exception;
 
+    /**
+     * 确认完成 或者 回款
+     * @param user
+     * @param confirm
+     * @throws Exception
+     */
+    void confirmTaskSuccessOrMoney(UserVO user, ConfirmTaskPO confirm) throws Exception;
+
     /****************** 业务信息 ********************/
 
     /**
@@ -134,8 +144,9 @@ public interface IBusinessTaskService {
     /**
      * 确认添加确认信息
      * @param remark
+     * @param user
      * @throws Exception
      */
-    void insertManageRemarkInfo(ManageBusinessRemark remark) throws Exception;
+    void insertManageRemarkInfo(UserVO user, ManageBusinessRemark remark) throws Exception;
 
 }

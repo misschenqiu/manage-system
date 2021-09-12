@@ -37,6 +37,12 @@ spring:
       map-underscore-to-camel-case: true
       cache-enabled: false
 
+#jobDataMap 是否都为string 类型 默认是 false
+org:
+  quartz:
+    jobStore:
+      useProperties: false
+
 #输出日志
 logging:
   config: classpath:log4j2.xml

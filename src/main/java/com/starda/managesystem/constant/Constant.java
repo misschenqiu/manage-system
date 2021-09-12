@@ -154,4 +154,12 @@ public interface Constant {
         int SUBMIT_NO = 0;
     }
 
+    /**
+     * 1.回款 2.完成
+     */
+    interface BusinessType{
+        int ONE = 1;
+        int TWO = 2;
+    }
+
 }

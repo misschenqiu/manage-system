@@ -75,7 +75,7 @@ public class TaskController {
     }
 
     /**
-     * 下发任务
+     * 下发任务至员工端
      */
     @PostMapping("confirmIssueTask")
     public Result confirmIssueTask(@AnnotationAuthor UserVO user, @RequestBody @Valid CommonUpdateIdPO taskInfo) throws Exception{
@@ -141,6 +141,20 @@ public class TaskController {
         List<ConfirmTaskInfoListVO> confirmTaskInfoListVOS = this.businessTaskService.confirmTaskInfoList(user, businessId);
 
         return Result.ok().resultPage(confirmTaskInfoListVOS);
+    }
+
+    /**
+     * 完成和回款
+     * @param user
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/confirmTaskSuccessOrMoney")
+    public Result confirmTaskSuccessOrMoney(@AnnotationAuthor UserVO user, @RequestBody @Valid ConfirmTaskPO confirm) throws Exception{
+
+        this.businessTaskService.confirmTaskSuccessOrMoney(user, confirm);
+
+        return Result.success();
     }
 
 

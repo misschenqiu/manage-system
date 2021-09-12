@@ -1,7 +1,9 @@
 package com.starda.managesystem.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.starda.managesystem.config.Result;
 import com.starda.managesystem.config.author.UserVO;
+import com.starda.managesystem.pojo.ManageReminder;
 import com.starda.managesystem.pojo.po.RemoveIdsPO;
 import com.starda.managesystem.pojo.po.reminder.InsertReminderPO;
 import com.starda.managesystem.pojo.po.reminder.ReminderQueryPO;
@@ -18,7 +20,7 @@ import com.starda.managesystem.pojo.vo.ReminderListVO;
  * @Date: 2021/8/31 0:21
  * @Version: 1.0
  */
-public interface IScheduledTimeService {
+public interface IScheduledTimeService extends IService<ManageReminder> {
 
     /**
      * 添加提醒消息

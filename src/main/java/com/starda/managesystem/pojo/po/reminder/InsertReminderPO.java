@@ -3,6 +3,7 @@ package com.starda.managesystem.pojo.po.reminder;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
@@ -73,5 +74,11 @@ public class InsertReminderPO {
      *
      */
     private List<Integer> companyIds;
+
+    /**
+     * 联系人电话
+     */
+    @NotBlank(message = "短信接收电话，不能为空")
+    private String reminderPhone;
 
 }

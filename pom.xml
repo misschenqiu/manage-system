@@ -142,6 +142,13 @@
             <version>${fastjson.version}</version>
         </dependency>
 
+        <!-- 引入socket -->
+        <dependency>
+            <!-- websocket -->
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+
         <!-- 加密工具包 依赖 -->
         <!-- https://mvnrepository.com/artifact/commons-codec/commons-codec -->
         <dependency>

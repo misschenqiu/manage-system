@@ -211,6 +211,11 @@ public class UserInfoServiceImpl extends ServiceImpl<SysUserMapper, SysUser> imp
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insertStaffInfo(UserVO user, StaffInfoPO staffInfo) throws Exception {
+        // 验证图片不能全为数字
+        if(NumberUtil.isNumber(staffInfo.getAccount())){
+            throw new ManageStarException("账号请不要全部设置未数字，避免和电话号码从冲突！");
+        }
+
         // 获取地址
         if(StrUtil.isNotBlank(staffInfo.getAddress())){
             staffInfo.setAddressCode(this.addressService.addManageAddress(staffInfo.getAddress()));

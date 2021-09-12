@@ -17,11 +17,12 @@
     <result column="reminder_time" jdbcType="TIMESTAMP" property="reminderTime" />
     <result column="one_week" jdbcType="INTEGER" property="oneWeek" />
     <result column="week_type" jdbcType="INTEGER" property="weekType" />
+    <result column="reminder_phone" jdbcType="VARCHAR" property="reminderPhone" />
   </resultMap>
   <sql id="Base_Column_List">
     id, reminder_name, content, `status`, create_time, create_account_id, update_time, 
     reminder_open, again_number, create_user_name, again, remark, reminder_time, one_week, 
-    week_type
+    week_type, reminder_phone
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -38,12 +39,14 @@
       create_time, create_account_id, update_time, 
       reminder_open, again_number, create_user_name, 
       again, remark, reminder_time, 
-      one_week, week_type)
+      one_week, week_type, reminder_phone
+      )
     values (#{reminderName,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}, 
       #{createTime,jdbcType=TIMESTAMP}, #{createAccountId,jdbcType=INTEGER}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{reminderOpen,jdbcType=INTEGER}, #{againNumber,jdbcType=INTEGER}, #{createUserName,jdbcType=VARCHAR}, 
       #{again,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{reminderTime,jdbcType=TIMESTAMP}, 
-      #{oneWeek,jdbcType=INTEGER}, #{weekType,jdbcType=INTEGER})
+      #{oneWeek,jdbcType=INTEGER}, #{weekType,jdbcType=INTEGER}, #{reminderPhone,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.ManageReminder" useGeneratedKeys="true">
     insert into manage_reminder
@@ -90,6 +93,9 @@
       <if test="weekType != null">
         week_type,
       </if>
+      <if test="reminderPhone != null">
+        reminder_phone,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="reminderName != null">
@@ -133,6 +139,9 @@
       </if>
       <if test="weekType != null">
         #{weekType,jdbcType=INTEGER},
+      </if>
+      <if test="reminderPhone != null">
+        #{reminderPhone,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -181,6 +190,9 @@
       <if test="weekType != null">
         week_type = #{weekType,jdbcType=INTEGER},
       </if>
+      <if test="reminderPhone != null">
+        reminder_phone = #{reminderPhone,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -199,7 +211,8 @@
       remark = #{remark,jdbcType=VARCHAR},
       reminder_time = #{reminderTime,jdbcType=TIMESTAMP},
       one_week = #{oneWeek,jdbcType=INTEGER},
-      week_type = #{weekType,jdbcType=INTEGER}
+      week_type = #{weekType,jdbcType=INTEGER},
+      reminder_phone = #{reminderPhone,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
