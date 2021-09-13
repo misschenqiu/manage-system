@@ -20,6 +20,7 @@ import com.starda.managesystem.pojo.po.app.AppTaskQueryPO;
 import com.starda.managesystem.pojo.po.business.ConfirmTaskPO;
 import com.starda.managesystem.pojo.vo.app.AppTaskInfoListVO;
 import com.starda.managesystem.pojo.vo.app.AppTaskInfoVO;
+import com.starda.managesystem.pojo.vo.business.ManageBusinessInfoDTO;
 import com.starda.managesystem.service.IAppTaskBusinessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -145,5 +146,11 @@ public class AppTaskBusinessServiceImpl extends ServiceImpl<ManageBusinessInfoMa
     @Override
     public AppTaskInfoVO getTaskInfo(UserVO user, ConfirmTaskPO po) throws Exception {
         return null;
+    }
+
+    @Override
+    public List<ManageBusinessInfoDTO> getManageBusinessInfoList(MPJLambdaWrapper<ManageBusinessInfo> wrapper) throws Exception {
+        List<ManageBusinessInfoDTO> manageBusinessInfoDTOS = this.baseMapper.selectJoinList(ManageBusinessInfoDTO.class, wrapper);
+        return manageBusinessInfoDTOS;
     }
 }

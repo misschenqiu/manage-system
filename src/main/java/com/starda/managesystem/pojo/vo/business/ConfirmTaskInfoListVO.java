@@ -93,4 +93,14 @@ public class ConfirmTaskInfoListVO {
      */
     private TaskStaffInfoVO staffInfoVO;
 
+    /**
+     * 员工 头像
+     */
+    private String headImg;
+
+    /**
+     * 员工名称
+     */
+    private String staffName;
+
 }

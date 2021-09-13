@@ -90,6 +90,11 @@ public class TaskInfoLIstVO {
     private Integer confirmIssue;
 
     /**
+     * 员工是否已经提交 0.否 1.是
+     */
+    private Integer staffSubmit;
+
+    /**
      * 管理员备注
      */
     private TaskInfoRemarkVO manageRemarkVO;

@@ -54,6 +54,12 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
     @Override
     public void insertTaskInfo(UserVO user, InsertTaskInfoPO taskInfo) throws Exception {
 
+        // 判断业务是否已经结束
+        ManageBusiness manageBusiness = this.getById(taskInfo.getBusinessId());
+        if(manageBusiness.getBusinessSucess().equals(Constant.BaseNumberManage.ONE)){
+            throw new ManageStarException("该业务已经结束，不能在操作！");
+        }
+
         //1. 查询业务是否又数据
         List<ManageBusinessInfo> list = this.taskBusinessService.list(new LambdaQueryWrapper<ManageBusinessInfo>()
                 .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE)
@@ -161,7 +167,8 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         ManageBusinessInfo taskBusinessInfo = this.taskBusinessService.getOne(new LambdaQueryWrapper<ManageBusinessInfo>()
                 .eq(ManageBusinessInfo::getId, taskInfo.getId())
                 .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE));
-        if (taskBusinessInfo.getFinish().equals(Constant.TaskBusinessType.THREE)) {
+        if (taskBusinessInfo.getFinish().equals(Constant.TaskBusinessType.THREE)
+                || taskBusinessInfo.getStaffSubmit().equals(Constant.StaffSubmitType.SUBMIT_YES)) {
             throw new ManageStarException("该任务已经完成，不能修改");
         }
         ManageBusinessInfo manageBusinessInfo = BeanUtil.toBean(taskInfo, ManageBusinessInfo.class);
@@ -216,6 +223,15 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
 
     @Override
     public void confirmIssueTask(UserVO user, CommonUpdateIdPO po) throws Exception {
+        // 判断当前业务是否结束
+        ManageBusiness business = this.getBaseMapper().selectJoinOne(ManageBusiness.class, new MPJLambdaWrapper<ManageBusiness>()
+                .selectAll(ManageBusiness.class)
+                .rightJoin(ManageBusinessInfo.class, ManageBusinessInfo::getBusinessId, ManageBusiness::getId)
+                .eq(ManageBusinessInfo::getId, po.getId()));
+        if(business.getBusinessSucess().equals(Constant.BaseNumberManage.ONE)){
+            throw new ManageStarException("该业务已完成，不可操作！");
+        }
+
         // 判断前任务是否完成
         ManageBusinessInfo businessInfo = this.taskBusinessService.getById(po.getId());
         List<ManageBusinessInfo> businessInfos = this.taskBusinessService.list(new LambdaQueryWrapper<ManageBusinessInfo>()
@@ -240,7 +256,10 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
     public List<ConfirmTaskInfoListVO> confirmTaskInfoList(UserVO user, ConfirmTaskPO po) throws Exception {
 
         //1. 获取到改业务所有任务信息
-        List<ManageBusinessInfo> businessInfoList = this.taskBusinessService.list(new LambdaQueryWrapper<ManageBusinessInfo>()
+        List<ManageBusinessInfoDTO> businessInfoList = this.taskBusinessService.getManageBusinessInfoList(new MPJLambdaWrapper<ManageBusinessInfo>()
+                .selectAll(ManageBusinessInfo.class)
+                .selectAs(SysStaff::getHead_img, ManageBusinessInfoDTO::getHeadImg)
+                .leftJoin(SysStaff.class, SysStaff::getId, ManageBusinessInfo::getStaffId)
                 .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE)
                 .eq(ManageBusinessInfo::getBusinessId, po.getBusinessId())
                 .orderByAsc(ManageBusinessInfo::getLevel)
@@ -340,7 +359,7 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
                 .eq(ManageBusinessInfo::getBusinessId, confirm.getBusinessId())
         );
 
-        if(null == businessInfos || businessInfos.isEmpty()){
+        if(null != businessInfos && !businessInfos.isEmpty()){
             throw new ManageStarException("该业务存在未完成业务，不能操作！");
         }
         ManageBusiness business = new ManageBusiness();
@@ -352,7 +371,17 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
                 break;
             // 完成
             case Constant.BusinessType.TWO:
+                List<ManageBusinessInfo> manageBusinessInfos = this.taskBusinessService.list(new LambdaQueryWrapper<ManageBusinessInfo>()
+                        .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE)
+                        .eq(ManageBusinessInfo::getBusinessId, confirm.getBusinessId())
+                        .orderByDesc(ManageBusinessInfo::getLevel)
+                        .orderByDesc(ManageBusinessInfo::getCreateTime));
+                if(null == manageBusinessInfos || manageBusinessInfos.isEmpty()){
+                    return;
+                }
+                business.setEndTime(manageBusinessInfos.get(Constant.BaseNumberManage.ZERO).getFinishTime());
                 business.setBusinessSucess(Constant.BaseNumberManage.ONE);
+
                 break;
         }
 

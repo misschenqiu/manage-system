@@ -1,6 +1,8 @@
 package com.starda.managesystem.pojo.vo.business;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @ProjectName: manage-system
@@ -13,6 +15,8 @@ import lombok.Data;
  */
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class TaskStaffInfoVO {
 
     private Integer id;

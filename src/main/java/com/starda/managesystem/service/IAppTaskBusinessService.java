@@ -1,6 +1,7 @@
 package com.starda.managesystem.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.starda.managesystem.config.Result;
 import com.starda.managesystem.config.author.UserVO;
 import com.starda.managesystem.pojo.ManageBusinessInfo;
@@ -9,6 +10,9 @@ import com.starda.managesystem.pojo.po.app.AppTaskQueryPO;
 import com.starda.managesystem.pojo.po.business.ConfirmTaskPO;
 import com.starda.managesystem.pojo.vo.app.AppTaskInfoListVO;
 import com.starda.managesystem.pojo.vo.app.AppTaskInfoVO;
+import com.starda.managesystem.pojo.vo.business.ManageBusinessInfoDTO;
+
+import java.util.List;
 
 /**
  * @ProjectName: manage-system
@@ -54,5 +58,13 @@ public interface IAppTaskBusinessService extends IService<ManageBusinessInfo> {
      * @throws Exception
      */
     AppTaskInfoVO getTaskInfo(UserVO user, ConfirmTaskPO po) throws Exception;
+
+    /**
+     * 获取到详情
+     * @param wrapper
+     * @return
+     * @throws Exception
+     */
+    List<ManageBusinessInfoDTO> getManageBusinessInfoList(MPJLambdaWrapper<ManageBusinessInfo> wrapper) throws Exception;
 
 }
