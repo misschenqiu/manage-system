@@ -46,4 +46,9 @@ public class AppTaskInfoListVO {
      */
     private Integer finish;
 
+    /**
+     * 员工是否确认 0.否 1.是
+     */
+    private Integer staffConfirm;
+
 }

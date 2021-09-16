@@ -133,6 +133,11 @@ public class ManageBusinessInfo implements Serializable {
      */
     private Integer staffSubmit;
 
+    /**
+     * 员工是否确认 0.否 1.是
+     */
+    private Integer staffConfirm;
+
     private static final long serialVersionUID = 1L;
 
     @Override

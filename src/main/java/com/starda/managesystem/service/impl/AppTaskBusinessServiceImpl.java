@@ -12,9 +12,12 @@ import com.starda.managesystem.constant.Constant;
 import com.starda.managesystem.exceptions.ManageStarException;
 import com.starda.managesystem.mapper.business.ManageBusinessInfoMapper;
 import com.starda.managesystem.mapper.business.ManageBusinessRemarkMapper;
+import com.starda.managesystem.mapper.system.SysStaffMapper;
 import com.starda.managesystem.pojo.ManageBusiness;
 import com.starda.managesystem.pojo.ManageBusinessInfo;
 import com.starda.managesystem.pojo.ManageBusinessRemark;
+import com.starda.managesystem.pojo.SysStaff;
+import com.starda.managesystem.pojo.po.CommonParamPO;
 import com.starda.managesystem.pojo.po.app.AppConfirmTaskPO;
 import com.starda.managesystem.pojo.po.app.AppTaskQueryPO;
 import com.starda.managesystem.pojo.po.business.ConfirmTaskPO;
@@ -44,6 +47,9 @@ public class AppTaskBusinessServiceImpl extends ServiceImpl<ManageBusinessInfoMa
 
     @Autowired
     private ManageBusinessRemarkMapper businessRemarkMapper;
+
+    @Autowired
+    private SysStaffMapper staffMapper;
 
     @Override
     public ManageBusinessInfo getBeforeTaskInfo(Integer taskId) throws Exception {
@@ -153,4 +159,24 @@ public class AppTaskBusinessServiceImpl extends ServiceImpl<ManageBusinessInfoMa
         List<ManageBusinessInfoDTO> manageBusinessInfoDTOS = this.baseMapper.selectJoinList(ManageBusinessInfoDTO.class, wrapper);
         return manageBusinessInfoDTOS;
     }
+
+    @Override
+    public void confirmBusinessInfo(UserVO user, Integer businessId) throws Exception {
+        ManageBusinessInfo businessInfo = new ManageBusinessInfo();
+        businessInfo.setId(businessId);
+        businessInfo.setStaffConfirm(Constant.BaseNumberManage.ONE);
+        this.baseMapper.updateById(businessInfo);
+    }
+
+    @Override
+    public void phoneSerial(UserVO user, CommonParamPO param) throws Exception{
+
+        SysStaff sysStaff = new SysStaff();
+        sysStaff.setId(user.getStaffId());
+        sysStaff.setPhoneSerial(param.getParam());
+
+        this.staffMapper.updateById(sysStaff);
+
+    }
+
 }

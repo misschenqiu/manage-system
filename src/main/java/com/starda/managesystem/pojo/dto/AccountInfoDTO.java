@@ -66,6 +66,11 @@ public class AccountInfoDTO implements Serializable {
     private String staffImg;
 
     /**
+     * 员工手机序列号
+     */
+    private String phoneSerial;
+
+    /**
      * 角色信息
      */
     List<SysRole> roleList;

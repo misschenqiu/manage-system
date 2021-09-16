@@ -32,13 +32,14 @@
     <result column="staff_id" jdbcType="INTEGER" property="staffId" />
     <result column="staff_username" jdbcType="VARCHAR" property="staffName" />
     <result column="staff_head_img" jdbcType="VARCHAR" property="staffImg" />
+    <result column="phone_serial" property="phoneSerial"/>
   </resultMap>
 
   <!-- 获取到账号信息 -->
     <select id="getAccountInfo" resultMap="Base_Account_Result">
         select sys_user.id as sys_user_id, sys_user.account as sys_user_account, sys_user.`password` as `sys_user_password`,
       sys_user.phone as sys_user_phone, sys_user.address as sys_user_address, sys_user.address_code as sys_user_address_code,
-               staff.id as staff_id, staff.username as staff_username, staff.head_img as staff_head_img
+               staff.id as staff_id, staff.username as staff_username, staff.head_img as staff_head_img, staff.phone_serial
         from sys_user sys_user
         left join sys_staff staff on sys_user.id = staff.user_id
         <where>

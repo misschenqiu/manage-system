@@ -5,6 +5,7 @@ import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.starda.managesystem.config.Result;
 import com.starda.managesystem.config.author.UserVO;
 import com.starda.managesystem.pojo.ManageBusinessInfo;
+import com.starda.managesystem.pojo.po.CommonParamPO;
 import com.starda.managesystem.pojo.po.app.AppConfirmTaskPO;
 import com.starda.managesystem.pojo.po.app.AppTaskQueryPO;
 import com.starda.managesystem.pojo.po.business.ConfirmTaskPO;
@@ -66,5 +67,21 @@ public interface IAppTaskBusinessService extends IService<ManageBusinessInfo> {
      * @throws Exception
      */
     List<ManageBusinessInfoDTO> getManageBusinessInfoList(MPJLambdaWrapper<ManageBusinessInfo> wrapper) throws Exception;
+
+    /**
+     * 员工接收任务
+     * @param user
+     * @param businessId
+     * @throws Exception
+     */
+    void confirmBusinessInfo(UserVO user, Integer businessId) throws Exception;
+
+    /**
+     * 添加手机序列号
+     * @param user
+     * @param param
+     * @throws Exception
+     */
+    void phoneSerial(UserVO user, CommonParamPO param) throws Exception;
 
 }

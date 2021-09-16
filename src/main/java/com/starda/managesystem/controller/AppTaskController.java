@@ -3,6 +3,7 @@ package com.starda.managesystem.controller;
 import com.starda.managesystem.config.Result;
 import com.starda.managesystem.config.annotation.AnnotationAuthor;
 import com.starda.managesystem.config.author.UserVO;
+import com.starda.managesystem.pojo.po.CommonParamPO;
 import com.starda.managesystem.pojo.po.app.AppConfirmTaskPO;
 import com.starda.managesystem.pojo.po.app.AppTaskQueryPO;
 import com.starda.managesystem.pojo.po.business.ConfirmTaskPO;
@@ -12,10 +13,7 @@ import com.starda.managesystem.pojo.vo.business.TaskInfoVO;
 import com.starda.managesystem.service.IAppTaskBusinessService;
 import com.starda.managesystem.service.IBusinessTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -85,7 +83,7 @@ public class AppTaskController {
     }
 
     /**
-     * 下发任务
+     * 创建下发任务
      * @param user
      * @param po
      * @return
@@ -93,6 +91,100 @@ public class AppTaskController {
      */
     @PostMapping("issueTaskInfo")
     public Result issueTaskInfo(@AnnotationAuthor UserVO user, @RequestBody @Valid InsertTaskInfoPO po) throws Exception{
+
+        return Result.success();
+    }
+
+    /**
+     *
+     * @param user
+     * @param type
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("manageOrStaff")
+    public Result manageOrStaff(@AnnotationAuthor UserVO user, @RequestBody @Valid Integer type) throws Exception{
+        return Result.success();
+    }
+
+    /**
+     * 接收任务
+     * @param user
+     * @param businessId
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/confirmBusinessInfo/{businessId}")
+    public Result confirmBusinessInfo(@AnnotationAuthor UserVO user, @PathVariable @Valid Integer businessId) throws Exception{
+
+        this.appTaskBusinessService.confirmBusinessInfo(user, businessId);
+
+        return Result.success();
+    }
+
+    /**
+     * 添加手机序列号
+     * @param user
+     * @param param
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/phoneSerial")
+    public Result phoneSerial(@AnnotationAuthor UserVO user, @RequestBody @Valid CommonParamPO param) throws Exception{
+
+        this.appTaskBusinessService.phoneSerial(user, param);
+
+        return Result.success();
+    }
+
+    /**
+     * 确认伙食驳回任务
+     * @param user
+     * @param po
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("confirmIssueTaskInfo")
+    public Result confirmIssueTaskInfo(@AnnotationAuthor UserVO user, @RequestBody @Valid InsertTaskInfoPO po) throws Exception{
+
+        return Result.success();
+    }
+
+    /**
+     * 管理员任务列表
+     * @param user
+     * @param po
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("getTaskInfoList")
+    public Result getTaskInfoList(@AnnotationAuthor UserVO user, @RequestBody @Valid InsertTaskInfoPO po) throws Exception{
+
+        return Result.success();
+    }
+
+    /**
+     * 下发任务
+     * @param user
+     * @param po
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("issueTaskToStaff")
+    public Result issueTaskToStaff(@AnnotationAuthor UserVO user, @RequestBody @Valid InsertTaskInfoPO po) throws Exception{
+
+        return Result.success();
+    }
+
+    /**
+     * 业务列表
+     * @param user
+     * @param po
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("getBusinessList")
+    public Result getBusinessList(@AnnotationAuthor UserVO user, @RequestBody @Valid InsertTaskInfoPO po) throws Exception{
 
         return Result.success();
     }

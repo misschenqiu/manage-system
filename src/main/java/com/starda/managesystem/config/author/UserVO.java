@@ -78,6 +78,11 @@ public class UserVO implements UserDetails, CredentialsContainer {
     private String roleListString;
 
     /**
+     * 手机序列号
+     */
+    private String phoneSerial;
+
+    /**
      * 角色信息
      */
     List<GrantedAuthority> authorities;

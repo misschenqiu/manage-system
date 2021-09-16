@@ -55,6 +55,7 @@ public class MyAuthenticationSuccessHandler extends JSONAuthentication implement
             put("token", tokenKey);
             put("staffImg", userDetails.getStaffImg());
             put("staffName", userDetails.getStaffName());
+            put("param", userDetails.getPhoneSerial());
         }};
         Result result = Result.success(data, Constant.BaseStringInfoManage.SUCCESS);
         this.WriteJSON(request, response, result);

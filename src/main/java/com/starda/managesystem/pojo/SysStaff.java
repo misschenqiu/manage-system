@@ -85,5 +85,10 @@ public class SysStaff implements Serializable {
      */
     private Date update_time;
 
+    /**
+     * 员工手机序列号
+     */
+    private String phoneSerial;
+
     private static final long serialVersionUID = 1L;
 }
