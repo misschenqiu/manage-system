@@ -4,12 +4,19 @@ import com.starda.managesystem.config.Result;
 import com.starda.managesystem.config.annotation.AnnotationAuthor;
 import com.starda.managesystem.config.author.UserVO;
 import com.starda.managesystem.pojo.po.CommonParamPO;
+import com.starda.managesystem.pojo.po.CommonUpdateIdPO;
 import com.starda.managesystem.pojo.po.app.AppConfirmTaskPO;
+import com.starda.managesystem.pojo.po.app.AppManageQueryBusinessPO;
 import com.starda.managesystem.pojo.po.app.AppTaskQueryPO;
 import com.starda.managesystem.pojo.po.business.ConfirmTaskPO;
 import com.starda.managesystem.pojo.po.business.InsertTaskInfoPO;
+import com.starda.managesystem.pojo.po.business.TaskInfoQueryPO;
+import com.starda.managesystem.pojo.vo.app.AppBusinessInfoListVO;
+import com.starda.managesystem.pojo.vo.app.AppBusinessListVO;
 import com.starda.managesystem.pojo.vo.app.AppTaskInfoListVO;
+import com.starda.managesystem.pojo.vo.business.TaskInfoLIstVO;
 import com.starda.managesystem.pojo.vo.business.TaskInfoVO;
+import com.starda.managesystem.service.IAppManageService;
 import com.starda.managesystem.service.IAppTaskBusinessService;
 import com.starda.managesystem.service.IBusinessTaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +43,12 @@ public class AppTaskController {
 
     @Autowired
     private IBusinessTaskService taskService;
+
+    @Autowired
+    private IAppManageService appManageService;
+
+    @Autowired
+    private IBusinessTaskService businessTaskService;
 
     /**
      * 获取app首页数据
@@ -138,14 +151,16 @@ public class AppTaskController {
     }
 
     /**
-     * 确认伙食驳回任务
+     * 确认或驳回任务
      * @param user
-     * @param po
+     * @param confirm
      * @return
      * @throws Exception
      */
     @PostMapping("confirmIssueTaskInfo")
-    public Result confirmIssueTaskInfo(@AnnotationAuthor UserVO user, @RequestBody @Valid InsertTaskInfoPO po) throws Exception{
+    public Result confirmIssueTaskInfo(@AnnotationAuthor UserVO user, @RequestBody @Valid ConfirmTaskPO confirm) throws Exception{
+
+        this.businessTaskService.confirmTaskInfo(user, confirm);
 
         return Result.success();
     }
@@ -157,21 +172,25 @@ public class AppTaskController {
      * @return
      * @throws Exception
      */
-    @PostMapping("getTaskInfoList")
-    public Result getTaskInfoList(@AnnotationAuthor UserVO user, @RequestBody @Valid InsertTaskInfoPO po) throws Exception{
+    @PostMapping("getManageTaskInfoList")
+    public Result getManageTaskInfoList(@AnnotationAuthor UserVO user, @RequestBody @Valid TaskInfoQueryPO po) throws Exception{
 
-        return Result.success();
+        Result<AppBusinessInfoListVO> appTaskInfoList = this.appManageService.getAppTaskInfoList(user, po);
+
+        return appTaskInfoList;
     }
 
     /**
-     * 下发任务
+     * 下发任务 至员工
      * @param user
-     * @param po
+     * @param taskInfo
      * @return
      * @throws Exception
      */
     @PostMapping("issueTaskToStaff")
-    public Result issueTaskToStaff(@AnnotationAuthor UserVO user, @RequestBody @Valid InsertTaskInfoPO po) throws Exception{
+    public Result issueTaskToStaff(@AnnotationAuthor UserVO user, @RequestBody @Valid CommonUpdateIdPO taskInfo) throws Exception{
+
+        this.businessTaskService.confirmIssueTask(user, taskInfo);
 
         return Result.success();
     }
@@ -184,9 +203,11 @@ public class AppTaskController {
      * @throws Exception
      */
     @PostMapping("getBusinessList")
-    public Result getBusinessList(@AnnotationAuthor UserVO user, @RequestBody @Valid InsertTaskInfoPO po) throws Exception{
+    public Result getBusinessList(@AnnotationAuthor UserVO user, @RequestBody @Valid AppManageQueryBusinessPO po) throws Exception{
 
-        return Result.success();
+        Result<AppBusinessListVO> appBusinessListVOResult = appManageService.getBusinessList(user, po);
+
+        return appBusinessListVOResult;
     }
 
 }
