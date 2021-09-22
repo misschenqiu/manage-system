@@ -17,6 +17,7 @@ import com.starda.managesystem.pojo.ManageBusiness;
 import com.starda.managesystem.pojo.ManageBusinessInfo;
 import com.starda.managesystem.pojo.ManageBusinessRemark;
 import com.starda.managesystem.pojo.SysStaff;
+import com.starda.managesystem.pojo.dto.TaskInfoDTO;
 import com.starda.managesystem.pojo.po.CommonParamPO;
 import com.starda.managesystem.pojo.po.app.AppConfirmTaskPO;
 import com.starda.managesystem.pojo.po.app.AppTaskQueryPO;
@@ -177,6 +178,12 @@ public class AppTaskBusinessServiceImpl extends ServiceImpl<ManageBusinessInfoMa
 
         this.staffMapper.updateById(sysStaff);
 
+    }
+
+    @Override
+    public List<TaskInfoDTO> getTaskInfoList(MPJLambdaWrapper<ManageBusinessInfo> wrapper) throws Exception {
+        List<TaskInfoDTO> taskInfoDTOS = this.baseMapper.selectJoinList(TaskInfoDTO.class, wrapper);
+        return taskInfoDTOS;
     }
 
 }

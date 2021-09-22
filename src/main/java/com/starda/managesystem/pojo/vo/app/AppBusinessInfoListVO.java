@@ -46,6 +46,10 @@ public class AppBusinessInfoListVO {
      */
     private String createUser;
 
+    /**
+     * 员工提成
+     */
+    private String money;
 
     /**
      * 0.未结束，1.终止  2. 未到款  3.完成 4.退回 5.驳回

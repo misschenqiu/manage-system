@@ -2,10 +2,14 @@ package com.starda.managesystem.service;
 
 import com.starda.managesystem.config.Result;
 import com.starda.managesystem.config.author.UserVO;
+import com.starda.managesystem.pojo.ManageBusinessInfo;
+import com.starda.managesystem.pojo.dto.TaskInfoDTO;
 import com.starda.managesystem.pojo.po.app.AppManageQueryBusinessPO;
 import com.starda.managesystem.pojo.po.business.TaskInfoQueryPO;
 import com.starda.managesystem.pojo.vo.app.AppBusinessInfoListVO;
 import com.starda.managesystem.pojo.vo.business.TaskInfoLIstVO;
+
+import java.util.List;
 
 /**
  * @ProjectName: manage-system
@@ -35,5 +39,12 @@ public interface IAppManageService {
      * @throws Exception
      */
     Result<AppBusinessInfoListVO> getAppTaskInfoList(UserVO user, TaskInfoQueryPO po) throws Exception;
+
+    /**
+     * 获取 员工未接收的任务信息
+     * @return
+     * @throws Exception
+     */
+    List<TaskInfoDTO> getTaskInfoList() throws Exception;
 
 }

@@ -4,11 +4,14 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.starda.managesystem.config.Result;
 import com.starda.managesystem.config.author.UserVO;
 import com.starda.managesystem.constant.Constant;
 import com.starda.managesystem.pojo.ManageBusiness;
 import com.starda.managesystem.pojo.ManageBusinessInfo;
+import com.starda.managesystem.pojo.SysStaff;
+import com.starda.managesystem.pojo.dto.TaskInfoDTO;
 import com.starda.managesystem.pojo.po.app.AppManageQueryBusinessPO;
 import com.starda.managesystem.pojo.po.business.TaskInfoQueryPO;
 import com.starda.managesystem.pojo.vo.app.AppBusinessInfoListVO;
@@ -17,10 +20,12 @@ import com.starda.managesystem.pojo.vo.business.TaskInfoLIstVO;
 import com.starda.managesystem.service.IAppManageService;
 import com.starda.managesystem.service.IAppTaskBusinessService;
 import com.starda.managesystem.service.IBusinessTaskService;
+import com.starda.managesystem.util.getui.GeTuiUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -79,5 +84,33 @@ public class AppManageServiceImpl implements IAppManageService {
                         .orderByAsc(ManageBusinessInfo::getLevel));
         List<AppBusinessInfoListVO> appBusinessInfoListVOS = BeanUtil.copyToList(page.getRecords(), AppBusinessInfoListVO.class);
         return Result.ok().resultPage(appBusinessInfoListVOS,  page.getCurrent(), page.getSize(), page.getTotal());
+    }
+
+    @Override
+    public List<TaskInfoDTO> getTaskInfoList() throws Exception {
+        // 1.查询 任务信息
+        List<TaskInfoDTO> list = this.taskBusinessService.getTaskInfoList(new MPJLambdaWrapper<ManageBusinessInfo>()
+                .select(ManageBusinessInfo::getTaskName)
+                .select(ManageBusinessInfo::getStaffId)
+                .select(SysStaff::getPhoneSerial)
+                .leftJoin(SysStaff.class, SysStaff::getId, ManageBusinessInfo::getStaffId)
+                .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE)
+                .eq(ManageBusinessInfo::getConfirmIssue, Constant.ConfirmTaskType.ONE)
+                .eq(ManageBusinessInfo::getStaffConfirm, Constant.StaffSubmitType.SUBMIT_NO));
+        // 2.通知栏 提醒
+        if(null == list || list.isEmpty()){
+            log.info("没有任务可提醒");
+            return null;
+        }
+        list.stream().forEach(task ->{
+            List<String> phoneSeres = new ArrayList<String>();
+            phoneSeres.add(task.getPhoneSerial());
+            try {
+                GeTuiUtil.messageInfoGetui(Constant.ResultCodeMessage.GE_TUI_TITLE, task.getTaskName(), phoneSeres);
+            } catch (Exception e) {
+                log.info("提醒失败" + e.getMessage());
+            }
+        });
+        return null;
     }
 }

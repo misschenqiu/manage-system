@@ -154,7 +154,7 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         }
         // 获取员工信息
         List<TaskStaffInfoVO> taskStaffInfoVOList = this.businessRemarkMapper.selectJoinList(TaskStaffInfoVO.class, wrapper);
-        if (null == manageRemark || manageRemark.isEmpty()) {
+        if (null == taskStaffInfoVOList || taskStaffInfoVOList.isEmpty()) {
             return taskInfoVO;
         }
         taskInfoVO.setStaffInfoVO(taskStaffInfoVOList.get(Constant.BaseNumberManage.ZERO));
