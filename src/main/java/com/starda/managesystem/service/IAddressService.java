@@ -1,13 +1,13 @@
 package com.starda.managesystem.service;
 
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.starda.managesystem.config.author.UserVO;
-import com.starda.managesystem.pojo.dto.MenuAddressDTO;
+import com.starda.managesystem.pojo.SysAddress;
 import com.starda.managesystem.pojo.po.address.AddressUrlPO;
 import com.starda.managesystem.pojo.vo.AddressVO;
 import com.starda.managesystem.pojo.vo.MenuAddressVO;
 import com.starda.managesystem.pojo.vo.role.MenuAddressListVO;
-import com.starda.managesystem.pojo.vo.role.MenuRoleChoiceVO;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ import java.util.List;
  * @Date: 2021/8/23 23:48
  * @Version: 1.0
  */
-public interface IAddressService {
+public interface IAddressService extends IService<SysAddress> {
 
     /**
      * 添加路由
@@ -82,5 +82,13 @@ public interface IAddressService {
      * @throws Exception
      */
     void removeManageAddress(Integer addressId) throws Exception;
+
+    /**
+     * 链表查询
+     * @param mapper
+     * @return
+     * @throws Exception
+     */
+    List<SysAddress> getMPJSysAddressList(MPJLambdaWrapper<SysAddress> mapper) throws Exception;
 
 }

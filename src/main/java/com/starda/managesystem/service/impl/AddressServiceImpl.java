@@ -7,9 +7,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.yulichang.base.MPJBaseMapper;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.starda.managesystem.config.ExceptionEnums;
 import com.starda.managesystem.config.author.UserVO;
 import com.starda.managesystem.constant.Constant;
@@ -17,10 +20,7 @@ import com.starda.managesystem.exceptions.ManageStarException;
 import com.starda.managesystem.mapper.system.SysAddressMapper;
 import com.starda.managesystem.mapper.system.SysMenuMapper;
 import com.starda.managesystem.mapper.system.SysRoleMenuMapper;
-import com.starda.managesystem.pojo.ManageAddress;
-import com.starda.managesystem.pojo.SysAddress;
-import com.starda.managesystem.pojo.SysMenu;
-import com.starda.managesystem.pojo.SysRole;
+import com.starda.managesystem.pojo.*;
 import com.starda.managesystem.pojo.dto.MenuAddressDTO;
 import com.starda.managesystem.pojo.po.address.AddressUrlPO;
 import com.starda.managesystem.pojo.vo.AddressVO;
@@ -180,9 +180,50 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
 
         // 1. 获取改角色下数据
         List<MenuAddressVO> menuAddressDTOS = BeanUtil.copyToList(this.getAddressList(vo), MenuAddressVO.class);
+
         log.info("获取到的角色下所有数据-》{}" + menuAddressDTOS.size());
 
-        return menuAddressDTOS;
+        // 获取自己的权限
+        // 判断是列表还是 菜单
+        if(StrUtil.isBlank(vo.getRoleListString())) {
+            // 1. 没有权限
+           throw new MybatisPlusException("管理员没有赋值权限");
+        }
+        List<SysRole> roleList = JSONArray.parseArray(vo.getRoleListString(), SysRole.class);
+        List<Integer> roleIds = roleList.stream().map(SysRole::getId).collect(Collectors.toList());
+
+        log.info("拥有角色" + roleIds);
+        List<SysAddress> addressList = this.baseMapper.selectJoinList(SysAddress.class, new MPJLambdaWrapper<SysAddress>()
+                .selectAll(SysAddress.class)
+                .rightJoin(SysRoleMenu.class, SysRoleMenu::getMenu_id, SysAddress::getId)
+                .in(SysRoleMenu::getRole_id, roleIds));
+        log.info("拥有的权限" + addressList);
+        if (null == addressList || addressList.isEmpty()){
+            throw new MybatisPlusException("管理员没有赋值权限");
+        }
+
+        List<Integer> list = addressList.stream().map(SysAddress::getId).collect(Collectors.toList());
+
+        return menuAddressDTOS.stream()
+                .filter(addressId -> {
+                    if (null == addressId.getChildren() || addressId.getChildren().isEmpty()){
+                        if(list.contains(addressId.getId())){
+                            return false;
+                        }
+                    }
+                    List<MenuAddressListVO> newChild = new ArrayList<MenuAddressListVO>();
+                    for (MenuAddressListVO child : addressId.getChildren()) {
+                        if(list.contains(child.getId())){
+                            newChild.add(child);
+                        }
+                    }
+                    // 子类
+                    addressId.getChildren().clear();
+                    addressId.setChildren(newChild);
+                    return true;
+                })
+                .collect(Collectors.toList());
+
     }
 
     @Override
@@ -241,6 +282,11 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
 
         this.baseMapper.updateAddress(addressId);
 
+    }
+
+    @Override
+    public List<SysAddress> getMPJSysAddressList(MPJLambdaWrapper<SysAddress> mapper) throws Exception {
+        return this.baseMapper.selectJoinList(SysAddress.class, mapper);
     }
 
     /**

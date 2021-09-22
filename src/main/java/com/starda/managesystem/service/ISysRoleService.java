@@ -8,8 +8,10 @@ import com.starda.managesystem.pojo.SysRole;
 import com.starda.managesystem.pojo.SysRoleMenu;
 import com.starda.managesystem.pojo.SysUserRole;
 import com.starda.managesystem.pojo.dto.RoleListDTO;
+import com.starda.managesystem.pojo.po.CommonUpdateIdPO;
 import com.starda.managesystem.pojo.po.role.RoleInsertPO;
 import com.starda.managesystem.pojo.po.role.RoleSelectPO;
+import com.starda.managesystem.pojo.vo.role.MenuRoleInfoVO;
 import com.starda.managesystem.pojo.vo.role.RoleListVO;
 
 import java.util.List;
@@ -103,5 +105,14 @@ public interface ISysRoleService {
      * @return
      */
     List<RoleListDTO> getRoleByAccountIdsList(List<Integer> accountIds) throws Exception;
+
+    /**
+     * 详情
+     * @param user
+     * @param po
+     * @return
+     * @throws Exception
+     */
+    MenuRoleInfoVO getRoleInfo(UserVO user, CommonUpdateIdPO po) throws Exception;
 
 }

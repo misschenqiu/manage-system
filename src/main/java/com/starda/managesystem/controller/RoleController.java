@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.starda.managesystem.config.Result;
 import com.starda.managesystem.config.annotation.AnnotationAuthor;
 import com.starda.managesystem.config.author.UserVO;
+import com.starda.managesystem.pojo.po.CommonUpdateIdPO;
 import com.starda.managesystem.pojo.po.role.RoleInsertPO;
 import com.starda.managesystem.pojo.po.role.RoleSelectPO;
+import com.starda.managesystem.pojo.vo.role.MenuRoleInfoVO;
 import com.starda.managesystem.pojo.vo.role.RoleListVO;
 import com.starda.managesystem.service.ISysRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,6 +96,17 @@ public class RoleController {
         Result roleListVOS = this.roleService.selectRoleList(userVO, po);
 
         return roleListVOS;
+    }
+
+    /**
+     * 角色详情
+     */
+    @PostMapping("/getRoleInfo")
+    public Result getRoleInfo(@AnnotationAuthor UserVO user, @RequestBody @Valid CommonUpdateIdPO po) throws Exception{
+
+        MenuRoleInfoVO vo = this.roleService.getRoleInfo(user, po);
+
+        return Result.ok().resultPage(vo);
     }
 
 }

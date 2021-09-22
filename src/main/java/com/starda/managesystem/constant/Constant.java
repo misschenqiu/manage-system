@@ -21,9 +21,11 @@ public interface Constant {
      */
     interface ResultCodeMessage{
         String SUCCESS = "success";
+        String ERROR_STRING = "error";
         String FAIL = "fail";
         Boolean DEFAULT = true;
         Boolean ERROR = false;
+        String GE_TUI_TITLE = "新任务";
     }
 
     /**
@@ -160,6 +162,26 @@ public interface Constant {
     interface BusinessType{
         int ONE = 1;
         int TWO = 2;
+    }
+
+    /**
+     * 消息通知常量
+     */
+    interface AppNotice{
+        String APP_ID = "Rmzu09u5hVAidPzz1EKpQ6";
+        String APP_KEY = "hp7vS2Dr40AGUERgQTa7Y";
+        String APP_SECRET = "mIxxqFkzR46iJIYWyzPL99";
+        String MASTER_SECRET = "lJxKWSMUcf8izcyJKB6lZ9";
+        String MARK = "io.rw";
+    }
+
+    /**
+     * 短信发送平台
+     */
+    interface SmsInfoConfig{
+        String AccessKeyId = "";
+        String AccessKeySecret = "";
+        String endpoint = "";
     }
 
 }

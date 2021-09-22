@@ -23,6 +23,7 @@ import com.starda.managesystem.pojo.po.business.*;
 import com.starda.managesystem.pojo.vo.business.*;
 import com.starda.managesystem.service.IAppTaskBusinessService;
 import com.starda.managesystem.service.IBusinessTaskService;
+import com.starda.managesystem.util.getui.GeTuiUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -88,7 +89,6 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         // 添加数据
         this.taskBusinessService.save(manageBusinessInfo);
         log.info("添加任务正常");
-        // TODO 提醒对应员工
 
     }
 
@@ -250,6 +250,11 @@ public class BusinessTaskServiceImpl extends ServiceImpl<ManageBusinessMapper, M
         taskInfo.setId(po.getId());
         taskInfo.setConfirmIssue(Constant.ConfirmTaskType.ONE);
         this.taskBusinessService.updateById(taskInfo);
+
+        // 提醒对应员工
+        List<String> phoneSeres = new ArrayList<String>();
+        phoneSeres.add(user.getPhoneSerial());
+        GeTuiUtil.messageInfoGetui(Constant.ResultCodeMessage.GE_TUI_TITLE, businessInfo.getTaskName(), phoneSeres);
     }
 
     @Override

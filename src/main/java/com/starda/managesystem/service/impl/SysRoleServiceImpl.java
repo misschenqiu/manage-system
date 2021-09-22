@@ -2,11 +2,13 @@ package com.starda.managesystem.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.yulichang.wrapper.MPJLambdaWrapper;
 import com.starda.managesystem.common.SecurityPasswordCommon;
 import com.starda.managesystem.config.Result;
 import com.starda.managesystem.config.author.UserVO;
@@ -15,23 +17,28 @@ import com.starda.managesystem.exceptions.ManageStarException;
 import com.starda.managesystem.mapper.system.SysRoleMapper;
 import com.starda.managesystem.mapper.system.SysRoleMenuMapper;
 import com.starda.managesystem.mapper.system.SysUserRoleMapper;
-import com.starda.managesystem.pojo.SysRole;
-import com.starda.managesystem.pojo.SysRoleMenu;
-import com.starda.managesystem.pojo.SysUserRole;
+import com.starda.managesystem.pojo.*;
 import com.starda.managesystem.pojo.dto.RoleListDTO;
 import com.starda.managesystem.pojo.dto.role.RoleDTO;
+import com.starda.managesystem.pojo.po.CommonUpdateIdPO;
 import com.starda.managesystem.pojo.po.role.RoleInsertPO;
 import com.starda.managesystem.pojo.po.role.RoleSelectPO;
+import com.starda.managesystem.pojo.vo.MenuAddressVO;
+import com.starda.managesystem.pojo.vo.role.MenuAddressListVO;
+import com.starda.managesystem.pojo.vo.role.MenuRoleInfoVO;
 import com.starda.managesystem.pojo.vo.role.RoleListVO;
 import com.starda.managesystem.service.IAddressService;
 import com.starda.managesystem.service.ISysRoleService;
+import com.starda.managesystem.util.BeanCopyUtil;
 import lombok.extern.log4j.Log4j2;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -255,6 +262,40 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         }
 
         return this.baseMapper.selectRoleByAccountIds(accountIds);
+    }
+
+    @Override
+    public MenuRoleInfoVO getRoleInfo(UserVO user, CommonUpdateIdPO po) throws Exception{
+        // 判断是否是自己得的权限
+        Boolean flash = false;
+        if (po.getId() > 0){
+            flash = true;
+        }
+        List<SysAddress> addressList = this.addressService.getMPJSysAddressList(new MPJLambdaWrapper<SysAddress>()
+                .selectAll(SysAddress.class)
+                .leftJoin(SysRoleMenu.class, SysRoleMenu::getMenu_id, SysAddress::getId)
+                .eq(SysRoleMenu::getRole_id, po.getId()));
+
+        // 转换数据
+        HashMap<String, String> mapping = new HashMap<String, String>();
+        mapping.put("urlName", "name");
+        mapping.put("menuId", "sort");
+        mapping.put("icon", "icons");
+        mapping.put("addressUrl", "component");
+        mapping.put("route", "path");
+        List<MenuAddressVO> menuAddressVOList = BeanCopyUtil.copyToList(addressList, MenuAddressVO.class, mapping);
+
+        // 解析对象
+        menuAddressVOList.stream().forEach(menu->{
+            menu.setMeta(JSONObject.parseObject(menu.getIcons(), HashMap.class));
+        });
+
+        // 对象id
+        List<Integer> addressIdList = addressList.stream().map(SysAddress::getId).collect(Collectors.toList());
+
+        MenuRoleInfoVO infoVO = new MenuRoleInfoVO(menuAddressVOList, addressIdList);
+
+        return infoVO;
     }
 
 }
