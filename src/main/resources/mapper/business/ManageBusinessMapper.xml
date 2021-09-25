@@ -25,12 +25,14 @@
     <result column="Insurance_people" jdbcType="VARCHAR" property="insurancePeople" />
     <result column="Insurance_phone" jdbcType="VARCHAR" property="insurancePhone" />
     <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="car_brand" property="carBrand"/>
+    <result column="car_Shelf" property="carShelf"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, business_name, remark, create_account_id, create_user_name, create_time, update_time, 
     update_account_id, business_type, company_id, company_name, business_sucess, end_time, 
     collect_money, Insurance_number, dock_people, dock_phone, business_img, money, Insurance_company, 
-    Insurance_people, Insurance_phone, `status`
+    Insurance_people, Insurance_phone, `status`,car_brand,car_Shelf
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -50,7 +52,7 @@
       collect_money, Insurance_number, dock_people, 
       dock_phone, business_img, money, 
       Insurance_company, Insurance_people, Insurance_phone, 
-      `status`)
+      `status`,car_brand,car_Shelf)
     values (#{businessName,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, #{createAccountId,jdbcType=INTEGER}, 
       #{createUserName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{updateAccountId,jdbcType=INTEGER}, #{businessType,jdbcType=VARCHAR}, #{companyId,jdbcType=INTEGER}, 
@@ -58,7 +60,8 @@
       #{collectMoney,jdbcType=INTEGER}, #{insuranceNumber,jdbcType=VARCHAR}, #{dockPeople,jdbcType=VARCHAR}, 
       #{dockPhone,jdbcType=VARCHAR}, #{businessImg,jdbcType=VARCHAR}, #{money,jdbcType=VARCHAR}, 
       #{insuranceCompany,jdbcType=VARCHAR}, #{insurancePeople,jdbcType=VARCHAR}, #{insurancePhone,jdbcType=VARCHAR}, 
-      #{status,jdbcType=INTEGER})
+      #{status,jdbcType=INTEGER}, #{carBrand},
+            #{carShelf})
   </insert>
   <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.starda.managesystem.pojo.ManageBusiness" useGeneratedKeys="true">
     insert into manage_business
@@ -129,6 +132,12 @@
       <if test="status != null">
         `status`,
       </if>
+      <if test="carShelf != null">
+        car_shelf,
+      </if>
+      <if test="carBrand != null">
+        car_brand,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="businessName != null">
@@ -196,6 +205,12 @@
       </if>
       <if test="status != null">
         #{status,jdbcType=INTEGER},
+      </if>
+      <if test="carShelf != null">
+        #{carShelf},
+      </if>
+      <if test="carBrand != null">
+        #{carBrand},
       </if>
     </trim>
   </insert>
@@ -268,6 +283,12 @@
       <if test="status != null">
         `status` = #{status,jdbcType=INTEGER},
       </if>
+      <if test="carShelf != null">
+        car_shelf = #{carShelf},
+      </if>
+      <if test="carBrand != null">
+        car_brand = #{carBrand},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -294,7 +315,9 @@
       Insurance_company = #{insuranceCompany,jdbcType=VARCHAR},
       Insurance_people = #{insurancePeople,jdbcType=VARCHAR},
       Insurance_phone = #{insurancePhone,jdbcType=VARCHAR},
-      `status` = #{status,jdbcType=INTEGER}
+      `status` = #{status,jdbcType=INTEGER},
+        car_shelf = #{carShelf},
+    car_brand = #{carBrand}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

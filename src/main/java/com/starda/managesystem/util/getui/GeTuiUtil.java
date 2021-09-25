@@ -7,6 +7,7 @@ import cn.hutool.http.HttpRequest;
 import com.alibaba.fastjson.JSONObject;
 import com.starda.managesystem.common.LocalCache;
 import com.starda.managesystem.constant.Constant;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
@@ -23,6 +24,7 @@ import java.util.Map;
  * @Version: 1.0
  */
 @Configuration
+@Log4j2
 public class GeTuiUtil {
 
     private static final String BASEURL = "https://restapi.getui.com/v2/" + Constant.AppNotice.APP_ID;
@@ -88,6 +90,7 @@ public class GeTuiUtil {
        // 获取授权token
        String token = LocalCache.get(TOKEN_KEY, false) + "";
         if(sendOut(token, paramMap)){
+            log.info("提示成功");
             return Constant.ResultCodeMessage.SUCCESS;
         }
        String newToken = getToken();
@@ -99,8 +102,10 @@ public class GeTuiUtil {
             }else {
                 LocalCache.put(TOKEN_KEY, geTuiResult.getData().getToken());
             }
+           log.info("提示成功");
            return Constant.ResultCodeMessage.SUCCESS;
        }
+       log.info("提示成功");
        return Constant.ResultCodeMessage.ERROR_STRING;
    }
 

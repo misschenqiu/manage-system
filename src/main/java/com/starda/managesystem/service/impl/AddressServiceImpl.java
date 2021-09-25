@@ -187,7 +187,7 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
         // 判断是列表还是 菜单
         if(StrUtil.isBlank(vo.getRoleListString())) {
             // 1. 没有权限
-           throw new MybatisPlusException("管理员没有赋值权限");
+          return new ArrayList<MenuAddressVO>();
         }
         List<SysRole> roleList = JSONArray.parseArray(vo.getRoleListString(), SysRole.class);
         List<Integer> roleIds = roleList.stream().map(SysRole::getId).collect(Collectors.toList());
@@ -199,7 +199,7 @@ public class AddressServiceImpl extends ServiceImpl<SysAddressMapper, SysAddress
                 .in(SysRoleMenu::getRole_id, roleIds));
         log.info("拥有的权限" + addressList);
         if (null == addressList || addressList.isEmpty()){
-            throw new MybatisPlusException("管理员没有赋值权限");
+            return new ArrayList<MenuAddressVO>();
         }
 
         List<Integer> list = addressList.stream().map(SysAddress::getId).collect(Collectors.toList());

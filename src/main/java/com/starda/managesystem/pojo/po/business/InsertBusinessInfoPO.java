@@ -42,18 +42,18 @@ public class InsertBusinessInfoPO {
     private String companyName;
 
     /**
-     * 保险单号
+     * 报案号
      */
     private String insuranceNumber;
 
     /**
-     * 对应人
+     * 汽车联系人
      */
     @NotBlank(message = "业务对应人不能为空")
     private String dockPeople;
 
     /**
-     * 对应人电话
+     * 汽车联系人信息
      */
     private String dockPhone;
 
@@ -82,5 +82,14 @@ public class InsertBusinessInfoPO {
      */
     private String insurancePhone;
 
+    /**
+     * 车牌号
+     */
+    private String carBrand;
+
+    /**
+     * 车架号
+     */
+    private String carShelf;
 
 }

@@ -83,17 +83,17 @@ public class ManageBusiness implements Serializable {
     private Integer collectMoney;
 
     /**
-     * 保险单号
+     * 报案号
      */
     private String insuranceNumber;
 
     /**
-     * 对应人
+     * 汽车联系人
      */
     private String dockPeople;
 
     /**
-     * 对应人电话
+     * 汽车联系人电话
      */
     private String dockPhone;
 
@@ -126,6 +126,16 @@ public class ManageBusiness implements Serializable {
      * 是否可用,0:不可用，1：可用
      */
     private Integer status;
+
+    /**
+     * 车牌号
+     */
+    private String carBrand;
+
+    /**
+     * 车架号
+     */
+    private String carShelf;
 
     private static final long serialVersionUID = 1L;
 

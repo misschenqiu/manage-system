@@ -112,4 +112,14 @@ public class BusinessInfoListVO {
      */
     private String insurancePhone;
 
+    /**
+     * 车牌号
+     */
+    private String carBrand;
+
+    /**
+     * 车架号
+     */
+    private String carShelf;
+
 }
