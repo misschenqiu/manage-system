@@ -94,6 +94,7 @@ public class AppManageServiceImpl implements IAppManageService {
                 .select(ManageBusinessInfo::getStaffId)
                 .select(SysStaff::getPhoneSerial)
                 .leftJoin(SysStaff.class, SysStaff::getId, ManageBusinessInfo::getStaffId)
+                .eq(ManageBusinessInfo::getFinish, Constant.BaseNumberManage.ZERO)
                 .eq(ManageBusinessInfo::getStatus, Constant.BaseNumberManage.ONE)
                 .eq(ManageBusinessInfo::getConfirmIssue, Constant.ConfirmTaskType.ONE)
                 .eq(ManageBusinessInfo::getStaffConfirm, Constant.StaffSubmitType.SUBMIT_NO));
